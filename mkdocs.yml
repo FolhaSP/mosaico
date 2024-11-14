@@ -30,9 +30,6 @@ theme:
     repo: fontawesome/brands/github
   features:
     - header.autohide
-    - navigation.instant
-    - navigation.instant.progress
-    - navigation.instant.preview
     - navigation.indexes
     - navigation.path
     - navigation.tabs
