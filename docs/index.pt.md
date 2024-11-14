@@ -1,68 +1,68 @@
-# Getting Started
+# Começando
 
-__Mosaico__ is a Python library for programmatically creating and managing video compositions. It provides a high-level interface for working with media assets, positioning elements, applying effects, and generating video scripts, all built on top of MoviePy - one of the most popular video editing libraries in Python.
+__Mosaico__ é uma biblioteca Python para criar e gerenciar composições de vídeo programaticamente. Fornece uma interface de alto nível para trabalhar com assets de mídia, posicionar elementos, aplicar efeitos e gerar roteiros de vídeo, tudo construído sobre o MoviePy - uma das bibliotecas de edição de vídeo mais populares em Python.
 
-The library is designed with flexibility and extensibility in mind, offering clean abstractions for:
+A biblioteca foi projetada pensando em flexibilidade e extensibilidade, oferecendo abstrações limpas para:
 
-- Managing different types of media assets (audio, images, text, subtitles)
-- Precise positioning and layout control
-- Effect application and animation
-- AI-powered script generation
-- Text-to-speech synthesis
-- Integration with popular ML frameworks
+- Gerenciamento de diferentes tipos de assets de mídia (áudio, imagens, texto, legendas)
+- Controle preciso de posicionamento e layout
+- Aplicação de efeitos e animação
+- Geração de roteiros com IA
+- Síntese de texto em fala
+- Integração com frameworks populares de ML
 
-## Key Features and Capabilities
+## Recursos e Capacidades Principais
 
 <div class="grid cards" markdown>
 
--   [:material-script-text: __Script Generation__](concepts/script-generators.md)
+-   [:material-script-text: __Geração de Roteiros__](concepts/script-generators.md)
 
     ---
 
-    -   Clean interfaces for custom script generation
-    -   Extensible framework for AI integration
-    -   Shot and scene organization
-    -   Script-to-video rendering
+    -   Interfaces limpas para geração personalizada de roteiros
+    -   Framework extensível para integração com IA
+    -   Organização de cenas e tomadas
+    -   Renderização de roteiro para vídeo
 
--   [:material-file-multiple: __Asset Management__](concepts/media-and-assets.md)
-
-    ---
-
-    -   Support for multiple media types
-    -   Flexible asset parameters and metadata handling
-    -   Reference system for tracking assets in scenes
-
--   [:material-arrange-send-backward: __Positioning System__](concepts/positioning.md)
+-   [:material-file-multiple: __Gerenciamento de Assets__](concepts/media-and-assets.md)
 
     ---
 
-    -   Multiple positioning modes (absolute, relative, region-based)
-    -   Frame-aware positioning calculations
-    -   Flexible alignment options
+    -   Suporte para múltiplos tipos de mídia
+    -   Manipulação flexível de parâmetros e metadados de assets
+    -   Sistema de referência para rastreamento de assets em cenas
 
--   [:material-movie-filter: __Effects Engine__](concepts/effects.md)
-
-    ---
-
-    -   Built-in pan and zoom effects
-    -   Extensible effect system
-    -   Parameter-based effect configuration
-    -   Effect composition support
-
--   [:material-microphone-message: __Speech Synthesis__](concepts/speech-synthesizers.md)
+-   [:material-arrange-send-backward: __Sistema de Posicionamento__](concepts/positioning.md)
 
     ---
 
-    -   Integration with major TTS providers
-    -   Configurable voice parameters
-    -   Batch synthesis support
-    -   Asset parameter controls
+    -   Múltiplos modos de posicionamento (absoluto, relativo, baseado em regiões)
+    -   Cálculos de posicionamento com consciência de quadro
+    -   Opções flexíveis de alinhamento
 
--   [:material-puzzle: __External Integrations__](integrations/index.md)
+-   [:material-movie-filter: __Motor de Efeitos__](concepts/effects.md)
 
     ---
 
-    -   Haystack and LangChain integrations out of the box
-    -   Extensible adapter system
-    -   Clean integration protocols
+    -   Efeitos incorporados de pan e zoom
+    -   Sistema extensível de efeitos
+    -   Configuração baseada em parâmetros
+    -   Suporte à composição de efeitos
+
+-   [:material-microphone-message: __Síntese de Fala__](concepts/speech-synthesizers.md)
+
+    ---
+
+    -   Integração com principais provedores de TTS
+    -   Parâmetros configuráveis de voz
+    -   Suporte à síntese em lote
+    -   Controles de parâmetros de assets
+
+-   [:material-puzzle: __Integrações Externas__](integrations/index.md)
+
+    ---
+
+    -   Integrações prontas com Haystack e LangChain
+    -   Sistema extensível de adaptadores
+    -   Protocolos limpos de integração
 </div>
