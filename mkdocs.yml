@@ -152,7 +152,6 @@ nav:
       - Script Generators:
           - api-reference/script-generators/index.md
           - api-reference/script-generators/script.md
-          - api-reference/script-generators/news.md
       - Speech Synthesizers:
           - api-reference/speech-synthesizers/index.md
           - api-reference/speech-synthesizers/elevenlabs.md
