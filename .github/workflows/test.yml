@@ -1,0 +1,36 @@
+name: Unit Tests
+
+on:
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  tests:
+    name: Unit Tests
+    runs-on: ${{ matrix.os }}
+    continue-on-error: ${{ matrix.experimental }}
+    strategy:
+      fail-fast: true
+      matrix:
+        python-version: ["3.10", "3.11", "3.12"]
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        experimental: [false]
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup FFmpeg
+        uses: AnimMouse/setup-ffmpeg@v1
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v3
+        with:
+          enable-cache: true
+          cache-dependency-glob: "uv.lock"
+      - name: Set up Python ${{ matrix.python-version }}
+        run: uv python install ${{ matrix.python-version }}
+      - name: Install the project
+        run: uv sync --all-extras --dev
+      - name: Test with pytest
+        run: uv run pytest
+      - name: Minimize uv cache
+        run: uv cache prune --ci

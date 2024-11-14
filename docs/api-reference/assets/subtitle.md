@@ -1,0 +1,1 @@
+::: mosaico.assets.subtitle

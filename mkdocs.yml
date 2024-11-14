@@ -1,0 +1,211 @@
+site_name: Mosaico
+repo_name: folhalab/mosaico
+repo_url: https://github.com/folhalab/mosaico
+copyright: © 2024 Folha de S.Paulo
+docs_dir: docs
+
+theme:
+  name: material
+  custom_dir: docs/overrides/
+  logo: assets/logo.png
+  palette:
+    # Palette toggle for light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: white
+      accent: white
+      toggle:
+        icon: material/lightbulb
+        name: Switch to dark mode
+
+    # Palette toggle for dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: black
+      accent: black
+      toggle:
+        icon: material/lightbulb-outline
+        name: Switch to system preference
+  icon:
+    repo: fontawesome/brands/github
+  features:
+    - header.autohide
+    - navigation.instant
+    - navigation.instant.progress
+    - navigation.instant.preview
+    - navigation.indexes
+    - navigation.path
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.footer
+
+watch:
+  - ./src/mosaico/
+
+markdown_extensions:
+  # pymdownx blocks
+  - pymdownx.blocks.admonition:
+      types:
+        - tip
+  - pymdownx.blocks.details:
+  - pymdownx.blocks.tab:
+      alternate_style: True
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - pymdownx.inlinehilite
+  - pymdownx.snippets:
+      base_path: [./cookbook]
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.details
+  - pymdownx.tabbed:
+      alternate_style: true
+  - admonition
+  - attr_list
+  - md_in_html
+
+extra:
+  generator: false
+  version:
+    provider: mike
+
+extra_css:
+  - stylesheets/extra.css
+
+nav:
+  - Getting Started:
+      - index.md
+      - getting-started/architecture.md
+      - getting-started/installation.md
+      - getting-started/quick-start.md
+  - Concepts:
+      - concepts/index.md
+      - concepts/media-and-assets.md
+      - concepts/positioning.md
+      - concepts/asset-references-and-scenes.md
+      - concepts/script-generators.md
+      - concepts/video-projects.md
+      - concepts/effects.md
+      - concepts/speech-synthesizers.md
+      - concepts/audio-transcriptors.md
+  - Integrations:
+      - integrations/index.md
+      - Frameworks:
+          - integrations/frameworks/haystack.md
+          - integrations/frameworks/langchain.md
+      - Platforms:
+          - integrations/platforms/assemblyai.md
+          - integrations/platforms/elevenlabs.md
+          - integrations/platforms/openai.md
+  - Cookbook:
+      - cookbook/index.md
+      - cookbook/adding-audio.md
+      - cookbook/adding-images.md
+      - cookbook/adding-subtitles.md
+      - cookbook/basic-video.md
+      - cookbook/creating-custom-effects.md
+      - cookbook/multilayer-scene.md
+      - cookbook/project-config.md
+      - cookbook/slide-show.md
+      - cookbook/syncing-audio.md
+      - cookbook/text-animation.md
+      - cookbook/timed-transition.md
+      - cookbook/timeline-management.md
+      - cookbook/video-from-article.md
+  - API Reference:
+      - Assets:
+          - api-reference/assets/index.md
+          - api-reference/assets/audio.md
+          - api-reference/assets/image.md
+          - api-reference/assets/text.md
+          - api-reference/assets/subtitle.md
+      - api-reference/asset-reference.md
+      - Audio Transcribers:
+          - api-reference/audio-transcribers/index.md
+          - api-reference/audio-transcribers/assemblyai.md
+          - api-reference/audio-transcribers/openai.md
+      - Clip Makers:
+          - api-reference/clip-makers/index.md
+          - api-reference/clip-makers/audio.md
+          - api-reference/clip-makers/image.md
+          - api-reference/clip-makers/subtitle.md
+          - api-reference/clip-makers/text.md
+      - Effects:
+          - api-reference/effects/index.md
+          - api-reference/effects/pan.md
+          - api-reference/effects/zoom.md
+      - api-reference/media.md
+      - Positioning:
+          - api-reference/positioning/index.md
+          - api-reference/positioning/absolute.md
+          - api-reference/positioning/region.md
+          - api-reference/positioning/relative.md
+      - api-reference/scene.md
+      - Script Generators:
+          - api-reference/script-generators/index.md
+          - api-reference/script-generators/script.md
+          - api-reference/script-generators/news.md
+      - Speech Synthesizers:
+          - api-reference/speech-synthesizers/index.md
+          - api-reference/speech-synthesizers/elevenlabs.md
+          - api-reference/speech-synthesizers/openai.md
+      - Video:
+          - api-reference/video/project.md
+          - api-reference/video/rendering.md
+  - Development:
+      - development/contributing.md
+  - Roadmap: roadmap.md
+
+plugins:
+  - search
+  - i18n:
+      default_language: en
+      docs_structure: suffix
+      languages:
+        - locale: en
+          default: true
+          name: 🇺🇸 English
+          build: true
+        - locale: pt
+          name: 🇧🇷 Português (Brasil)
+          build: true
+          nav_translations:
+            Getting Started: Começando
+            Concepts: Conceitos
+            Integrations: Integrações
+            API Reference: Referência da API
+            Development: Desenvolvimento
+  - mkdocstrings:
+      handlers:
+        python:
+          paths: [src/mosaico/]
+          options:
+            show_submodules: false
+            show_root_heading: false
+            show_root_toc_entry: false
+            show_symbol_type_toc: true
+            show_symbol_type_heading: true
+            separate_signature: true
+            members_order: source
+            filters: ["!^_", "!model_post_init"]
+            docstring_style: sphinx
+            docstring_options:
+              ignore_init_summary: true
+            merge_init_into_class: true
+            parameter_headings: true
+            show_signature_annotations: true
+            signature_crossrefs: true
+          import:
+            - url: https://docs.python.org/3/objects.inv
+            - url: https://typing-extensions.readthedocs.io/en/latest/objects.inv
+            - url: https://docs.pydantic.dev/latest/objects.inv
+            - url: https://moviepy-tburrows13.readthedocs.io/en/improve-docs/objects.inv
+  - print-site
