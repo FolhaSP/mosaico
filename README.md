@@ -60,7 +60,7 @@ For common usage patterns and examples, see our [Cookbook](docs/cookbook/index.e
 
 Comprehensive documentation is available [here](https://folhasp.github.io/mosaico). Documentation includes:
 
-- [Getting Started](https://folhasp.github.io/mosaico/getting-started): Installation, setup, and basic usage
+- [Getting Started](https://folhasp.github.io/mosaico): Installation, setup, and basic usage
 - [Concepts](https://folhasp.github.io/mosaico/concepts): Overview of key concepts and terminology
 - [Cookbook](https://folhasp.github.io/mosaico/cookbook): Examples and tutorials for common tasks
 - [API Reference](https://folhasp.github.io/mosaico/api-reference): Detailed reference for all classes and functions
