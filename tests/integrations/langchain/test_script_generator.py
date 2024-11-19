@@ -15,7 +15,11 @@ from mosaico.script_generators.script import ShootingScript, Shot
 
 @pytest.fixture
 def sample_media():
-    return [Media.from_data("Test video content", metadata={"description": "A test video", "credit": "Test Author"})]
+    return [
+        Media.from_data(
+            "Test video content", id="media_1", metadata={"description": "A test video", "credit": "Test Author"}
+        )
+    ]
 
 
 @pytest.fixture
@@ -30,7 +34,7 @@ def sample_script():
                 start_time=0.0,
                 end_time=5.0,
                 subtitle="Test subtitle",
-                media_references=[0],
+                media_id="media_1",
             )
         ],
     )
@@ -76,7 +80,7 @@ class MockScriptGenerator(ScriptGenerator):
                     start_time=0.0,
                     end_time=5.0,
                     subtitle="Test",
-                    media_references=[0],
+                    media_id=media[0].id,
                 )
             ],
         )
