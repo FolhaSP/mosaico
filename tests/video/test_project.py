@@ -218,7 +218,7 @@ class MockScriptGenerator:
                     start_time=0,
                     end_time=5,
                     subtitle="Hello world",
-                    media_references=[0],
+                    media_id=media[0].id,
                 ),
                 Shot(
                     number=2,
@@ -226,7 +226,7 @@ class MockScriptGenerator:
                     start_time=5,
                     end_time=10,
                     subtitle="This is a test",
-                    media_references=[1],
+                    media_id=media[1].id,
                 ),
             ],
         )

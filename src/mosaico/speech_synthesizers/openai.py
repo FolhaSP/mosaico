@@ -2,7 +2,6 @@ import io
 from collections.abc import Sequence
 from typing import Annotated, Any, ClassVar, Literal
 
-from openai import OpenAI
 from pydantic import BaseModel
 from pydantic.fields import Field, PrivateAttr
 from pydantic.functional_validators import model_validator
@@ -45,6 +44,10 @@ class OpenAISpeechSynthesizer(BaseModel):
         """
         Set the OpenAI client.
         """
+        try:
+            from openai import OpenAI
+        except ImportError:
+            raise ImportError("The 'openai' package is required for using the OpenAISpeechSynthesizer.")
         self._client = OpenAI(api_key=self.api_key, base_url=self.base_url, timeout=self.timeout)
         return self
 
