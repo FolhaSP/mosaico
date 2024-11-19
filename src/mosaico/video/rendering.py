@@ -16,7 +16,6 @@ from mosaico.clip_makers.factory import make_clip
 
 if TYPE_CHECKING:
     from mosaico.assets.types import Asset
-    from mosaico.effects.protocol import Effect
     from mosaico.types import FrameSize
     from mosaico.video.project import VideoProject
     from mosaico.video.types import TimelineEvent
@@ -35,21 +34,19 @@ def render_video(project: VideoProject, output_dir: str | Path, *, overwrite: bo
     output_path = output_dir / f"{project.config.title}.mp4"
 
     if not output_dir.exists():
-        raise FileNotFoundError(f"Output directory does not exist: {output_dir}")
+        msg = f"Output directory does not exist: {output_dir}"
+        raise FileNotFoundError(msg)
 
     if output_path.exists() and not overwrite:
-        raise FileExistsError(f"Output file already exists: {output_path}")
+        msg = f"Output file already exists: {output_path}"
+        raise FileExistsError(msg)
 
     video_clips = []
     audio_clips = []
 
     for event in project.timeline:
         event_asset_ref_pairs = _get_event_assets_and_refs(event, project)
-        event_video_clips, event_audio_clips = _render_event_clips(
-            asset_and_ref_pairs=event_asset_ref_pairs,
-            video_resolution=project.config.resolution,
-            effects=getattr(event, "effects", []),
-        )
+        event_video_clips, event_audio_clips = _render_event_clips(event_asset_ref_pairs, project.config.resolution)
         video_clips.extend(event_video_clips or [])
         audio_clips.extend(event_audio_clips or [])
 
@@ -99,7 +96,7 @@ def _get_event_asset_refs(event: TimelineEvent) -> list[AssetReference]:
 
 
 def _render_event_clips(
-    asset_and_ref_pairs: Sequence[tuple[Asset, AssetReference]], video_resolution: FrameSize, effects: Sequence[Effect]
+    asset_and_ref_pairs: Sequence[tuple[Asset, AssetReference]], video_resolution: FrameSize
 ) -> tuple[list[VideoClip], list[AudioClip]]:
     """
     Compose a video clip from the given assets.
@@ -108,7 +105,7 @@ def _render_event_clips(
     video_clips = []
 
     for asset, asset_ref in asset_and_ref_pairs:
-        clip = make_clip(asset, asset_ref.duration, video_resolution, effects)
+        clip = make_clip(asset, asset_ref.duration, video_resolution, asset_ref.effects)
         clip = clip.set_start(asset_ref.start_time)
 
         if hasattr(asset.params, "z_index"):

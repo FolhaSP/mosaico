@@ -23,8 +23,8 @@ class Shot(BaseModel):
     subtitle: str
     """The subtitle for the shot."""
 
-    media_references: list[int] = Field(..., min_length=1)
-    """The media references for the shot."""
+    media_id: str
+    """The media reference for the shot."""
 
     effects: list[VideoEffectType] = Field(default_factory=list)
     """The effects applied to the shot."""

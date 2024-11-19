@@ -29,6 +29,7 @@ assemblyai = ["assemblyai>=0.34.0"]
 langchain = ["langchain>=0.3.7"]
 haystack = ["haystack-ai>=2.6.1"]
 elevenlabs = ["elevenlabs>=1.9.0"]
+news = ["instructor>=1.6.4", "litellm>=1.52.9"]
 
 [build-system]
 requires = ["hatchling"]

@@ -21,7 +21,7 @@ class SubtitleAsset(BaseTextAsset):
         default_factory=lambda: TextAssetParams(
             position=RegionPosition(x="center", y="bottom"),
             font_color=Color("white"),
-            font_size=48,
+            font_size=45,
             stroke_width=1,
             align="center",
             shadow_blur=10,

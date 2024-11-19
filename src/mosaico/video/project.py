@@ -127,26 +127,26 @@ class VideoProject(BaseModel):
 
         # Create assets and asset references from the script.
         for shot in script.shots:
-            shot_assets: list[Asset] = [SubtitleAsset.from_data(shot.subtitle)]
-            shot_scene = Scene(description=shot.description).add_asset_references(
-                references=AssetReference.from_asset(shot_assets[0])
-                .with_start_time(shot.start_time)
-                .with_end_time(shot.end_time)
-            )
+            referenced_media = next(m for m in media if m.id == shot.media_id)
+            shot_subtitle = SubtitleAsset.from_data(shot.subtitle)
             shot_effects = [create_effect(effect) for effect in shot.effects]
-
-            for media_ref in shot.media_references:
-                shot_asset = convert_media_to_asset(media[media_ref])
-                shot_asset_ref = (
+            shot_asset = convert_media_to_asset(referenced_media)
+            shot_scene = (
+                Scene(description=shot.description)
+                .add_asset_references(
+                    AssetReference.from_asset(shot_subtitle)
+                    .with_start_time(shot.start_time)
+                    .with_end_time(shot.end_time)
+                )
+                .add_asset_references(
                     AssetReference.from_asset(shot_asset)
                     .with_start_time(shot.start_time)
                     .with_end_time(shot.end_time)
-                    .with_effects(shot_effects)
+                    .with_effects(shot_effects if shot_asset.type == "image" else [])
                 )
-                shot_scene = shot_scene.add_asset_references(shot_asset_ref)
-                shot_assets.append(shot_asset)
+            )
 
-            project = project.add_assets(shot_assets).add_timeline_events(shot_scene)
+            project = project.add_assets(shot_asset).add_assets(shot_subtitle).add_timeline_events(shot_scene)
 
         return project
 
