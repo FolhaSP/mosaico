@@ -1,6 +1,6 @@
 [project]
 name = "mosaico"
-version = "0.1.0-rc0"
+version = "0.1.0rc1"
 description = "Open-source video generation framework"
 authors = [
     { name = "Leonardo Diegues", email = "leonardo.diegues@grupofolha.com.br" },
@@ -8,6 +8,20 @@ authors = [
 ]
 readme = "README.md"
 requires-python = ">=3.10,<3.13"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "License :: OSI Approved :: GNU General Public License (GPL)",
+    "Operating System :: OS Independent",
+    "Topic :: Multimedia",
+    "Topic :: Multimedia :: Video :: Non-Linear Editor",
+    "Topic :: Multimedia :: Sound/Audio :: Speech",
+    "Topic :: Multimedia :: Sound/Audio :: Sound Synthesis",
+    "Topic :: Text Processing :: Fonts",
+
+]
 dependencies = [
     "pydantic",
     "pyyaml",
