@@ -43,7 +43,7 @@ class NewsVideoScriptGenerator:
     def __init__(
         self,
         context: str,
-        model: str = "gpt-4o",
+        model: str = "claude-3-5-sonnet-20241022",
         model_params: dict[str, Any] | None = None,
         api_key: str | None = None,
         base_url: str | None = None,
