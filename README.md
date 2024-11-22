@@ -19,30 +19,104 @@ pip install mosaico
 
 ## Quick Start
 
+Easily create and render a video project from a script generator:
+
 ```python
-from mosaico.assets import create_asset
-from mosaico.scene import Scene
-from mosaico.video.project import VideoProject, VideoProjectConfig
+from mosaico.audio_transcribers.assemblyai import AssemblyAIAudioTranscriber
+from mosaico.script_generators.news import NewsVideoScriptGenerator
+from mosaico.speech_synthesizers.elevenlabs import ElevenLabsSpeechSynthesizer
+from mosaico.video.project import VideoProject
+from mosaico.video.rendering import render_video
 
-# Create assets
-image = create_asset("image", path="background.jpg")
-text = create_asset("text", data="Hello World")
-audio = create_asset("audio", path="narration.mp3")
 
-# Create asset references with timing
-image_ref = AssetReference.from_asset(image).with_start_time(0).with_end_time(5)
-text_ref = AssetReference.from_asset(text).with_start_time(1).with_end_time(4)
-audio_ref = AssetReference.from_asset(audio).with_start_time(0).with_end_time(5)
+# Import your media
+media = [
+    Media.from_path("background.jpg", metadata={"description": "Background image"}),
+    Media.from_path("image1.jpg", metadata={"description": "Image 1"}),
+    Media.from_path("image2.jpg", metadata={"description": "Image 2"}),
+    Media.from_path("image3.jpg", metadata={"description": "Image 3"}),
+]
 
-# Create scene
-scene = Scene(asset_references=[image_ref, text_ref, audio_ref])
+# Textual context for the video
+context = "..."
+
+# Create script generator
+script_generator = NewsVideoScriptGenerator(
+    context=context,
+    language="pt",
+    num_paragraphs=8,
+)
+
+# Create speech synthesizer
+speech_synthesizer = ElevenLabsSpeechSynthesizer(
+    voice_id="Xb7hH8MSUJpSbSDYk0k2",
+    voice_stability=0.8,
+    voice_similarity_boost=0.75,
+    voice_speaker_boost=False,
+)
+
+# Create audio transcriber for captions
+audio_transcriber = AssemblyAIAudioTranscriber()
 
 # Create project
 project = (
-    VideoProject(config=VideoProjectConfig())
-    .add_assets([image, text, audio])
-    .add_timeline_events(scene)
+    VideoProject.from_script_generator(script_generator, media)
+    .with_title("My Breaking News Video")
+    .with_fps(30)
+    .with_resolution((1920, 1080))
+    .add_narration(speech_synthesizer)
+    .add_captions_from_transcriber(audio_transcriber, overwrite=True)
 )
+
+# Render project
+render_video(project, "My-Breaking-News-Video.mp4")
+```
+
+Or create a video project from scratch:
+
+```python
+from mosaico.video.project import VideoProject
+from mosaico.assets import ImageAsset, TextAsset, AudioAsset, AssetReference
+
+# Import your media as production-ready assets
+assets = [
+    ImageAsset.from_path("background.jpg", metadata={"description": "Background image"}),
+    ImageAsset.from_path("image1.jpg", metadata={"description": "Image 1"}),
+    ImageAsset.from_path("image2.jpg", metadata={"description": "Image 2"}),
+    ImageAsset.from_path("image3.jpg", metadata={"description": "Image 3"}),
+    TextAsset.from_data("Subtitle 1"),
+    TextAsset.from_data("Subtitle 2"),
+    TextAsset.from_data("Subtitle 3"),
+    AudioAsset.from_path("narration.mp3"),
+]
+
+asset_references = [
+    AssetReference.from_asset(background, start_time=0, end_time=10),
+    AssetReference.from_asset(image1, start_time=10, end_time=20),
+    AssetReference.from_asset(image2, start_time=20, end_time=30),
+    AssetReference.from_asset(image3, start_time=30, end_time=40),
+    AssetReference.from_asset(subtitle1, start_time=40, end_time=50),
+    AssetReference.from_asset(subtitle2, start_time=50, end_time=60),
+    AssetReference.from_asset(subtitle3, start_time=60, end_time=70),
+    AssetReference.from_asset(narration, start_time=70, end_time=80),
+]
+
+scene = Scene(description="My Scene").add_asset_references(asset_references)
+
+project = (
+    VideoProject()
+    .with_title("My Breaking News Video")
+    .with_fps(30)
+    .with_resolution((1920, 1080))
+    .add_assets(assets)
+    # Add the asset references as scene events to the timeline
+    .add_timeline_events(scene)
+    # Or add asset references directly to the timeline
+    # .add_timeline_events(asset_references)
+)
+
+# Render project
+render_video(project, "My-Breaking-News-Video.mp4")
 ```
 
 ## Cookbook
