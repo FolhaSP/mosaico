@@ -377,6 +377,7 @@ class VideoProject(BaseModel):
                 if ref.asset_type == "subtitle":
                     self.remove_asset(ref.asset_id)
 
+            # Calculate time scale factor if needed
             current_time = scene.start_time
 
             for phrase in phrases:

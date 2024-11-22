@@ -55,11 +55,15 @@ class Shot(BaseModel):
     @property
     def start_time(self) -> float:
         """The start time of the shot in seconds."""
+        if not self.media_references:
+            return 0
         return min(media_reference.start_time for media_reference in self.media_references)
 
     @property
     def end_time(self) -> float:
         """The end time of the shot in seconds."""
+        if not self.media_references:
+            return 0
         return max(media_reference.end_time for media_reference in self.media_references)
 
     @property
