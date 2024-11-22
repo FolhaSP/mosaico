@@ -56,7 +56,7 @@ speech_synthesizer = ElevenLabsSpeechSynthesizer(
 )
 
 # Create audio transcriber for captions
-audio_transcriber = AssemblyAIAudioTranscriber(api_key=ASSEMBLYAI_API_KEY)
+audio_transcriber = AssemblyAIAudioTranscriber()
 
 # Create project
 project = (
