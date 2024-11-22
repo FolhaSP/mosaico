@@ -125,28 +125,44 @@ class VideoProject(BaseModel):
         # Generate assets and scenes from a scene generator.
         script = script_generator.generate(media, **kwargs)
 
-        # Create assets and asset references from the script.
+        # Create assets and scenes from the script.
         for shot in script.shots:
-            referenced_media = next(m for m in media if m.id == shot.media_id)
+            # Create subtitle asset
             shot_subtitle = SubtitleAsset.from_data(shot.subtitle)
-            shot_effects = [create_effect(effect) for effect in shot.effects]
-            shot_asset = convert_media_to_asset(referenced_media)
-            shot_scene = (
-                Scene(description=shot.description)
-                .add_asset_references(
-                    AssetReference.from_asset(shot_subtitle)
-                    .with_start_time(shot.start_time)
-                    .with_end_time(shot.end_time)
-                )
-                .add_asset_references(
-                    AssetReference.from_asset(shot_asset)
-                    .with_start_time(shot.start_time)
-                    .with_end_time(shot.end_time)
-                    .with_effects(shot_effects if shot_asset.type == "image" else [])
-                )
+
+            # Create scene with initial subtitle reference
+            scene = Scene(description=shot.description).add_asset_references(
+                AssetReference.from_asset(shot_subtitle).with_start_time(shot.start_time).with_end_time(shot.end_time)
             )
 
-            project = project.add_assets(shot_asset).add_assets(shot_subtitle).add_timeline_events(shot_scene)
+            # Add subtitle asset to project
+            project = project.add_assets(shot_subtitle)
+
+            # Process each media reference in the shot
+            for media_ref in shot.media_references:
+                # Find the referenced media
+                referenced_media = next(m for m in media if m.id == media_ref.media_id)
+
+                # Convert media to asset
+                media_asset = convert_media_to_asset(referenced_media)
+
+                # Create asset reference with timing and effects
+                asset_ref = (
+                    AssetReference.from_asset(media_asset)
+                    .with_start_time(media_ref.start_time)
+                    .with_end_time(media_ref.end_time)
+                )
+
+                # Add effects if it's an image asset
+                if media_asset.type == "image" and media_ref.effects:
+                    asset_ref = asset_ref.with_effects([create_effect(effect) for effect in media_ref.effects])
+
+                # Add media asset and its reference to the scene
+                project = project.add_assets(media_asset)
+                scene = scene.add_asset_references(asset_ref)
+
+            # Add completed scene to project timeline
+            project = project.add_timeline_events(scene)
 
         return project
 
@@ -239,12 +255,13 @@ class VideoProject(BaseModel):
         """
         Add narration to subtitles inside Scene objects by generating speech audio from subtitle text.
 
-        Updates other asset timings within each Scene based on generated speech duration.
+        Updates asset timings within each Scene to match narration duration, dividing time equally
+        between multiple images.
 
         :param speech_synthesizer: The speech synthesizer to use for generating narration audio
         :return: The updated project with narration added
         """
-        current_time = 0
+        current_time = None
 
         for i, scene in enumerate(self.timeline.sort()):
             if not isinstance(scene, Scene):
@@ -266,15 +283,44 @@ class VideoProject(BaseModel):
             # Add narration assets to project
             self.add_assets(narration_assets)
 
-            # Calculate new duration based on narration
-            total_narration_duration = sum(asset.duration for asset in narration_assets)
+            # Calculate total narration duration for this scene
+            total_narration_duration = sum(narration.duration for narration in narration_assets)
 
-            # Create new asset references with scaled timing
+            # Get non-subtitle assets to adjust timing
+            non_subtitle_refs = [ref for ref in scene.asset_references if ref.asset_type != "subtitle"]
+            image_refs = [ref for ref in non_subtitle_refs if ref.asset_type == "image"]
+            other_refs = [ref for ref in non_subtitle_refs if ref.asset_type != "image"]
+
+            if current_time is None:
+                current_time = scene.asset_references[0].start_time
+
             new_refs = []
-            for ref in scene.asset_references:
-                new_start = current_time
-                new_end = current_time + total_narration_duration
-                new_ref = ref.model_copy().with_start_time(new_start).with_end_time(new_end)
+
+            # Adjust image timings - divide narration duration equally
+            if image_refs:
+                time_per_image = total_narration_duration / len(image_refs)
+                for idx, ref in enumerate(image_refs):
+                    new_start = current_time + (idx * time_per_image)
+                    new_end = new_start + time_per_image
+                    new_ref = ref.model_copy().with_start_time(new_start).with_end_time(new_end)
+                    new_refs.append(new_ref)
+
+            # Add other non-image assets with full narration duration
+            for ref in other_refs:
+                new_ref = (
+                    ref.model_copy()
+                    .with_start_time(current_time)
+                    .with_end_time(current_time + total_narration_duration)
+                )
+                new_refs.append(new_ref)
+
+            # Add subtitle references spanning full narration duration
+            for ref in subtitle_refs:
+                new_ref = (
+                    ref.model_copy()
+                    .with_start_time(current_time)
+                    .with_end_time(current_time + total_narration_duration)
+                )
                 new_refs.append(new_ref)
 
             # Add narration references
@@ -286,11 +332,12 @@ class VideoProject(BaseModel):
                 )
                 new_refs.append(narration_ref)
 
+            # Update current_time for next scene
+            current_time += total_narration_duration
+
             # Create new scene with updated references
             new_scene = scene.model_copy(update={"asset_references": new_refs})
             self.timeline[i] = new_scene
-
-            current_time += total_narration_duration
 
         return self
 
@@ -330,19 +377,14 @@ class VideoProject(BaseModel):
                 if ref.asset_type == "subtitle":
                     self.remove_asset(ref.asset_id)
 
-            current_time = 0
-            total_phrase_duration = sum(phrase[-1].end_time - phrase[0].start_time for phrase in phrases)
-
-            # Calculate time scale factor if needed
-            time_scale = scene.duration / total_phrase_duration if total_phrase_duration > 0 else 1.0
             current_time = scene.start_time
 
-            for i, phrase in enumerate(phrases):
+            for phrase in phrases:
                 subtitle_text = " ".join(word.text for word in phrase)
                 subtitle = SubtitleAsset.from_data(subtitle_text)
 
                 # Calculate scaled duration
-                phrase_duration = (phrase[-1].end_time - phrase[0].start_time) * time_scale
+                phrase_duration = phrase[-1].end_time - phrase[0].start_time
 
                 start_time = current_time
                 end_time = start_time + phrase_duration

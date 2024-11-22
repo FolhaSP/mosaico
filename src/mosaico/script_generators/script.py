@@ -1,8 +1,40 @@
+from __future__ import annotations
+
+from typing import Literal
+
 from pydantic import BaseModel, PositiveInt
 from pydantic.fields import Field
+from pydantic.functional_validators import model_validator
 from pydantic.types import NonNegativeFloat, PositiveFloat
+from typing_extensions import Self
 
 from mosaico.effects.types import VideoEffectType
+
+
+class ShotMediaReference(BaseModel):
+    """A reference to a media object."""
+
+    media_id: str
+    """The ID of the media object."""
+
+    type: Literal["image", "video"]
+    """The type of the media object."""
+
+    start_time: NonNegativeFloat
+    """The start time of the media object in seconds."""
+
+    end_time: PositiveFloat
+    """The end time of the media object in seconds."""
+
+    effects: list[VideoEffectType] = Field(default_factory=list)
+    """The effects applied to the media object."""
+
+    @model_validator(mode="after")
+    def _validate_media_references(self) -> Self:
+        """Validate the media references."""
+        if self.start_time >= self.end_time:
+            raise ValueError("The start time must be less than the end time.")
+        return self
 
 
 class Shot(BaseModel):
@@ -14,20 +46,21 @@ class Shot(BaseModel):
     description: str
     """The description of the shot."""
 
-    start_time: NonNegativeFloat
-    """The start time of the shot in seconds."""
-
-    end_time: PositiveFloat
-    """The end time of the shot in seconds."""
-
     subtitle: str
     """The subtitle for the shot."""
 
-    media_id: str
-    """The media reference for the shot."""
+    media_references: list[ShotMediaReference] = Field(default_factory=list)
+    """The media references for the shot."""
 
-    effects: list[VideoEffectType] = Field(default_factory=list)
-    """The effects applied to the shot."""
+    @property
+    def start_time(self) -> float:
+        """The start time of the shot in seconds."""
+        return min(media_reference.start_time for media_reference in self.media_references)
+
+    @property
+    def end_time(self) -> float:
+        """The end time of the shot in seconds."""
+        return max(media_reference.end_time for media_reference in self.media_references)
 
     @property
     def duration(self) -> float:

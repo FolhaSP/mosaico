@@ -105,6 +105,7 @@ def _render_event_clips(
     video_clips = []
 
     for asset, asset_ref in asset_and_ref_pairs:
+        print(asset.type, asset_ref.start_time, asset_ref.end_time, asset_ref.effects)
         clip = make_clip(asset, asset_ref.duration, video_resolution, asset_ref.effects)
         clip = clip.set_start(asset_ref.start_time)
 

@@ -11,9 +11,10 @@ SUMMARIZE_CONTEXT_PROMPT = textwrap.dedent(
 
 
     OUTPUT GUIDELINES:
-    - The summary should have {num_paragraphs} paragraphs.
-    - Each paragraph should be 1 sentence long.
+    - The summary should have {num_paragraphs} short paragraphs.
+    - Each paragraph should be 1 short sentence long.
     - Adhere to the best practices of journalistic writing.
+    - Make sure the first paragraph is the lead of the story.
     - Return only the paragraphs in {language} without any additional information.
 
     CONTEXT:
@@ -30,14 +31,43 @@ MEDIA_SUGGESTING_PROMPT = textwrap.dedent(
     the visual appeal and storytelling of an informative video. Your selections should be relevant, engaging, and
     directly correspond to the content of each paragraph.
 
-    From the media objects provided, you will select items that best match the content of each paragraph. Your goal
-    is to choose media that will enhance the viewer's understanding and create a compelling visual narrative.
+    From the media objects provided, your goal is to choose media that will enhance the viewer's understanding and
+    create a compelling visual narrative. Make sure each suggested media object is thoughtfully integrated to enhance
+    the narrative flow.
 
     OUTPUT GUIDELINES:
-    - For each paragraph, select one media object from the provided collection
+    - Try to use as many media objects as possible (2-3) for each paragraph.
+    - The video should be dynamic, so be sure to select different media objects for different shots.
     - Only select media objects that are available in the provided collection
-    - Avoid selecting the same media object for multiple paragraphs
-    - Answer only with the structured response format in the same language as the paragraphs
+    - Each media object should be used only once.
+    - Answer only with the structured response format in the same language as the paragraphs.
+
+    EXAMPLE:
+    Paragraph 1: "The president of the United States, Joe Biden, visited the White House on Tuesday."
+    Paragraph 2: "He met with the vice president, Kamala Harris."
+
+    Shot 1:
+    Paragraph 1: "The president of the United States, Joe Biden, visited the White House on Tuesday."
+    Media References:
+        - Media Object: "joe-biden-walking"
+          Type: "video"
+          Relevance: "Shows the president walking towards the White House"
+        - Media Object: "white-house-exterior"
+          Type: "image"
+          Relevance: "Shows the White House exterior"
+        - Media Object: "presidential-seal"
+          Type: "image"
+          Relevance: "Shows the presidential seal"
+
+    Shot 2:
+    Paragraph 2: "He met with the vice president, Kamala Harris."
+    Media References:
+        - Media Object: "biden-meeting-kamala-harris"
+          Type: "video"
+          Relevance: "Shows the president and vice president meeting"
+        - Media Object: "kamala-harris-image"
+          Type: "image"
+          Relevance: "Shows the vice president"
 
     PARAGRAPHS:
     {paragraphs}
@@ -49,20 +79,17 @@ MEDIA_SUGGESTING_PROMPT = textwrap.dedent(
     """
 ).strip()
 
-
 SHOOTING_SCRIPT_PROMPT = textwrap.dedent(
     """
     INSTRUCTIONS:
-    You are an experienced journalist and scriptwriter tasked with creating a detailed shooting script for an
-    informative video based on the following paragraphs and media objects. Your script should suggest specific
-    shot, effects, and narration that effectively tell the story while incorporating the media assets.
-
-    The script should maintain journalistic standards of accuracy and objectivity while being engaging for viewers.
-    Make sure each suggested media object is thoughtfully integrated to enhance the narrative flow.
+    You are an experienced video editor tasked with creating a shooting script for an informative video based on the
+    following paragraphs and media objects. Your script should suggest effects and timings for the media objects to create
+    a visually engaging video.
 
     OUTPUT GUIDELINES:
-    - Provide a detailed shooting script that includes shots, effects, and timings.
-    - Use the paragraphs as subtitles for each shot. Keep them as they are.
+    - Keep the paragraphs and media objects as they are. Avoid changing them.
+    - Use the paragraphs as subtitles for the shots.
+    - Add timings to the media objects. Make sure they do not overlap.
     - Respond only with the structured output format in the same language as the paragraphs.
 
     PARAGRAPHS AND MEDIA OBJECTS SUGGESTIONS:

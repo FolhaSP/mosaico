@@ -1,9 +1,8 @@
-from typing import TYPE_CHECKING, Any, Sequence
+from typing import TYPE_CHECKING, Any, Literal, Sequence
 
 from pydantic import BaseModel
 from pydantic_extra_types.language_code import LanguageAlpha2
 
-from mosaico.assets.types import AssetType
 from mosaico.media import Media
 from mosaico.script_generators.news.prompts import (
     MEDIA_SUGGESTING_PROMPT,
@@ -23,10 +22,10 @@ class ParagraphMediaSuggestion(BaseModel):
     paragraph: str
     """The paragraph content to which the media object corresponds."""
 
-    media_id: str
-    """The media reference for the shot."""
+    media_ids: list[str]
+    """The media IDs for the shot."""
 
-    type: AssetType
+    type: Literal["image", "video", "audio"]
     """The type of media (image, video, or audio)."""
 
     relevance: str
