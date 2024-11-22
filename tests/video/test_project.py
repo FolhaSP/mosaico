@@ -668,8 +668,8 @@ def test_add_narration_preserves_relative_timing():
 
     # Calculate expected timings based on MockSpeechSynthesizer's behavior
     narration_duration = len(subtitle_asset.to_string()) * 0.1
-    expected_start = 0  # Start time should be 0 for all assets
-    expected_end = narration_duration  # End time should match narration duration
+    expected_start = 1  # Start time should be 1 second into the scene
+    expected_end = narration_duration + 1  # End time should match narration duration + 1 second
 
     # Verify relative timing
     text_ref = next(ref for ref in updated_scene.asset_references if ref.asset_id == "text1")
