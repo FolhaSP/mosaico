@@ -15,6 +15,7 @@ SUMMARIZE_CONTEXT_PROMPT = textwrap.dedent(
     - Each paragraph should be 1 short sentence long.
     - Adhere to the best practices of journalistic writing.
     - Make sure the first paragraph is the lead of the story.
+    - Make the paragraphs follow the chronology of the context.
     - Return only the paragraphs in {language} without any additional information.
 
     CONTEXT:
