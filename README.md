@@ -1,5 +1,11 @@
 # Mosaico
 
+[![License](https://img.shields.io/github/license/folhasp/mosaico?style=flat-square&color=blue)](https://github.com/folhasp/mosaico/blob/main/LICENSE)
+[![Python](https://img.shields.io/pypi/pyversions/mosaico?style=flat-square&color=blue&logo=python&logoColor=gold)](https://pypi.org/project/mosaico/)
+[![PyPI](https://img.shields.io/pypi/v/mosaico?style=flat-square&color=blue&logo=pypi&logoColor=gold)](https://pypi.org/project/mosaico/)
+[![Downloads](https://img.shields.io/pypi/dm/mosaico?style=flat-square&color=green&logo=pypi&logoColor=gold)](https://pypi.org/project/mosaico/)
+[![Stars](https://img.shields.io/github/stars/folhasp/mosaico?style=flat-square&color=yellow&logo=github)](https://github.com/folhasp/mosaico)
+
 Mosaico is a Python library for programmatically creating and managing video compositions. It provides a high-level interface for working with media assets, positioning elements, applying effects, and generating video scripts.
 
 ## Installation
