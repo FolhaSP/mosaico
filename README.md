@@ -76,7 +76,7 @@ Or create a video project from scratch:
 
 ```python
 from mosaico.video.project import VideoProject
-from mosaico.assets import ImageAsset, TextAsset, AudioAsset
+from mosaico.assets import ImageAsset, TextAsset, AudioAsset, AssetReference
 
 # Import your media as production-ready assets
 assets = [
