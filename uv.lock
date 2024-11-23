@@ -1219,10 +1219,11 @@ wheels = [
 
 [[package]]
 name = "mosaico"
-version = "0.1.0rc2"
+version = "0.1.0rc3"
 source = { editable = "." }
 dependencies = [
     { name = "findsystemfontsfilename" },
+    { name = "fsspec" },
     { name = "moviepy" },
     { name = "opencv-python" },
     { name = "pycountry" },
@@ -1282,6 +1283,7 @@ requires-dist = [
     { name = "click", marker = "extra == 'cli'", specifier = ">=8.1.7" },
     { name = "elevenlabs", marker = "extra == 'elevenlabs'", specifier = ">=1.9.0" },
     { name = "findsystemfontsfilename", specifier = ">=0.3.0" },
+    { name = "fsspec", specifier = ">=2024.10.0" },
     { name = "haystack-ai", marker = "extra == 'haystack'", specifier = ">=2.6.1" },
     { name = "instructor", marker = "extra == 'news'", specifier = ">=1.6.4" },
     { name = "langchain", marker = "extra == 'langchain'", specifier = ">=0.3.7" },

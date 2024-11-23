@@ -5,9 +5,9 @@ import io
 import mimetypes
 import uuid
 from collections.abc import Generator
-from pathlib import Path
 from typing import Any
 
+import fsspec
 from pydantic import BaseModel
 from pydantic.config import ConfigDict
 from pydantic.fields import Field
@@ -93,11 +93,8 @@ class Media(BaseModel):
         :param kwargs: Additional keyword arguments to the constructor.
         :return: The media.
         """
-        if not Path(path).exists():
-            raise FileNotFoundError(f"File not found: {path}")
-
         if not mime_type and guess_mime_type:
-            mime_type = mimetypes.guess_type(path)[0]
+            mime_type = mimetypes.guess_type(str(path))[0]
 
         return cls(
             data=None,
@@ -153,7 +150,7 @@ class Media(BaseModel):
             raise TypeError("Adapter must be an instance of Adapter")
         return adapter.to_external(self)
 
-    def to_string(self) -> str:
+    def to_string(self, *, storage_options: dict[str, Any] | None = None) -> str:
         """
         Returns the media as a string.
         """
@@ -162,11 +159,10 @@ class Media(BaseModel):
         if isinstance(self.data, bytes):
             return self.data.decode(self.encoding)
         if self.data is None and self.path is not None:
-            with open(self.path, encoding=self.encoding) as file:
-                return file.read()
+            return _load_file(self.path, storage_options).decode(self.encoding)
         raise ValueError("Data is not a string or bytes")
 
-    def to_bytes(self) -> bytes:
+    def to_bytes(self, *, storage_options: dict[str, Any] | None = None) -> bytes:
         """
         Returns the media as bytes.
         """
@@ -175,19 +171,39 @@ class Media(BaseModel):
         if isinstance(self.data, str):
             return self.data.encode(self.encoding)
         if self.data is None and self.path is not None:
-            with open(self.path, "rb") as file:
-                return file.read()
+            return _load_file(self.path, storage_options)
         raise ValueError("Data is not a string or bytes")
 
     @contextlib.contextmanager
-    def to_bytes_io(self) -> Generator[io.BytesIO | io.BufferedReader]:
+    def to_bytes_io(
+        self, *, storage_options: dict[str, Any] | None = None
+    ) -> Generator[io.BytesIO | io.BufferedReader]:
         """
         Read data as a byte stream.
         """
         if isinstance(self.data, bytes):
             yield io.BytesIO(self.data)
         elif self.data is None and self.path:
-            with open(str(self.path), "rb") as f:
-                yield f
+            yield from _yield_file(self.path, storage_options)
         else:
             raise NotImplementedError(f"Unable to convert blob {self}")
+
+
+def _yield_file(
+    path: PathLike, storage_options: dict[str, Any] | None = None
+) -> Generator[io.BufferedReader, None, None]:
+    """
+    Yields a file from a path.
+    """
+    fs, path_str = fsspec.core.url_to_fs(str(path), **(storage_options or {}))
+    with fs.open(path_str, "rb") as f:
+        yield f  # type: ignore
+
+
+def _load_file(path: PathLike, storage_options: dict[str, Any] | None = None) -> bytes:
+    """
+    Loads a file from a path.
+    """
+    fs, path_str = fsspec.core.url_to_fs(str(path), **(storage_options or {}))
+    with fs.open(path_str, "rb") as f:
+        return f.read()

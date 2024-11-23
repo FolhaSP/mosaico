@@ -3,7 +3,7 @@ from __future__ import annotations
 import multiprocessing
 from collections.abc import Sequence
 from pathlib import Path
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 from moviepy.audio.AudioClip import AudioClip
 from moviepy.video.compositing.concatenate import CompositeAudioClip, CompositeVideoClip
@@ -21,12 +21,19 @@ if TYPE_CHECKING:
     from mosaico.video.types import TimelineEvent
 
 
-def render_video(project: VideoProject, output_dir: str | Path, *, overwrite: bool = False) -> Path:
+def render_video(
+    project: VideoProject,
+    output_dir: str | Path,
+    *,
+    storage_options: dict[str, Any] | None = None,
+    overwrite: bool = False,
+) -> Path:
     """
     Renders a video based on a project.
 
     :param project: The project to render.
     :param output_dir: The output directory.
+    :param storage_options: Optional storage options to pass to the clip.
     :param overwrite: Whether to overwrite the output file if it already exists.
     :return: The path to the rendered video.
     """
@@ -46,7 +53,9 @@ def render_video(project: VideoProject, output_dir: str | Path, *, overwrite: bo
 
     for event in project.timeline:
         event_asset_ref_pairs = _get_event_assets_and_refs(event, project)
-        event_video_clips, event_audio_clips = _render_event_clips(event_asset_ref_pairs, project.config.resolution)
+        event_video_clips, event_audio_clips = _render_event_clips(
+            event_asset_ref_pairs, project.config.resolution, storage_options
+        )
         video_clips.extend(event_video_clips or [])
         audio_clips.extend(event_audio_clips or [])
 
@@ -96,7 +105,9 @@ def _get_event_asset_refs(event: TimelineEvent) -> list[AssetReference]:
 
 
 def _render_event_clips(
-    asset_and_ref_pairs: Sequence[tuple[Asset, AssetReference]], video_resolution: FrameSize
+    asset_and_ref_pairs: Sequence[tuple[Asset, AssetReference]],
+    video_resolution: FrameSize,
+    storage_options: dict[str, Any] | None = None,
 ) -> tuple[list[VideoClip], list[AudioClip]]:
     """
     Compose a video clip from the given assets.
@@ -105,8 +116,9 @@ def _render_event_clips(
     video_clips = []
 
     for asset, asset_ref in asset_and_ref_pairs:
-        print(asset.type, asset_ref.start_time, asset_ref.end_time, asset_ref.effects)
-        clip = make_clip(asset, asset_ref.duration, video_resolution, asset_ref.effects)
+        clip = make_clip(
+            asset, asset_ref.duration, video_resolution, asset_ref.effects, storage_options=storage_options
+        )
         clip = clip.set_start(asset_ref.start_time)
 
         if hasattr(asset.params, "z_index"):

@@ -34,15 +34,21 @@ def test_make_clip(mock_get_clip_maker_class) -> None:
     duration = 10.0
     video_resolution = (1920, 1080)
     effects = [Mock(spec=Effect)]
+    storage_options = {}
     kwargs = {"extra_arg": "value"}
 
     result = make_clip(
-        asset=mock_asset, duration=duration, video_resolution=video_resolution, effects=effects, **kwargs
+        asset=mock_asset,
+        duration=duration,
+        video_resolution=video_resolution,
+        effects=effects,
+        storage_options=storage_options,
+        **kwargs,
     )
 
     mock_get_clip_maker_class.assert_called_once_with(mock_asset.type)
     mock_clip_maker_cls.assert_called_once_with(
-        duration=duration, video_resolution=video_resolution, effects=effects, **kwargs
+        duration=duration, video_resolution=video_resolution, effects=effects, storage_options=storage_options, **kwargs
     )
     mock_clip_maker_cls.return_value.make_clip.assert_called_once_with(mock_asset)
     assert result == mock_clip
