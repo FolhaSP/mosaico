@@ -32,6 +32,7 @@ dependencies = [
     "pydantic-extra-types>=2.9.0",
     "pycountry>=24.6.1",
     "tinytag>=1.10.1",
+    "fsspec>=2024.10.0",
 ]
 
 [project.scripts]

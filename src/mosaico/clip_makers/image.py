@@ -61,7 +61,7 @@ class ImageClipMaker(BaseClipMaker[ImageAsset]):
         position = asset.params.position
 
         with tempfile.NamedTemporaryFile(mode="wb", suffix=".jpg") as fp:
-            nparr = np.frombuffer(asset.to_bytes(), np.uint8)
+            nparr = np.frombuffer(asset.to_bytes(storage_options=self.storage_options), np.uint8)
             image = cv.imdecode(nparr, cv.IMREAD_COLOR)
 
             # Resize the image if it's not the same resolution as the video

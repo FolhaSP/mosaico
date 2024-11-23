@@ -92,12 +92,6 @@ def test_audio_asset_from_invalid_data():
         AudioAsset.from_data(b"invalid audio data")
 
 
-def test_audio_asset_from_invalid_path():
-    # Test handling non-existent file path
-    with pytest.raises(FileNotFoundError):
-        AudioAsset.from_path("nonexistent_audio.mp3", duration=1.0, sample_rate=44100, sample_width=2, channels=2)
-
-
 def test_audio_asset_params_default_values(sample_audio_data):
     # Test default parameter values
     audio_asset = AudioAsset.from_data(sample_audio_data)

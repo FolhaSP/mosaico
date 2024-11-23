@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import Generic, TypeVar
+from typing import Any, Generic, TypeVar
 
 from moviepy.Clip import Clip
 from pydantic import BaseModel
@@ -29,6 +29,9 @@ class BaseClipMaker(BaseModel, Generic[T], ABC):
     effects: list[Effect] = Field(default_factory=list)
     """List of effects to apply to the clip."""
 
+    storage_options: dict[str, Any] = Field(default_factory=dict)
+    """Storage options for the media."""
+
     model_config = ConfigDict(arbitrary_types_allowed=True, validate_assignment=True)
 
     @abstractmethod
@@ -40,7 +43,7 @@ class BaseClipMaker(BaseModel, Generic[T], ABC):
         """
         Make a clip from the given clip, duration and video resolution.
 
-        :clip: The clip to make the clip from.
+        :asset: The asset to make the clip from.
         :duration: The duration of the clip in seconds.
         :video_resolution: The resolution of the video.
         :return: The clip.
