@@ -92,7 +92,8 @@ class TextClipMaker(BaseClipMaker[BaseTextAsset]):
 
         # Load the font and wrap the text
         font = _load_font(params.font_family, params.font_size)
-        wrapped_text = _wrap_text(asset.to_string(), font, round(max_width * 0.9))
+        text = asset.to_string(storage_options=self.storage_options)
+        wrapped_text = _wrap_text(text, font, round(max_width * 0.9))
         text_size = _get_font_text_size(wrapped_text, font)
 
         shadow_image = None
