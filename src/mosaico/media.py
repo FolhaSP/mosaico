@@ -66,9 +66,6 @@ class Media(BaseModel):
         if "data" not in values and "path" not in values:
             raise ValueError("Either data or path must be provided")
 
-        if str(values.get("path", "")).startswith("http"):
-            raise ValueError("HTTP paths are not supported")
-
         return values
 
     @classmethod
