@@ -12,6 +12,7 @@ from typing_extensions import Self
 
 from mosaico.assets.base import BaseAsset
 from mosaico.assets.utils import check_user_provided_required_keys
+from mosaico.media import _load_file
 from mosaico.types import PathLike
 
 
@@ -94,23 +95,27 @@ class AudioAsset(BaseAsset[AudioAssetParams]):
         :param kwargs: Additional keyword arguments to the constructor.
         :return: The assets.
         """
+        storage_options = kwargs.pop("storage_options", None)
+
         if not check_user_provided_required_keys(kwargs, ["duration", "sample_rate", "sample_width", "channels"]):
-            audio_info = _extract_audio_info(path)
+            raw_audio = _load_file(path, storage_options=storage_options)
+            audio_info = _extract_audio_info(raw_audio)
             kwargs.update(audio_info)
 
         return super().from_path(
             path, encoding=encoding, mime_type=mime_type, guess_mime_type=guess_mime_type, metadata=metadata, **kwargs
         )
 
-    def slice(self, start_time: float, end_time: float) -> AudioAsset:
+    def slice(self, start_time: float, end_time: float, *, storage_options: dict[str, Any] | None = None) -> AudioAsset:
         """
         Slices the audio asset.
 
         :param start_time: The start time in seconds.
         :param end_time: The end time in seconds.
+        :param storage_options: The storage options.
         :return: The sliced audio asset.
         """
-        with self.to_bytes_io() as audio_file:
+        with self.to_bytes_io(storage_options=storage_options) as audio_file:
             audio = AudioSegment.from_file(
                 file=audio_file,
                 sample_width=self.sample_width,
