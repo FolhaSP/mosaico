@@ -1219,7 +1219,7 @@ wheels = [
 
 [[package]]
 name = "mosaico"
-version = "0.1.0rc4"
+version = "0.1.0rc5"
 source = { editable = "." }
 dependencies = [
     { name = "findsystemfontsfilename" },

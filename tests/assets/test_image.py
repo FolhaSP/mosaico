@@ -108,3 +108,43 @@ def test_image_asset_with_metadata(sample_image_data):
     image_asset = ImageAsset.from_data(sample_image_data, metadata=metadata)
 
     assert image_asset.metadata == metadata
+
+
+# def test_image_asset_from_remote_path(mocker, sample_image_data):
+#     # Mock the _load_file function to simulate remote file loading
+#     mock_load_file = mocker.patch("mosaico.media._load_file")
+#     mock_load_file.return_value = sample_image_data
+
+#     remote_path = "https://f.i.uol.com.br/fotografia/2022/02/09/16444170036203cfeb9fbd1_1644417003_3x2_md.jpg"
+#     image_asset = ImageAsset.from_path(remote_path)
+
+#     assert image_asset.type == "image"
+#     assert image_asset.width == 100
+#     assert image_asset.height == 50
+#     assert image_asset.to_bytes() == sample_image_data
+
+
+# def test_image_asset_from_remote_path_with_explicit_dimensions(mocker, sample_image_data):
+#     # Mock the _load_file function to simulate remote file loading
+#     mock_load_file = mocker.patch("mosaico.media._load_file")
+#     mock_load_file.return_value = sample_image_data
+
+#     remote_path = "https://f.i.uol.com.br/fotografia/2022/02/09/16444170036203cfeb9fbd1_1644417003_3x2_md.jpg"
+#     image_asset = ImageAsset.from_path(remote_path, width=300, height=150)
+
+#     assert image_asset.width == 300
+#     assert image_asset.height == 150
+#     assert image_asset.to_bytes() == sample_image_data
+
+
+# def test_image_asset_from_remote_path_with_metadata(mocker, sample_image_data):
+#     # Mock the _load_file function to simulate remote file loading
+#     mock_load_file = mocker.patch("mosaico.media._load_file")
+#     mock_load_file.return_value = sample_image_data
+
+#     remote_path = "https://f.i.uol.com.br/fotografia/2022/02/09/16444170036203cfeb9fbd1_1644417003_3x2_md.jpg"
+#     metadata = {"author": "Test User", "created": "2023-01-01"}
+#     image_asset = ImageAsset.from_path(remote_path, metadata=metadata)
+
+#     assert image_asset.metadata == metadata
+#     assert image_asset.to_bytes() == sample_image_data

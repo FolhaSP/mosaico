@@ -12,6 +12,7 @@ from typing_extensions import Self
 
 from mosaico.assets.base import BaseAsset
 from mosaico.assets.utils import check_user_provided_required_keys
+from mosaico.media import _load_file
 from mosaico.positioning import AbsolutePosition, Position
 from mosaico.types import PathLike
 
@@ -100,9 +101,12 @@ class ImageAsset(BaseAsset[ImageAssetParams]):
         :param kwargs: Additional keyword arguments to the constructor.
         :return: The assets.
         """
+        storage_options = kwargs.pop("storage_options", None)
+
         if not check_user_provided_required_keys(kwargs, ["width", "height"]):
-            with Image.open(path) as img:
-                kwargs["width"], kwargs["height"] = img.size
+            raw_image = _load_file(path, storage_options)
+            with Image.open(io.BytesIO(raw_image)) as image:
+                kwargs["width"], kwargs["height"] = image.size
 
         return super().from_path(
             path, encoding=encoding, mime_type=mime_type, guess_mime_type=guess_mime_type, metadata=metadata, **kwargs
