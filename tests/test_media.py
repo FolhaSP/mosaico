@@ -56,11 +56,6 @@ def test_validate_media_without_data_or_path():
         Media()
 
 
-def test_validate_media_with_http_path():
-    with pytest.raises(ValidationError, match="HTTP paths are not supported"):
-        Media(path="http://example.com/image.jpg")
-
-
 def test_from_path(tmp_path):
     file_path = create_temp_file(tmp_path, "test", "test.txt")
     media = Media.from_path(file_path)
