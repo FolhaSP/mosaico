@@ -14,12 +14,6 @@ Mosaico is a Python library for programmatically creating and managing video com
 pip install mosaico
 ```
 
-To install script generator, speech synthesizer or audio transcriber dependencies, use:
-
-```bash
-pip install "mosaico[news]"
-```
-
 For additional dependencies, see the [additional dependencies](https://folhasp.github.io/mosaico/installation#additional-dependencies) section in the documentation.
 
 ## Features
@@ -32,6 +26,12 @@ For additional dependencies, see the [additional dependencies](https://folhasp.g
 - Integration with popular ML frameworks, such as [Haystack](https://haystack.deepset.ai/) and [LangChain](https://www.langchain.com/)
 
 ## Quick Start
+
+Install Mosaico and additional dependencies for news video generation:
+
+```bash
+pip install "mosaico[news,assemblyai,elevenlabs]"
+```
 
 Easily create and render a video project from a script generator:
 
