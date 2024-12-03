@@ -14,6 +14,14 @@ Mosaico is a Python library for programmatically creating and managing video com
 pip install mosaico
 ```
 
+To install script generator, speech synthesizer or audio transcriber dependencies, use:
+
+```bash
+pip install "mosaico[news]"
+```
+
+For additional dependencies, see the [additional dependencies](https://folhasp.github.io/mosaico/installation#additional-dependencies) section in the documentation.
+
 ## Features
 
 - AI-powered script generation for videos
@@ -28,11 +36,19 @@ pip install mosaico
 Easily create and render a video project from a script generator:
 
 ```python
+import os
+
 from mosaico.audio_transcribers.assemblyai import AssemblyAIAudioTranscriber
 from mosaico.script_generators.news import NewsVideoScriptGenerator
 from mosaico.speech_synthesizers.elevenlabs import ElevenLabsSpeechSynthesizer
 from mosaico.video.project import VideoProject
 from mosaico.video.rendering import render_video
+
+
+# Set your API keys
+ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY")
+ASSEMBLYAI_API_KEY = os.getenv("ASSEMBLYAI_API_KEY")
+ELEVENLABS_API_KEY = os.getenv("ELEVENLABS_API_KEY")
 
 
 # Import your media
@@ -51,6 +67,7 @@ script_generator = NewsVideoScriptGenerator(
     context=context,
     language="pt",
     num_paragraphs=8,
+    api_key=ANTHROPIC_API_KEY,
 )
 
 # Create speech synthesizer
@@ -59,10 +76,11 @@ speech_synthesizer = ElevenLabsSpeechSynthesizer(
     voice_stability=0.8,
     voice_similarity_boost=0.75,
     voice_speaker_boost=False,
+    api_key=ELEVENLABS_API_KEY,
 )
 
 # Create audio transcriber for captions
-audio_transcriber = AssemblyAIAudioTranscriber()
+audio_transcriber = AssemblyAIAudioTranscriber(api_key=ASSEMBLYAI_API_KEY)
 
 # Create project
 project = (
@@ -75,7 +93,7 @@ project = (
 )
 
 # Render project
-render_video(project, "My-Breaking-News-Video.mp4")
+render_video(project, "path/to/dir")
 ```
 
 Or create a video project from scratch:
@@ -122,7 +140,7 @@ project = (
 )
 
 # Render project
-render_video(project, "My-Breaking-News-Video.mp4")
+render_video(project, "path/to/dir")
 ```
 
 ## Cookbook

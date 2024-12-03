@@ -88,3 +88,28 @@ git clone https://github.com/folhalab/mosaico.git
 cd mosaico
 pip install -e .
 ```
+
+### Dependências Adicionais
+
+Para instalar dependências opcionais para o __Mosaico__, use o seguinte comando, substituindo `news` pelo recurso desejado ou concatenando múltiplos recursos separados por vírgulas:
+
+=== "Recurso único"
+
+    ```bash
+    pip install "mosaico[news]"
+    ```
+
+=== "Múltiplos recursos"
+
+    ```bash
+    pip install "mosaico[news,elevenlabs,assemblyai]"
+    ```
+
+Os recursos disponíveis e suas dependências estão listados abaixo:
+
+| Recurso     	| Componente                            	| Dependências           	| Descrição                                                                 	|
+|-------------	|---------------------------------------	|-----------------------	|---------------------------------------------------------------------------	|
+| `news`      	| gerador de script                     	| `litellm`, `instructor`	| Geração de scripts para vídeos baseada em IA                             	|
+| `openai`    	| sintetizador de fala, transcritor de áudio	| `openai`          	| Integrações de síntese de texto para fala e transcrição de áudio com OpenAI	|
+| `elevenlabs`	| sintetizador de fala                  	| `elevenlabs`          	| Integração de síntese de texto para fala com ElevenLabs                   	|
+| `assemblyai`	| transcritor de áudio                  	| `assemblyai`          	| Integração de transcrição de áudio com AssemblyAI                         	|

@@ -88,3 +88,28 @@ git clone https://github.com/folhalab/mosaico.git
 cd mosaico
 pip install -e .
 ```
+
+### Additional Dependencies
+
+To install optional dependencies for __Mosaico__, use the following command, replacing `news` with the desired feature or concatenating multiple features separated by commas:
+
+=== "Single feature"
+
+    ```bash
+    pip install "mosaico[news]"
+    ```
+
+=== "Multiple features"
+
+    ```bash
+    pip install "mosaico[news,elevenlabs,assemblyai]"
+    ```
+
+Available features and their dependencies are listed below:
+
+| Feature      	| Component                             	| Dependencies            	| Description                                                               	|
+|--------------	|---------------------------------------	|-------------------------	|---------------------------------------------------------------------------	|
+| `news`       	| script generator                      	| `litellm`, `instructor` 	| AI-powered script generation for videos                                   	|
+| `openai`     	| speech synthesizer, audio transcriber 	| `openai`                	| Text-to-speech synthesis and audio transcription integrations with OpenAI 	|
+| `elevenlabs` 	| speech synthesizer                    	| `elevenlabs`            	| Text-to-speech synthesis integration with ElevenLabs                      	|
+| `assemblyai` 	| audio transcriber                     	| `assemblyai`            	| Audio transcription integration with AssemblyAI                           	|
