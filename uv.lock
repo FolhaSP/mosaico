@@ -1219,7 +1219,7 @@ wheels = [
 
 [[package]]
 name = "mosaico"
-version = "0.1.0rc5"
+version = "0.1.0rc6"
 source = { editable = "." }
 dependencies = [
     { name = "findsystemfontsfilename" },
@@ -1253,6 +1253,9 @@ langchain = [
 news = [
     { name = "instructor" },
     { name = "litellm" },
+]
+openai = [
+    { name = "openai" },
 ]
 
 [package.dev-dependencies]
@@ -1288,7 +1291,8 @@ requires-dist = [
     { name = "instructor", marker = "extra == 'news'", specifier = ">=1.6.4" },
     { name = "langchain", marker = "extra == 'langchain'", specifier = ">=0.3.7" },
     { name = "litellm", marker = "extra == 'news'", specifier = ">=1.52.9" },
-    { name = "moviepy", specifier = ">=2.0.0.dev2" },
+    { name = "moviepy", specifier = "==2.0.0.dev2" },
+    { name = "openai", marker = "extra == 'openai'", specifier = ">=1.54.4" },
     { name = "opencv-python", specifier = ">=4.10.0.84" },
     { name = "pycountry", specifier = ">=24.6.1" },
     { name = "pydantic" },
