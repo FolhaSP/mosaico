@@ -14,7 +14,7 @@ Mosaico is a Python library for programmatically creating and managing video com
 pip install mosaico
 ```
 
-For additional dependencies, see the [additional dependencies](https://folhasp.github.io/mosaico/installation#additional-dependencies) section in the documentation.
+For additional dependencies, see the [additional dependencies](https://folhasp.github.io/mosaico/getting-started/installation#additional-dependencies) section in the documentation.
 
 ## Features
 
