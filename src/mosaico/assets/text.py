@@ -17,7 +17,7 @@ class TextAssetParams(BaseModel):
     position: Position = Field(default_factory=AbsolutePosition)
     """The positioning of the text assets in the video."""
 
-    font_family: str = "Arial Bold"
+    font_family: str | None = None
     """The font family."""
 
     font_size: NonNegativeInt = 70

@@ -1,12 +1,13 @@
 from __future__ import annotations
 
 import math
+import sys
+from dataclasses import dataclass
 from pathlib import Path
 from tempfile import NamedTemporaryFile
 from typing import cast
 
 from find_system_fonts_filename import get_system_fonts_filename
-from find_system_fonts_filename.exceptions import FindSystemFontsFilenameException
 from moviepy.Clip import Clip
 from moviepy.video.VideoClip import ImageClip
 from PIL import Image, ImageDraw, ImageFilter, ImageFont
@@ -88,6 +89,10 @@ class TextClipMaker(BaseClipMaker[BaseTextAsset]):
             raise ValueError("duration is required to make a text clip")
 
         params = asset.params
+
+        if params.font_family is None:
+            params.font_family = _get_system_fallback_font_name()
+
         max_width, max_height = self.video_resolution
 
         # Load the font and wrap the text
@@ -143,14 +148,95 @@ class TextClipMaker(BaseClipMaker[BaseTextAsset]):
             )
 
 
+@dataclass
+class SystemFont:
+    """System font representation."""
+
+    path: str
+    """The path to the font file in the system."""
+
+    @property
+    def name(self) -> str:
+        """
+        Get the font name.
+        """
+        return Path(self.path).with_suffix("").name
+
+    @property
+    def slug(self) -> str:
+        """
+        Get the slugified font name.
+        """
+        return _slugify_font_name(self.name)
+
+    def matches(self, name: str) -> bool:
+        """
+        Check if the font name matches the given name.
+        """
+        return self.name == name or self.slug == _slugify_font_name(name)
+
+    def load(self, size: float) -> ImageFont.FreeTypeFont:
+        """
+        Load the font.
+        """
+        return ImageFont.truetype(self.path, size)
+
+
+def _slugify_font_name(font_name: str) -> str:
+    """
+    Get the slugified font name.
+
+    Slugify the font name by converting to lowercase, removing special characters,
+    and replacing spaces and underscores with hyphens.
+    """
+    # Convert to lowercase and replace spaces/underscores with hyphens
+    slug = font_name.lower().replace(" ", "-").replace("_", "-")
+
+    # Remove any non-alphanumeric characters except hyphens
+    slug = "".join(c for c in slug if c.isalnum() or c == "-")
+
+    # Remove leading/trailing hyphens
+    slug = slug.strip("-")
+
+    # Replace multiple consecutive hyphens with a single hyphen
+    while "--" in slug:
+        slug = slug.replace("--", "-")
+
+    return slug
+
+
+def _list_system_fonts() -> list[SystemFont]:
+    """
+    List the system fonts.
+    """
+    return [SystemFont(path=path) for path in get_system_fonts_filename()]
+
+
+def _get_system_fallback_font_name() -> str:
+    """
+    Get the system fallback font name.
+    """
+    if sys.platform == "win32":
+        return "Arialbd"
+    elif sys.platform == "darwin":
+        return "Arial Bold"
+    else:
+        return "DejaVuSans-Bold"
+
+
 def _load_font(font_family: str, font_size: int) -> ImageFont.FreeTypeFont:
     """
     Load the font with the given family and size.
     """
-    available_fonts = {Path(file).with_suffix("").name: file for file in get_system_fonts_filename()}
-    if font_family not in available_fonts:
-        raise FindSystemFontsFilenameException(f"Font {font_family} not found in system fonts")
-    return ImageFont.truetype(font=available_fonts[font_family], size=font_size)
+    available_fonts = _list_system_fonts()
+    selected_font = next((font for font in available_fonts if font.matches(font_family)), None)
+
+    if selected_font is not None:
+        return selected_font.load(font_size)
+
+    default_font = ImageFont.load_default(font_size)
+    default_font = cast(ImageFont.FreeTypeFont, default_font)
+    return default_font
 
 
 def _wrap_text(text: str, font: ImageFont.FreeTypeFont, max_width: int) -> str:
