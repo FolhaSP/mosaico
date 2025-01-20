@@ -41,8 +41,7 @@ MEDIA_SUGGESTING_PROMPT = textwrap.dedent(
     - The video should be dynamic, so be sure to select different media objects for different shots.
     - Only select media objects that are available in the provided collection
     - Each media object should be used only once.
-    - If there are characters, places, or things in the paragraph, select a media object that shows the character, place,
-    or thing.
+    - If there are characters, places, or things in the paragraph, select a media object that shows the character, place, or thing.
     - Answer only with the structured response format in the same language as the paragraphs.
 
     EXAMPLE:
@@ -71,7 +70,7 @@ MEDIA_SUGGESTING_PROMPT = textwrap.dedent(
 
     AVAILABLE MEDIA OBJECTS:
     {media_objects}
- 
+
     PARAGRAPHS:
     {paragraphs}
 

@@ -1,3 +1,6 @@
+from __future__ import annotations
+
+import io
 from collections.abc import Sequence
 from typing import Any, ClassVar
 from unittest.mock import patch
@@ -194,6 +197,18 @@ def test_from_file_success(mock_project_file):
     )
 
 
+def test_from_file_string_buffer(mock_project_file):
+    project_buf = io.StringIO(mock_project_file.read_text())
+    project = VideoProject.from_file(project_buf)
+    assert project.config.title == "Test Project"
+    assert project.config.resolution == (1920, 1080)
+    assert project.config.fps == 30
+    assert project.assets == {"asset1": TextAsset.from_data("test", id="asset1")}
+    assert project.timeline == Timeline().add_events(
+        [AssetReference(asset_id="asset1", asset_type="text", start_time=0, end_time=10)]
+    )
+
+
 def test_from_file_invalid_path():
     with pytest.raises(FileNotFoundError):
         VideoProject.from_file("non_existent_file.yaml")
@@ -204,6 +219,13 @@ def test_to_file(mock_project_file, tmp_path):
     project_file = tmp_path / "project.yaml"
     project.to_file(project_file)
     assert project_file.read_text() == mock_project_file.read_text()
+
+
+def test_to_file_string_buffer(mock_project_file) -> None:
+    project = VideoProject.from_file(mock_project_file)
+    project_file = io.StringIO()
+    project.to_file(project_file)
+    assert VideoProject.from_file(project_file) == project
 
 
 class MockScriptGenerator:

@@ -26,7 +26,7 @@ from mosaico.scene import Scene
 from mosaico.script_generators.protocol import ScriptGenerator
 from mosaico.script_generators.script import Shot
 from mosaico.speech_synthesizers.protocol import SpeechSynthesizer
-from mosaico.types import FrameSize, PathLike
+from mosaico.types import FilePath, FrameSize, ReadableBuffer, WritableBuffer
 from mosaico.video.timeline import EventOrEventSequence, Timeline
 from mosaico.video.types import AssetInputType, TimelineEvent
 
@@ -90,14 +90,19 @@ class VideoProject(BaseModel):
         return project
 
     @classmethod
-    def from_file(cls, path: PathLike) -> VideoProject:
+    def from_file(cls, file: FilePath | ReadableBuffer[str]) -> VideoProject:
         """
         Create a Project object from a YAML file.
 
-        :param path: The path to the YAML file.
+        :param file: The path to the YAML file.
         :return: A Project object instance.
         """
-        project_str = Path(path).read_text(encoding="utf-8")
+        if isinstance(file, (str, Path)):
+            project_str = Path(file).read_text()
+        else:
+            file.seek(0)
+            project_str = file.read()
+
         project_dict = yaml.safe_load(project_str)
         return cls.from_dict(project_dict)
 
@@ -166,17 +171,21 @@ class VideoProject(BaseModel):
 
         return project
 
-    def to_file(self, path: PathLike) -> None:
+    def to_file(self, file: FilePath | WritableBuffer[str]) -> None:
         """
         Write the Project object to a YAML file.
 
-        :param path: The path to the YAML file.
+        :param file: The path to the YAML file.
         """
         project = self.model_dump(exclude_none=True)
         project["assets"] = {asset_id: asset.model_dump() for asset_id, asset in self.assets.items()}
         project["timeline"] = [event.model_dump() for event in self.timeline]
         project_yaml = yaml.safe_dump(project, allow_unicode=True, sort_keys=False)
-        Path(path).write_text(project_yaml)
+
+        if isinstance(file, (str, Path)):
+            Path(file).write_text(project_yaml)
+        else:
+            file.write(project_yaml)
 
     def add_assets(self, assets: AssetInputType) -> VideoProject:
         """

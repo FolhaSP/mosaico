@@ -128,6 +128,8 @@ ignore = [
 "src/mosaico/assets/factory.py" = ["A002"]
 "src/mosaico/video/project_builder.py" = ["C901", "PLR0912"]
 "src/mosaico/speech_synthesizers/*.py" = ["D102"]
+"src/mosaico/types.py" = ["D102"]
+"src/mosaico/**/prompts.py" = ["E501"]
 "cookbook/*.py" = ["F821"]
 "tests/*.py" = ["S101", "D", "ARG001", "PLR2004"]
 

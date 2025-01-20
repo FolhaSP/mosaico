@@ -13,7 +13,7 @@ from typing_extensions import Self
 from mosaico.assets.base import BaseAsset
 from mosaico.assets.utils import check_user_provided_required_keys
 from mosaico.media import _load_file
-from mosaico.types import PathLike
+from mosaico.types import FilePath
 
 
 class AudioAssetParams(BaseModel):
@@ -52,7 +52,7 @@ class AudioAsset(BaseAsset[AudioAssetParams]):
         cls,
         data: str | bytes,
         *,
-        path: PathLike | None = None,
+        path: FilePath | None = None,
         metadata: dict | None = None,
         mime_type: str | None = None,
         **kwargs: Any,
@@ -76,7 +76,7 @@ class AudioAsset(BaseAsset[AudioAssetParams]):
     @classmethod
     def from_path(
         cls,
-        path: PathLike,
+        path: FilePath,
         *,
         encoding: str = "utf-8",
         mime_type: str | None = None,
@@ -137,7 +137,7 @@ class AudioAsset(BaseAsset[AudioAssetParams]):
             )
 
 
-def _extract_audio_info(audio: PathLike | bytes) -> dict:
+def _extract_audio_info(audio: FilePath | bytes) -> dict:
     """
     Extracts the audio information from the audio data.
     """
