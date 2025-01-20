@@ -15,7 +15,7 @@ from pydantic.functional_validators import model_validator
 from typing_extensions import Self
 
 from mosaico.integrations.base.adapters import Adapter
-from mosaico.types import PathLike
+from mosaico.types import FilePath
 
 
 class Media(BaseModel):
@@ -29,7 +29,7 @@ class Media(BaseModel):
     data: str | bytes | None = None
     """The content of the media."""
 
-    path: PathLike | None = None
+    path: FilePath | None = None
     """The path to the media."""
 
     mime_type: str | None = None
@@ -71,7 +71,7 @@ class Media(BaseModel):
     @classmethod
     def from_path(
         cls,
-        path: PathLike,
+        path: FilePath,
         *,
         encoding: str = "utf-8",
         mime_type: str | None = None,
@@ -107,7 +107,7 @@ class Media(BaseModel):
         cls,
         data: str | bytes,
         *,
-        path: PathLike | None = None,
+        path: FilePath | None = None,
         metadata: dict | None = None,
         mime_type: str | None = None,
         **kwargs: Any,
@@ -187,8 +187,8 @@ class Media(BaseModel):
 
 
 def _yield_file(
-    path: PathLike, storage_options: dict[str, Any] | None = None
-) -> Generator[io.BufferedReader, None, None]:
+    path: FilePath, storage_options: dict[str, Any] | None = None
+) -> Generator[io.BufferedReader]:
     """
     Yields a file from a path.
     """
@@ -197,7 +197,7 @@ def _yield_file(
         yield f  # type: ignore
 
 
-def _load_file(path: PathLike, storage_options: dict[str, Any] | None = None) -> bytes:
+def _load_file(path: FilePath, storage_options: dict[str, Any] | None = None) -> bytes:
     """
     Loads a file from a path.
     """

@@ -14,7 +14,7 @@ from mosaico.assets.base import BaseAsset
 from mosaico.assets.utils import check_user_provided_required_keys
 from mosaico.media import _load_file
 from mosaico.positioning import AbsolutePosition, Position
-from mosaico.types import PathLike
+from mosaico.types import FilePath
 
 
 class ImageAssetParams(BaseModel):
@@ -55,7 +55,7 @@ class ImageAsset(BaseAsset[ImageAssetParams]):
         cls,
         data: str | bytes,
         *,
-        path: PathLike | None = None,
+        path: FilePath | None = None,
         metadata: dict | None = None,
         mime_type: str | None = None,
         **kwargs: Any,
@@ -82,7 +82,7 @@ class ImageAsset(BaseAsset[ImageAssetParams]):
     @classmethod
     def from_path(
         cls,
-        path: PathLike,
+        path: FilePath,
         *,
         encoding: str = "utf-8",
         mime_type: str | None = None,

@@ -94,7 +94,7 @@ class AssetReference(BaseModel):
             msg = "Missing 'asset_type' key in asset reference data."
             raise ValueError(msg)
 
-        if "asset_params" in data:
+        if "asset_params" in data and data["asset_params"] is not None:
             params_cls = get_asset_params_class(data["asset_type"])
             data["asset_params"] = params_cls.model_validate(data["asset_params"])
 

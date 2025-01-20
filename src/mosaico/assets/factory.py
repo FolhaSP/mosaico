@@ -13,7 +13,7 @@ if TYPE_CHECKING:
     from mosaico.assets.subtitle import SubtitleAsset
     from mosaico.assets.text import TextAsset, TextAssetParams
     from mosaico.assets.types import Asset, AssetParams, AssetType
-    from mosaico.types import PathLike
+    from mosaico.types import FilePath
 
 
 @overload
@@ -21,7 +21,7 @@ def create_asset(
     asset_type: Literal["image"],
     id: str | None = ...,
     data: str | bytes | None = ...,
-    path: PathLike | None = ...,
+    path: FilePath | None = ...,
     metadata: dict[str, Any] | None = ...,
     params: ImageAssetParams | None = ...,
     **kwargs: Any,
@@ -33,7 +33,7 @@ def create_asset(
     asset_type: Literal["audio"],
     id: str | None = ...,
     data: str | bytes | None = ...,
-    path: PathLike | None = ...,
+    path: FilePath | None = ...,
     metadata: dict[str, Any] | None = ...,
     params: AudioAssetParams | None = ...,
     **kwargs: Any,
@@ -45,7 +45,7 @@ def create_asset(
     asset_type: Literal["text"],
     id: str | None = ...,
     data: str | bytes | None = ...,
-    path: PathLike | None = ...,
+    path: FilePath | None = ...,
     metadata: dict[str, Any] | None = ...,
     params: TextAssetParams | None = ...,
     **kwargs: Any,
@@ -57,7 +57,7 @@ def create_asset(
     asset_type: Literal["subtitle"],
     id: str | None = ...,
     data: str | bytes | None = ...,
-    path: PathLike | None = ...,
+    path: FilePath | None = ...,
     metadata: dict[str, Any] | None = ...,
     params: TextAssetParams | None = ...,
     **kwargs: Any,
@@ -69,7 +69,7 @@ def create_asset(
     asset_type: AssetType,
     id: str | None = ...,
     data: str | bytes | None = ...,
-    path: PathLike | None = ...,
+    path: FilePath | None = ...,
     metadata: dict[str, Any] | None = ...,
     params: AssetParams | None = ...,
     **kwargs: Any,
@@ -80,7 +80,7 @@ def create_asset(
     asset_type: AssetType,
     id: str | None = None,
     data: str | bytes | None = None,
-    path: PathLike | None = None,
+    path: FilePath | None = None,
     metadata: dict[str, Any] | None = None,
     params: AssetParams | dict[str, Any] | None = None,
     **kwargs: Any,
