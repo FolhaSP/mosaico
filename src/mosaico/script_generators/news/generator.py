@@ -1,4 +1,5 @@
-from typing import TYPE_CHECKING, Any, Literal, Sequence
+from collections.abc import Sequence
+from typing import TYPE_CHECKING, Any
 
 from pydantic import BaseModel
 from pydantic_extra_types.language_code import LanguageAlpha2
@@ -24,9 +25,6 @@ class ParagraphMediaSuggestion(BaseModel):
 
     media_ids: list[str]
     """The media IDs for the shot."""
-
-    type: Literal["image", "video", "audio"]
-    """The type of media (image, video, or audio)."""
 
     relevance: str
     """How it relates to the specific paragraph."""

@@ -31,6 +31,10 @@ format:
 test:
 	uv run pytest
 
+.PHONY: e2e
+e2e:
+	uv run pytest e2e
+
 # Cria documentação
 .PHONY: docs
 docs:
