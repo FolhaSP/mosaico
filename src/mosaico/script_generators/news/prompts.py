@@ -88,7 +88,8 @@ SHOOTING_SCRIPT_PROMPT = textwrap.dedent(
     - Keep the paragraphs and media objects as they are. Avoid changing them.
     - Use the paragraphs as subtitles for the shots.
     - Add timings to the media objects. Make sure they do not overlap.
-    - Respond only with the structured output format in the same language as the paragraphs.
+    - Add a title for the shooting script.
+    - Respond only with the structured JSON output format in the same language as the paragraphs.
 
     SHOOTING SCRIPT:
     """
