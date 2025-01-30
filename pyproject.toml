@@ -132,6 +132,7 @@ ignore = [
 "src/mosaico/**/prompts.py" = ["E501"]
 "cookbook/*.py" = ["F821"]
 "tests/*.py" = ["S101", "D", "ARG001", "PLR2004"]
+"e2e/*.py" = ["S101", "D", "ARG001", "PLR2004"]
 
 [tool.ruff.lint.pylint]
 max-args = 10
