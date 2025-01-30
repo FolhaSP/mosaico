@@ -75,7 +75,7 @@ class Shot(BaseModel):
 class ShootingScript(BaseModel):
     """A shooting script for a video project."""
 
-    title: str
+    title: str = "Untitled"
     """The title of the script."""
 
     description: str | None = None
