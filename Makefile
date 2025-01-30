@@ -29,7 +29,7 @@ format:
 # Executa casos de teste
 .PHONY: test
 test:
-	uv run pytest
+	uv run pytest tests
 
 .PHONY: e2e
 e2e:

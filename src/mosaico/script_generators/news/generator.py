@@ -2,6 +2,7 @@ from collections.abc import Sequence
 from typing import TYPE_CHECKING, Any
 
 from pydantic import BaseModel
+from pydantic.fields import Field
 from pydantic_extra_types.language_code import LanguageAlpha2
 
 from mosaico.media import Media
@@ -33,7 +34,7 @@ class ParagraphMediaSuggestion(BaseModel):
 class ParagraphMediaSuggestions(BaseModel):
     """A list of media suggestions for paragraphs."""
 
-    suggestions: list[ParagraphMediaSuggestion]
+    suggestions: list[ParagraphMediaSuggestion] = Field(default_factory=list)
     """The list of paragraph media suggestions."""
 
 
@@ -83,7 +84,7 @@ class NewsVideoScriptGenerator:
         paragraphs_prompt = SUMMARIZE_CONTEXT_PROMPT.format(
             context=context, num_paragraphs=num_paragraphs, language=language.name
         )
-        paragraphs = self._fetch_completion(paragraphs_prompt, response_type=str)
+        paragraphs = self._fetch_completion(paragraphs_prompt, response_type=list[str])
         return paragraphs
 
     def _suggest_paragraph_media(self, paragraphs: list[str], media: Sequence[Media]) -> list[ParagraphMediaSuggestion]:
@@ -91,7 +92,8 @@ class NewsVideoScriptGenerator:
         Suggest media usage based on the media objects.
         """
         formatted_media = _build_media_string(media)
-        prompt = MEDIA_SUGGESTING_PROMPT.format(paragraphs=paragraphs, media_objects=formatted_media)
+        formatted_paragraphs = "\n".join(f"{i+1}. {p}" for i, p in enumerate(paragraphs))
+        prompt = MEDIA_SUGGESTING_PROMPT.format(paragraphs=formatted_paragraphs, media_objects=formatted_media)
         suggestions = self._fetch_completion(prompt, response_type=ParagraphMediaSuggestions)
         return suggestions.suggestions
 
@@ -99,7 +101,11 @@ class NewsVideoScriptGenerator:
         """
         Generate the shooting script.
         """
-        prompt = SHOOTING_SCRIPT_PROMPT.format(suggestions=suggestions)
+        formatted_suggestions = "\n".join(
+            f"Paragraph: {s.paragraph}\nMedia IDs: {', '.join(s.media_ids)}\nRelevance: {s.relevance}\n"
+            for s in suggestions
+        )
+        prompt = SHOOTING_SCRIPT_PROMPT.format(suggestions=formatted_suggestions)
         shooting_script = self._fetch_completion(prompt, response_type=ShootingScript)
         return shooting_script
 
