@@ -186,9 +186,7 @@ class Media(BaseModel):
             raise NotImplementedError(f"Unable to convert blob {self}")
 
 
-def _yield_file(
-    path: FilePath, storage_options: dict[str, Any] | None = None
-) -> Generator[io.BufferedReader]:
+def _yield_file(path: FilePath, storage_options: dict[str, Any] | None = None) -> Generator[io.BufferedReader]:
     """
     Yields a file from a path.
     """
