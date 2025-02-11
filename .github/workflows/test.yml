@@ -31,6 +31,8 @@ jobs:
       - name: Install the project
         run: uv sync --all-extras --dev
       - name: Test with pytest
-        run: uv run pytest tests
+        run: uv run pytest -p no:faulthandler tests
+        env:
+          PYTHONFAULTHANDLER: 1
       - name: Minimize uv cache
         run: uv cache prune --ci
