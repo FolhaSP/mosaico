@@ -32,7 +32,7 @@ class Timeline(RootModel):
         """
         if not self.root:
             return 0
-        return max([event.end_time for event in self.root])
+        return max(event.end_time for event in self.root)
 
     def add_events(self, event: EventOrEventSequence) -> Timeline:
         """

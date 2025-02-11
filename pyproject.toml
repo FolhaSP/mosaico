@@ -7,7 +7,7 @@ authors = [
     { name = "Lucas Golino", email = "lucas@golinux.space" },
 ]
 readme = "README.md"
-requires-python = ">=3.10,<3.13"
+requires-python = ">=3.10,<3.14"
 classifiers = [
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.10",
@@ -25,7 +25,7 @@ classifiers = [
 dependencies = [
     "pydantic",
     "pyyaml",
-    "moviepy==2.0.0.dev2",
+    "moviepy>=2",
     "opencv-python>=4.10.0.84",
     "findsystemfontsfilename>=0.3.0",
     "pydub>=0.25.1",
@@ -33,6 +33,7 @@ dependencies = [
     "pycountry>=24.6.1",
     "tinytag>=1.10.1",
     "fsspec>=2024.10.0",
+    "audioop-lts>=0.2.1;python_version >= '3.13'"
 ]
 
 [project.scripts]

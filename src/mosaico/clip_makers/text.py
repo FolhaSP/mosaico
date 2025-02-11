@@ -93,7 +93,7 @@ class TextClipMaker(BaseClipMaker[BaseTextAsset]):
         if params.font_family is None:
             params.font_family = _get_system_fallback_font_name()
 
-        max_width, max_height = self.video_resolution
+        max_width, _ = self.video_resolution
 
         # Load the font and wrap the text
         font = _load_font(params.font_family, params.font_size)
@@ -143,8 +143,8 @@ class TextClipMaker(BaseClipMaker[BaseTextAsset]):
 
             return (
                 ImageClip(f.name)
-                .set_position((params.position.x, params.position.y), relative=is_relative_position(params.position))
-                .set_duration(self.duration)
+                .with_position((params.position.x, params.position.y), relative=is_relative_position(params.position))
+                .with_duration(self.duration)
             )
 
 

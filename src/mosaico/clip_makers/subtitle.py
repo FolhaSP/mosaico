@@ -45,10 +45,10 @@ class SubtitleClipMaker(TextClipMaker):
 
         match position.y:
             case "top":
-                clip = clip.set_position(("center", video_resolution[1] * 0.2))
+                clip = clip.with_position(("center", video_resolution[1] * 0.2))
             case "bottom":
-                clip = clip.set_position(("center", video_resolution[1] * 0.8 - clip.h // 2))
+                clip = clip.with_position(("center", video_resolution[1] * 0.8 - clip.h // 2))
             case _:
-                clip = clip.set_position(("center", "center"))
+                clip = clip.with_position(("center", "center"))
 
         return clip

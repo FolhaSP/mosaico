@@ -1,6 +1,6 @@
 from typing import Annotated, Literal
 
-from moviepy.video.fx.resize import resize
+from moviepy.video import fx as vfx
 from moviepy.video.VideoClip import VideoClip
 from pydantic import BaseModel
 from pydantic.fields import Field
@@ -30,7 +30,7 @@ class BaseZoomEffect(BaseModel):
             progress = t / clip.duration
             return self.start_zoom + (self.end_zoom - self.start_zoom) * progress
 
-        return clip.fx(resize, zoom)
+        return clip.with_effects([vfx.Resize(zoom)])  # type: ignore
 
 
 class ZoomInEffect(BaseZoomEffect):

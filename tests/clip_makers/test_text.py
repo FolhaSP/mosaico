@@ -1,4 +1,3 @@
-import pytest
 from PIL import ImageFont
 
 from mosaico.clip_makers.text import (
@@ -36,7 +35,6 @@ def test_slugify_font_name():
         assert _slugify_font_name(input_name) == expected_output
 
 
-@pytest.mark.integration
 def test_list_system_fonts():
     """Test system fonts listing."""
     fonts = _list_system_fonts()
@@ -46,7 +44,6 @@ def test_list_system_fonts():
     assert all(isinstance(font, SystemFont) for font in fonts)
 
 
-@pytest.mark.integration
 def test_load_font():
     """Test font loading."""
     # Test with default size
@@ -58,7 +55,6 @@ def test_load_font():
     assert isinstance(font, ImageFont.FreeTypeFont)
 
 
-@pytest.mark.integration
 def test_get_system_fallback_font():
     """Test system fallback font retrieval."""
     fallback_font = _get_system_fallback_font_name()
@@ -76,7 +72,6 @@ def test_wrap_text():
     assert "\n" in wrapped
 
 
-@pytest.mark.integration
 def test_text_size_calculation():
     """Test text size calculation."""
     font = _load_font(_get_system_fallback_font_name(), 12)
@@ -89,7 +84,6 @@ def test_text_size_calculation():
     assert height > 0
 
 
-@pytest.mark.integration
 def test_font_matching():
     """Test font matching functionality."""
     font = SystemFont("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf")

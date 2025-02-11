@@ -1,5 +1,5 @@
 import pytest
-from moviepy.editor import ColorClip
+from moviepy.video.VideoClip import ColorClip
 
 from mosaico.effects.zoom import ZoomInEffect, ZoomOutEffect
 

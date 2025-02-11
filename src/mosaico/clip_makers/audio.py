@@ -2,9 +2,9 @@ from __future__ import annotations
 
 from tempfile import NamedTemporaryFile
 
-from moviepy.audio.fx.volumex import volumex
+from moviepy.audio import fx as afx
+from moviepy.audio.io.AudioFileClip import AudioFileClip
 from moviepy.Clip import Clip
-from moviepy.editor import AudioFileClip
 from pydub import AudioSegment
 
 from mosaico.assets.audio import AudioAsset
@@ -61,4 +61,6 @@ class AudioClipMaker(BaseClipMaker[AudioAsset]):
 
             audio.export(temp_file.name, format="mp3")
 
-            return AudioFileClip(temp_file.name, fps=asset.sample_rate).fx(volumex, asset.params.volume)
+            return AudioFileClip(temp_file.name, fps=asset.sample_rate).with_effects(
+                [afx.MultiplyVolume(asset.params.volume)]
+            )

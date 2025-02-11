@@ -98,7 +98,7 @@ class VideoProject(BaseModel):
         :return: A Project object instance.
         """
         if isinstance(file, (str, Path)):
-            project_str = Path(file).read_text()
+            project_str = Path(file).read_text(encoding="utf-8")
         else:
             file.seek(0)
             project_str = file.read()
@@ -183,7 +183,7 @@ class VideoProject(BaseModel):
         project_yaml = yaml.safe_dump(project, allow_unicode=True, sort_keys=False)
 
         if isinstance(file, (str, Path)):
-            Path(file).write_text(project_yaml)
+            Path(file).write_text(project_yaml, encoding="utf-8")
         else:
             file.write(project_yaml)
 
@@ -671,7 +671,7 @@ def _group_transcript_into_sentences(
     number_pattern = re.compile(r"\d+([.,]\d+)*")
 
     def is_part_of_number(word: str) -> bool:
-        return bool(number_pattern.match(word)) or word in [",", "."]
+        return bool(number_pattern.match(word)) or word in {",", "."}
 
     i = 0
 
