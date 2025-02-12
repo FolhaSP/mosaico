@@ -12,8 +12,11 @@ from mosaico.exceptions import InvalidAssetTypeError
         ("audio", {"data": b"Hello", "duration": 10, "sample_rate": 44100, "sample_width": 16, "channels": 1}),
         ("text", {"data": "Hello"}),
         ("subtitle", {"data": "Subtitle"}),
+        ("image", {"path": "test.png", "width": 100, "height": 100}),
+        ("audio", {"data": "test.mp3", "duration": 10, "sample_rate": 44100, "sample_width": 16, "channels": 1}),
+        ("subtitle", {"data": "Subtitle"}),
     ],
-    ids=["image", "audio", "text", "subtitle"],
+    ids=["image-data", "audio-data", "text-data", "subtitle-data", "image-path", "audio-path", "subtitle-data"],
 )
 def test_create_asset(asset_type, inputs):
     asset = create_asset(asset_type, **inputs)
