@@ -125,14 +125,20 @@ def create_asset(
 
         kwargs["params"] = params
 
+    if id is not None:
+        kwargs["id"] = id
+
+    if metadata is not None:
+        kwargs["metadata"] = metadata
+
     if data is not None:
-        return asset_class.from_data(data, id=id, path=path, metadata=metadata, **kwargs)
+        return asset_class.from_data(data, path=path, **kwargs)
 
     if path is None:
         msg = "Either 'data' or 'path' must be provided."
         raise ValueError(msg)
 
-    return asset_class.from_path(path, id=id, metadata=metadata, **kwargs)
+    return asset_class.from_path(path, **kwargs)
 
 
 @overload
