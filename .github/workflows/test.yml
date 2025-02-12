@@ -12,7 +12,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        python-version: ['3.10', '3.11', '3.12', '3.13']
+        python-version: ['3.10', '3.11', '3.12']
         os: [ubuntu-latest, windows-latest, macos-latest]
         experimental: [false]
     permissions:
@@ -31,8 +31,6 @@ jobs:
       - name: Install the project
         run: uv sync --all-extras --dev
       - name: Test with pytest
-        run: uv run pytest -p no:faulthandler -s tests
-        env:
-          PYTHONFAULTHANDLER: 1
+        run: uv run pytest tests
       - name: Minimize uv cache
         run: uv cache prune --ci

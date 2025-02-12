@@ -30,7 +30,7 @@ For additional dependencies, see the [additional dependencies](https://folhasp.g
 Install Mosaico and additional dependencies for news video generation:
 
 ```bash
-pip install "mosaico[news,assemblyai,elevenlabs]"
+pip install "mosaico[assemblyai,elevenlabs]"
 ```
 
 Easily create and render a video project from a script generator:
