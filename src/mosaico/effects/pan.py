@@ -2,7 +2,7 @@ from abc import abstractmethod
 from collections.abc import Callable
 from typing import Literal
 
-from moviepy.video.fx.resize import resize
+from moviepy.video import fx as vfx
 from moviepy.video.VideoClip import VideoClip
 from pydantic import BaseModel
 from pydantic.types import PositiveFloat
@@ -36,7 +36,7 @@ class BasePanEffect(BaseModel):
         :return: The clip with the effect applied.
         """
         pan_fn = self._pan_fn(clip)
-        return clip.fx(resize, self.zoom_factor).set_position(pan_fn)
+        return clip.with_effects([vfx.Resize(self.zoom_factor)]).with_position(pan_fn)  # type: ignore
 
 
 class PanRightEffect(BasePanEffect):

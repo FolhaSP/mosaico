@@ -1,7 +1,7 @@
 from unittest.mock import Mock, patch
 
 import pytest
-from moviepy.video.VideoClip import Clip
+from moviepy.Clip import Clip
 
 from mosaico.assets.types import Asset, AssetType
 from mosaico.clip_makers.base import BaseClipMaker

@@ -5,8 +5,8 @@ from collections.abc import Sequence
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
-from moviepy.audio.AudioClip import AudioClip
-from moviepy.video.compositing.concatenate import CompositeAudioClip, CompositeVideoClip
+from moviepy.audio.AudioClip import AudioClip, CompositeAudioClip
+from moviepy.video.compositing.CompositeVideoClip import CompositeVideoClip
 from moviepy.video.VideoClip import VideoClip
 
 from mosaico.assets.audio import AudioAsset
@@ -61,13 +61,13 @@ def render_video(
 
     video: VideoClip = (
         CompositeVideoClip(video_clips, size=project.config.resolution)
-        .set_fps(project.config.fps)
-        .set_duration(project.duration)
+        .with_fps(project.config.fps)
+        .with_duration(project.duration)
     )
 
     if audio_clips:
-        audio = CompositeAudioClip(audio_clips).set_duration(project.duration)
-        video = video.set_audio(audio)
+        audio = CompositeAudioClip(audio_clips).with_duration(project.duration)
+        video = video.with_audio(audio)
 
     video.write_videofile(
         output_path.as_posix(),
@@ -119,7 +119,7 @@ def _render_event_clips(
         clip = make_clip(
             asset, asset_ref.duration, video_resolution, asset_ref.effects, storage_options=storage_options
         )
-        clip = clip.set_start(asset_ref.start_time)
+        clip = clip.with_start(asset_ref.start_time)
 
         if hasattr(asset.params, "z_index"):
             layer = getattr(asset.params, "z_index")

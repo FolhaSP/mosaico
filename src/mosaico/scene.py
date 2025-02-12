@@ -53,7 +53,7 @@ class Scene(BaseModel):
         """
         if not self.asset_references:
             return 0
-        return min([ref.start_time for ref in self.asset_references])
+        return min(ref.start_time for ref in self.asset_references)
 
     @property
     def end_time(self) -> float:
@@ -62,7 +62,7 @@ class Scene(BaseModel):
         """
         if not self.asset_references:
             return 0
-        return max([ref.end_time for ref in self.asset_references])
+        return max(ref.end_time for ref in self.asset_references)
 
     @property
     def duration(self) -> float:

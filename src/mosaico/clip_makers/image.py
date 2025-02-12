@@ -72,8 +72,8 @@ class ImageClipMaker(BaseClipMaker[ImageAsset]):
 
             return (
                 ImageClip(img=fp.name)
-                .set_position((position.x, position.y), relative=is_relative_position(position))
-                .set_duration(self.duration)
+                .with_position((position.x, position.y), relative=is_relative_position(position))
+                .with_duration(self.duration)
             )
 
 

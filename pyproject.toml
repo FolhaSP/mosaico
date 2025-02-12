@@ -25,7 +25,7 @@ classifiers = [
 dependencies = [
     "pydantic",
     "pyyaml",
-    "moviepy==2.0.0.dev2",
+    "moviepy>=2",
     "opencv-python>=4.10.0.84",
     "findsystemfontsfilename>=0.3.0",
     "pydub>=0.25.1",
@@ -33,6 +33,9 @@ dependencies = [
     "pycountry>=24.6.1",
     "tinytag>=1.10.1",
     "fsspec>=2024.10.0",
+    "audioop-lts>=0.2.1;python_version >= '3.13'",
+    "instructor>=1.7.2",
+    "litellm>=1.61.0",
 ]
 
 [project.scripts]
@@ -45,7 +48,6 @@ elevenlabs = ["elevenlabs>=1.9.0"]
 openai = ["openai>=1.54.4"]
 langchain = ["langchain>=0.3.7"]
 haystack = ["haystack-ai>=2.6.1"]
-news = ["instructor>=1.6.4", "litellm>=1.52.9"]
 
 [build-system]
 requires = ["hatchling"]

@@ -29,7 +29,7 @@ class BaseFadeEffect(BaseModel):
             progress = t / clip.duration
             return self.start_fade + (self.end_fade - self.start_fade) * progress
 
-        return clip.fl(fade)
+        return clip.time_transform(fade)
 
 
 class FadeInEffect(BaseFadeEffect):
