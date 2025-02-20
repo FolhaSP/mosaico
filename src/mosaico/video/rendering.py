@@ -123,7 +123,7 @@ def _render_event_clips(
 
         if hasattr(asset.params, "z_index"):
             layer = getattr(asset.params, "z_index")
-            clip = clip.set_layer(layer)
+            clip = clip.with_layer_index(layer)
 
         if isinstance(asset, AudioAsset):
             audio_clips.append(clip)
