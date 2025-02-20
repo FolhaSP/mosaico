@@ -42,7 +42,17 @@ def render_video(
     Renders a video based on a project.
 
     :param project: The project to render.
-    :param output_path: The output path. Could be a '.mp4' file path or a directory path.
+    :param output_path: The output path. If a directory is provided, the output file will be saved in the directory
+        with the project title as the filename. Otherwise, be sure that the file extension matches the codec used.
+        By default, the output file will be an MP4 file (H.264 codec). The available codecs are:
+
+        - libx264: .mp4
+        - mpeg4: .mp4
+        - rawvideo: .avi
+        - png: .avi
+        - libvorbis: .ogv
+        - libvpx: .webm
+
     :param storage_options: Optional storage options to pass to the clip.
     :param overwrite: Whether to overwrite the output file if it already exists.
     :param kwargs: Additional keyword arguments to pass to Moviepy clip video writer.
