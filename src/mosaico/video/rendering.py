@@ -20,10 +20,19 @@ if TYPE_CHECKING:
     from mosaico.video.project import VideoProject
     from mosaico.video.types import TimelineEvent
 
+_CODEC_FILE_EXTENSION_MAP = {
+    "libx264": ".mp4",
+    "mpeg4": ".mp4",
+    "rawvideo": ".avi",
+    "png": ".avi",
+    "libvorbis": ".ogv",
+    "libvpx": ".webm",
+}
+
 
 def render_video(
     project: VideoProject,
-    output_dir: str | Path,
+    output_path: str | Path,
     *,
     storage_options: dict[str, Any] | None = None,
     overwrite: bool = False,
@@ -33,18 +42,25 @@ def render_video(
     Renders a video based on a project.
 
     :param project: The project to render.
-    :param output_dir: The output directory.
+    :param output_path: The output path. Could be a '.mp4' file path or a directory path.
     :param storage_options: Optional storage options to pass to the clip.
     :param overwrite: Whether to overwrite the output file if it already exists.
     :param kwargs: Additional keyword arguments to pass to Moviepy clip video writer.
     :return: The path to the rendered video.
     """
-    output_dir = Path(output_dir).resolve()
-    output_path = output_dir / f"{project.config.title}.mp4"
+    codec = kwargs.get("codec", "libx264")
 
-    if not output_dir.exists():
-        msg = f"Output directory does not exist: {output_dir}"
-        raise FileNotFoundError(msg)
+    output_path = Path(output_path).resolve()
+    output_file_ext = _CODEC_FILE_EXTENSION_MAP.get(codec, ".mp4")
+
+    if output_path.is_dir():
+        output_path /= f"{project.config.title}.{output_file_ext}"
+
+    if output_path.suffix != ".mp4":
+        raise ValueError(f"Output file must be an '{output_file_ext}' file.")
+
+    if not output_path.parent.exists():
+        raise FileNotFoundError(f"Output directory does not exist: {output_path.parent}")
 
     if output_path.exists() and not overwrite:
         msg = f"Output file already exists: {output_path}"
