@@ -27,6 +27,7 @@ def render_video(
     *,
     storage_options: dict[str, Any] | None = None,
     overwrite: bool = False,
+    **kwargs: Any,
 ) -> Path:
     """
     Renders a video based on a project.
@@ -35,6 +36,7 @@ def render_video(
     :param output_dir: The output directory.
     :param storage_options: Optional storage options to pass to the clip.
     :param overwrite: Whether to overwrite the output file if it already exists.
+    :param kwargs: Additional keyword arguments to pass to Moviepy clip video writer.
     :return: The path to the rendered video.
     """
     output_dir = Path(output_dir).resolve()
@@ -69,13 +71,12 @@ def render_video(
         audio = CompositeAudioClip(audio_clips).with_duration(project.duration)
         video = video.with_audio(audio)
 
-    video.write_videofile(
-        output_path.as_posix(),
-        codec="libx264",
-        audio_codec="aac",
-        temp_audiofile_path=output_path.parent.as_posix(),
-        threads=multiprocessing.cpu_count(),
-    )
+    kwargs["codec"] = kwargs.get("codec", "libx264")
+    kwargs["audio_codec"] = kwargs.get("audio_codec", "aac")
+    kwargs["threads"] = kwargs.get("threads", multiprocessing.cpu_count())
+    kwargs["temp_audiofile_path"] = kwargs.get("temp_audiofile_path", output_path.parent.as_posix())
+
+    video.write_videofile(output_path.as_posix(), **kwargs)
     video.close()
 
     return output_path
