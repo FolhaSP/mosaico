@@ -21,10 +21,10 @@ from mosaico.assets.utils import convert_media_to_asset
 from mosaico.audio_transcribers.protocol import AudioTranscriber
 from mosaico.audio_transcribers.transcription import Transcription, TranscriptionWord
 from mosaico.effects.factory import create_effect
+from mosaico.exceptions import AssetNotFoundError, TimelineEventNotFoundError
 from mosaico.media import Media
 from mosaico.scene import Scene
 from mosaico.script_generators.protocol import ScriptGenerator
-from mosaico.script_generators.script import Shot
 from mosaico.speech_synthesizers.protocol import SpeechSynthesizer
 from mosaico.types import FilePath, FrameSize, ReadableBuffer, WritableBuffer
 from mosaico.video.timeline import EventOrEventSequence, Timeline
@@ -223,28 +223,23 @@ class VideoProject(BaseModel):
         :raises ValueError: If an asset referenced in the events does not exist in the project.
         """
 
-        def validate_asset_id(asset_id: str, context: str = "") -> None:
+        def validate_asset_id(asset_id: str) -> None:
             """Helper to validate asset ID exists"""
             if asset_id not in self.assets:
-                msg = f"Asset with ID '{asset_id}' {context}not found in project assets."
-                raise IndexError(msg)
+                raise AssetNotFoundError(asset_id)
 
         def validate_scene_assets(scene_event: Scene | Mapping[str, Any]) -> None:
             """Helper to validate assets referenced in a scene"""
             if isinstance(scene_event, Scene):
                 for ref in scene_event.asset_references:
-                    validate_asset_id(ref.asset_id, "referenced in scene ")
+                    validate_asset_id(ref.asset_id)
             else:
                 for ref in scene_event["asset_references"]:
-                    if isinstance(ref, AssetReference):
-                        validate_asset_id(ref.asset_id, "referenced in scene ")
-                    else:
-                        validate_asset_id(ref["asset_id"], "referenced in scene ")
+                    asset_id = ref.asset_id if isinstance(ref, AssetReference) else ref["asset_id"]
+                    validate_asset_id(asset_id)
 
-        # Convert single event to list
         _events = events if isinstance(events, Sequence) else [events]
 
-        # Validate all asset references exist
         for event in _events:
             if isinstance(event, Scene):
                 validate_scene_assets(event)
@@ -547,8 +542,7 @@ class VideoProject(BaseModel):
         try:
             return self.assets[asset_id]
         except KeyError:
-            msg = f"Asset with ID '{asset_id}' not found in the project assets."
-            raise KeyError(msg) from None
+            raise AssetNotFoundError(asset_id) from None
 
     def get_timeline_event(self, index: int) -> TimelineEvent:
         """
@@ -558,11 +552,21 @@ class VideoProject(BaseModel):
         :return: The TimelineEvent object.
         :raises ValueError: If the index is out of range.
         """
-        try:
-            return self.timeline[index]
-        except IndexError:
-            msg = "Index out of range."
-            raise IndexError(msg) from None
+        if abs(index) >= len(self.timeline):
+            raise TimelineEventNotFoundError
+        return self.timeline[index]
+
+    def remove_timeline_event(self, index: int) -> VideoProject:
+        """
+        Remove a timeline event from the project.
+
+        :param index: The index of the timeline event to remove.
+        :return: The updated project.
+        """
+        if abs(index) >= len(self.timeline):
+            raise TimelineEventNotFoundError
+        del self.timeline[index]
+        return self
 
     def remove_asset(self, asset_id: str) -> VideoProject:
         """
@@ -574,28 +578,13 @@ class VideoProject(BaseModel):
         try:
             for i, event in enumerate(self.timeline):
                 if isinstance(event, Scene):
-                    self.timeline[i] = event.remove_references_by_asset_id(asset_id)
+                    self.timeline[i] = event.remove_asset_id_references(asset_id)
                 elif isinstance(event, AssetReference) and event.asset_id == asset_id:
-                    del self.timeline[i]
+                    self.remove_timeline_event(i)
             del self.assets[asset_id]
             return self
         except KeyError:
-            msg = f"Asset with ID '{asset_id}' not found in the project assets."
-            raise KeyError(msg) from None
-
-    def remove_timeline_event(self, index: int) -> VideoProject:
-        """
-        Remove a timeline event from the project.
-
-        :param index: The index of the timeline event to remove.
-        :return: The updated project.
-        """
-        try:
-            del self.timeline[index]
-            return self
-        except IndexError:
-            msg = "Timeline event index out of range."
-            raise IndexError(msg) from None
+            raise AssetNotFoundError(asset_id) from None
 
 
 def _process_asset_dicts(asset_data: Mapping[str, Any]) -> list[Asset]:
@@ -620,43 +609,6 @@ def _process_single_asset_dict(asset_data: Mapping[str, Any]) -> Asset:
         raise ValueError(msg)
     asset_type = asset_data["type"]
     return create_asset(asset_type, **{k: v for k, v in asset_data.items() if k != "type"})
-
-
-def _create_shot_subtitle_assets(
-    shot: Shot,
-    speech_asset: AudioAsset | None = None,
-    transcriber: AudioTranscriber | None = None,
-) -> tuple[list[SubtitleAsset], list[AssetReference]]:
-    """
-    Create subtitle assets for a given shot.
-    """
-    if shot.subtitle is None:
-        return [], []
-
-    if speech_asset is None or transcriber is None:
-        subtitle = SubtitleAsset.from_data(shot.subtitle)
-        reference = AssetReference.from_asset(subtitle, start_time=shot.start_time, end_time=shot.end_time)
-        return [subtitle], [reference]
-
-    transcription = transcriber.transcribe(speech_asset)
-
-    subtitles = []
-    references = []
-
-    phrases = _group_transcript_into_sentences(transcription)
-
-    for i, phrase in enumerate(phrases):
-        subtitle_text = " ".join(word.text for word in phrase)
-        subtitle_asset = SubtitleAsset.from_data(subtitle_text)
-        subtitle_start_time = shot.start_time + phrase[0].start_time
-        subtitle_end_time = shot.end_time if i == len(phrases) - 1 else shot.start_time + phrase[-1].end_time
-        subtitle_asset_ref = AssetReference.from_asset(
-            subtitle_asset, start_time=subtitle_start_time, end_time=subtitle_end_time
-        )
-        subtitles.append(subtitle_asset)
-        references.append(subtitle_asset_ref)
-
-    return subtitles, references
 
 
 def _group_transcript_into_sentences(
