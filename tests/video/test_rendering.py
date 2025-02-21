@@ -2,7 +2,7 @@ from pathlib import Path
 
 import pytest
 
-from mosaico.video.rendering import render_video
+from mosaico.video.rendering import _guess_codec_from_file_path, render_video
 
 
 # Dummy classes to simulate a VideoProject and minimal dependencies.
@@ -67,29 +67,31 @@ def test_output_directory_not_exists(tmp_path, dummy_project):
 
 
 def test_file_already_exists(tmp_path, dummy_project):
-    # Create a valid directory with an existing file.
     output_file = tmp_path / "output.mp4"
-    # Create file to simulate existing output.
     output_file.touch()
 
     with pytest.raises(FileExistsError, match="Output file already exists"):
         render_video(dummy_project, output_file.as_posix(), overwrite=False)
 
 
-def test_incorrect_extension(tmp_path, dummy_project):
-    # Provide a valid directory but with wrong file extension.
-    output_file = tmp_path / "output.avi"  # Since default codec libx264 expects .mp4
-    # Ensure parent exists.
+def test_mismatching_codec_and_extension(tmp_path, dummy_project):
+    output_file = tmp_path / "output.mp4"
     tmp_path.mkdir(exist_ok=True)
-    with pytest.raises(ValueError, match="Output file must be an '.mp4' file."):
-        render_video(dummy_project, output_file.as_posix())
+
+    with pytest.raises(ValueError, match="Output file must be an '.avi' file."):
+        render_video(dummy_project, output_file.as_posix(), codec="rawvideo")
+
+
+def test_guessing_codec_from_file_extension(tmp_path):
+    output_file = tmp_path / "output.avi"
+    output_codec = _guess_codec_from_file_path(output_file)
+
+    assert output_codec == "rawvideo"  # there are 3 alternatives, it should get the first one.
 
 
 def test_successful_rendering(tmp_path, dummy_project):
-    # Provide a valid output file.
     output_file = tmp_path / "output.mp4"
-    # Call render_video, should not raise and should return the output path.
     returned_path = render_video(dummy_project, output_file.as_posix(), overwrite=False)
+
     assert Path(returned_path) == output_file.resolve()
-    # Check that file is not created by our dummy rendering.
     assert not output_file.exists()
