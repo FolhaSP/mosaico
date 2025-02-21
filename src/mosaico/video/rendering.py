@@ -58,15 +58,14 @@ def render_video(
     :param kwargs: Additional keyword arguments to pass to Moviepy clip video writer.
     :return: The path to the rendered video.
     """
-    codec = kwargs.get("codec", "libx264")
-
     output_path = Path(output_path).resolve()
-    output_file_ext = _CODEC_FILE_EXTENSION_MAP.get(codec, ".mp4")
+    output_codec = kwargs.get("codec") or _guess_codec_from_file_path(output_path) or "libx264"
+    output_file_ext = _CODEC_FILE_EXTENSION_MAP[output_codec]
 
     if output_path.is_dir():
         output_path /= f"{project.config.title}.{output_file_ext}"
 
-    if output_path.suffix != ".mp4":
+    if output_path.suffix != output_file_ext:
         raise ValueError(f"Output file must be an '{output_file_ext}' file.")
 
     if not output_path.parent.exists():
@@ -97,7 +96,7 @@ def render_video(
         audio = CompositeAudioClip(audio_clips).with_duration(project.duration)
         video = video.with_audio(audio)
 
-    kwargs["codec"] = kwargs.get("codec", "libx264")
+    kwargs["codec"] = output_codec
     kwargs["audio_codec"] = kwargs.get("audio_codec", "aac")
     kwargs["threads"] = kwargs.get("threads", multiprocessing.cpu_count())
     kwargs["temp_audiofile_path"] = kwargs.get("temp_audiofile_path", output_path.parent.as_posix())
@@ -106,6 +105,15 @@ def render_video(
     video.close()
 
     return output_path
+
+
+def _guess_codec_from_file_path(file_path: Path) -> str | None:
+    """
+    Guess video codec from file path.
+    """
+    for codec, file_ext in _CODEC_FILE_EXTENSION_MAP.items():
+        if file_path.name.endswith(file_ext):
+            return codec
 
 
 def _get_event_assets_and_refs(event: TimelineEvent, project: VideoProject) -> list[tuple[Asset, AssetReference]]:
