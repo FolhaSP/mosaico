@@ -13,6 +13,7 @@ from mosaico.assets.reference import AssetReference
 from mosaico.assets.subtitle import SubtitleAsset
 from mosaico.assets.text import TextAsset, TextAssetParams
 from mosaico.audio_transcribers.transcription import Transcription, TranscriptionWord
+from mosaico.exceptions import AssetNotFoundError, TimelineEventNotFoundError
 from mosaico.media import Media
 from mosaico.scene import Scene
 from mosaico.script_generators.script import ShootingScript, Shot
@@ -140,8 +141,18 @@ def test_add_timeline_events_multiple_dict_scenes():
 
 def test_add_timeline_events_without_assets() -> None:
     event = AssetReference(asset_id="test", asset_type="text", start_time=0, end_time=10)
-    with pytest.raises(IndexError, match="Asset with ID 'test' not found in project assets"):
+    with pytest.raises(AssetNotFoundError, match="Asset with ID 'test' not found in the project assets"):
         VideoProject().add_timeline_events(event)
+
+
+def test_get_inexistent_timeline_event_error() -> None:
+    with pytest.raises(TimelineEventNotFoundError):
+        VideoProject().get_timeline_event(10)
+
+
+def test_remove_inexistent_timeline_event_error() -> None:
+    with pytest.raises(TimelineEventNotFoundError):
+        VideoProject().remove_timeline_event(10)
 
 
 def test_duration() -> None:
@@ -159,7 +170,7 @@ def test_get_asset() -> None:
     asset = TextAsset.from_data("test", id="asset1")
     project = VideoProject().add_assets(asset)
     assert project.get_asset("asset1") == asset
-    with pytest.raises(KeyError, match="Asset with ID 'nonexistent' not found in the project assets"):
+    with pytest.raises(AssetNotFoundError, match="Asset with ID 'nonexistent' not found in the project assets"):
         project.get_asset("nonexistent")
 
 

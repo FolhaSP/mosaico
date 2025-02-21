@@ -96,7 +96,7 @@ class Scene(BaseModel):
         self.asset_references.extend(references)
         return self
 
-    def remove_references_by_asset_id(self, asset_id: str) -> Scene:
+    def remove_asset_id_references(self, asset_id: str) -> Scene:
         """
         Remove asset references by asset ID.
 
