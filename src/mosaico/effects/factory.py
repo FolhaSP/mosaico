@@ -1,5 +1,6 @@
 from typing import Any
 
+from mosaico.effects.crossfade import CrossFadeInEffect, CrossFadeOutEffect
 from mosaico.effects.fade import FadeInEffect, FadeOutEffect
 from mosaico.effects.pan import PanDownEffect, PanLeftEffect, PanRightEffect, PanUpEffect
 from mosaico.effects.protocol import Effect
@@ -15,6 +16,8 @@ EFFECT_MAP: dict[str, type[Effect]] = {
     "zoom_out": ZoomOutEffect,
     "fade_in": FadeInEffect,
     "fade_out": FadeOutEffect,
+    "crossfade_in": CrossFadeInEffect,
+    "crossfade_out": CrossFadeOutEffect,
 }
 
 
