@@ -1,6 +1,8 @@
 import pytest
 
+from mosaico.effects.crossfade import CrossFadeInEffect, CrossFadeOutEffect
 from mosaico.effects.factory import EFFECT_MAP, create_effect
+from mosaico.effects.fade import FadeInEffect, FadeOutEffect
 from mosaico.effects.pan import PanDownEffect, PanLeftEffect, PanRightEffect, PanUpEffect
 from mosaico.effects.zoom import ZoomInEffect, ZoomOutEffect
 
@@ -14,6 +16,10 @@ from mosaico.effects.zoom import ZoomInEffect, ZoomOutEffect
         ("pan_down", PanDownEffect),
         ("zoom_in", ZoomInEffect),
         ("zoom_out", ZoomOutEffect),
+        ("fade_in", FadeInEffect),
+        ("fade_out", FadeOutEffect),
+        ("crossfade_in", CrossFadeInEffect),
+        ("crossfade_out", CrossFadeOutEffect),
     ],
 )
 def test_create_effect_valid(effect_type, expected_class):
