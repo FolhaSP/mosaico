@@ -1,12 +1,19 @@
 import json
+import logging
 import os
 from pathlib import Path
+from typing import cast
 
 import pytest
 
+from mosaico.assets.reference import AssetReference
 from mosaico.media import Media
+from mosaico.scene import Scene
 from mosaico.script_generators.news import NewsVideoScriptGenerator
 from mosaico.video.project import VideoProject
+
+
+logging.basicConfig(level=logging.DEBUG)
 
 
 @pytest.mark.skipif(not os.environ.get("OPENAI_API_KEY"), reason="Export OPENAI_API_KEY to run this test.")
@@ -30,3 +37,12 @@ def test_news_script_generation(samples_dir: Path) -> None:
     project = VideoProject.from_script_generator(script_generator, media=media)
 
     assert len(project.timeline) == 5
+
+    # Assert that effects are being suggested by AI and at least one of them is
+    # a movement-related event, such as "pan_left" or "zoom_out".
+    for event in project.timeline:
+        event = cast(Scene, event)
+        for ref in event.asset_references:
+            if ref.asset_type == "image":
+                assert any(fx.type.startswith(("pan_", "zoom_")) for fx in ref.effects)
+                assert not any(fx.type.startswith(("fade_", "crossfade_")) for fx in ref.effects)
