@@ -21,6 +21,14 @@ jobs:
       - uses: actions/checkout@v4
       - name: Setup FFmpeg
         uses: AnimMouse/setup-ffmpeg@v1
+        if: ${{ matrix.os == 'macos-latest' }}
+        with:
+          version: 71
+      - name: Setup FFmpeg
+        uses: AnimMouse/setup-ffmpeg@v1
+        if: ${{ matrix.os != 'macos-latest' }}
+        with:
+          version: 7.1
       - name: Set up uv
         uses: astral-sh/setup-uv@v3
         with:
