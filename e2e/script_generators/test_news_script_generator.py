@@ -1,19 +1,14 @@
 import json
-import logging
 import os
 from pathlib import Path
 from typing import cast
 
 import pytest
 
-from mosaico.assets.reference import AssetReference
 from mosaico.media import Media
 from mosaico.scene import Scene
 from mosaico.script_generators.news import NewsVideoScriptGenerator
 from mosaico.video.project import VideoProject
-
-
-logging.basicConfig(level=logging.DEBUG)
 
 
 @pytest.mark.skipif(not os.environ.get("OPENAI_API_KEY"), reason="Export OPENAI_API_KEY to run this test.")
