@@ -19,8 +19,8 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v4
-      - name: Setup FFmpeg
-        uses: AnimMouse/setup-ffmpeg@v1
+      # - name: Setup FFmpeg
+      #   uses: AnimMouse/setup-ffmpeg@v1
       - name: Set up uv
         uses: astral-sh/setup-uv@v3
         with:
