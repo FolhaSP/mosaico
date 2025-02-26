@@ -6,11 +6,12 @@ import pytest
 
 from mosaico.media import Media
 from mosaico.script_generators.news import NewsVideoScriptGenerator
-from mosaico.video.project import VideoProject
+from mosaico.video.project import VideoProject, VideoProjectConfig
+from mosaico.video.rendering import render_video
 
 
 @pytest.mark.skipif(not os.environ.get("OPENAI_API_KEY"), reason="Export OPENAI_API_KEY to run this test.")
-def test_news_script_generation(samples_dir: Path) -> None:
+def test_news_script_generation(samples_dir: Path, tmp_path: Path) -> None:
     """
     Test the script generation for a news video project.
     """
@@ -27,6 +28,9 @@ def test_news_script_generation(samples_dir: Path) -> None:
         language="pt",
     )
 
-    project = VideoProject.from_script_generator(script_generator, media=media)
+    project = VideoProject.from_script_generator(script_generator, media=media, config=VideoProjectConfig(fps=10))
 
     assert len(project.timeline) == 5
+
+    output_file = tmp_path / "news.mp4"
+    render_video(project, output_file)

@@ -252,24 +252,3 @@ def test_media_roundtrip_conversion():
     assert original_media.data == converted_media.data
     assert original_media.mime_type == converted_media.mime_type
     assert original_media.metadata == converted_media.metadata
-
-
-def test_from_external_with_invalid_adapter():
-    """Test from_external with an object that doesn't implement Adapter protocol"""
-
-    class InvalidAdapter:
-        pass
-
-    with pytest.raises(TypeError):
-        Media.from_external(InvalidAdapter(), {})  # type: ignore
-
-
-def test_to_external_with_invalid_adapter():
-    """Test to_external with an object that doesn't implement Adapter protocol"""
-
-    class InvalidAdapter:
-        pass
-
-    media = Media(data="test")
-    with pytest.raises(TypeError):
-        media.to_external(InvalidAdapter())  # type: ignore

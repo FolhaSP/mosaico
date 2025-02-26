@@ -3,8 +3,9 @@ from pathlib import Path
 
 import pytest
 from pydub import AudioSegment
+from pytest_mock import MockerFixture
 
-from mosaico.assets.audio import AudioAsset
+from mosaico.assets.audio import AudioAsset, AudioInfo
 
 
 @pytest.fixture
@@ -37,10 +38,13 @@ def test_audio_asset_from_data(sample_audio_data):
     assert audio_asset.data == sample_audio_data
 
 
-def test_audio_asset_from_data_with_explicit_params(sample_audio_data):
+def test_audio_asset_from_data_with_explicit_params(sample_audio_data: bytes, mocker: MockerFixture):
     # Test creating AudioAsset with explicitly provided parameters
-    audio_asset = AudioAsset.from_data(sample_audio_data, duration=2.0, sample_rate=44100, sample_width=2, channels=2)
+    audio_info = AudioInfo(duration=2.0, sample_rate=44100, sample_width=2, channels=2)
+    audio_asset = AudioAsset.from_data(sample_audio_data, info=audio_info)
+    load_info_spy = mocker.spy(AudioAsset, "_load_info")
 
+    load_info_spy.assert_not_called()
     assert audio_asset.duration == 2.0
     assert audio_asset.sample_rate == 44100
     assert audio_asset.sample_width == 2
@@ -89,7 +93,8 @@ def test_audio_asset_slice(sample_audio_data):
 def test_audio_asset_from_invalid_data():
     # Test handling invalid audio data
     with pytest.raises(Exception):
-        AudioAsset.from_data(b"invalid audio data")
+        asset = AudioAsset.from_data(b"invalid audio data")
+        asset.duration
 
 
 def test_audio_asset_params_default_values(sample_audio_data):

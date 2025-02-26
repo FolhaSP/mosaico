@@ -8,7 +8,7 @@ from unittest.mock import patch
 import pytest
 import yaml
 
-from mosaico.assets.audio import AudioAsset, AudioAssetParams
+from mosaico.assets.audio import AudioAsset, AudioAssetParams, AudioInfo
 from mosaico.assets.reference import AssetReference
 from mosaico.assets.subtitle import SubtitleAsset
 from mosaico.assets.text import TextAsset, TextAssetParams
@@ -275,11 +275,13 @@ class MockSpeechSynthesizer:
             AudioAsset.from_data(
                 "test_audio",
                 id="test_audio",
-                duration=len(text) * 0.1,
-                sample_width=16,
-                sample_rate=44100,
-                channels=1,
                 mime_type="audio/wav",
+                info=AudioInfo(
+                    duration=len(text) * 0.1,
+                    sample_width=16,
+                    sample_rate=44100,
+                    channels=1,
+                ),
             )
             for text in texts
         ]
@@ -356,7 +358,7 @@ def test_add_captions_with_params(sample_transcription):
 def test_add_captions_from_transcriber(mock_transcriber, sample_transcription):
     # Setup
     audio_asset = AudioAsset.from_data(
-        "test_audio", id="audio1", duration=2.5, sample_rate=44100, sample_width=128, channels=1
+        "test_audio", id="audio1", info=AudioInfo(duration=2.5, sample_rate=44100, sample_width=128, channels=1)
     )
     mock_transcriber.transcribe.return_value = sample_transcription
 
@@ -628,7 +630,7 @@ def test_add_narration_resizes_scene_assets():
     # Create initial assets
     subtitle_asset = SubtitleAsset.from_data("test text", id="text1")
     initial_audio = AudioAsset.from_data(
-        "initial audio", id="audio1", duration=2.0, sample_rate=44100, sample_width=2, channels=1
+        "initial audio", id="audio1", info=AudioInfo(duration=2.0, sample_rate=44100, sample_width=2, channels=1)
     )
 
     # Create initial scene with text and audio

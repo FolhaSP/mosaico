@@ -68,7 +68,7 @@ class TextAssetParams(BaseModel):
         return value.as_hex()
 
 
-class BaseTextAsset(BaseAsset[TextAssetParams]):
+class BaseTextAsset(BaseAsset[TextAssetParams, None]):
     """Represents a text assets with various properties."""
 
     params: TextAssetParams = Field(default_factory=TextAssetParams)

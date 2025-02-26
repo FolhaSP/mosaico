@@ -43,7 +43,7 @@ class AudioClipMaker(BaseClipMaker[AudioAsset]):
         clip_duration = self.duration if self.duration is not None else asset.duration
 
         with (
-            asset.to_bytes_io(storage_options=self.storage_options) as audio_buf,
+            asset.to_bytes_io() as audio_buf,
             NamedTemporaryFile(mode="wb", suffix=".mp3") as temp_file,
         ):
             audio = AudioSegment.from_file(

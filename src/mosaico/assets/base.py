@@ -9,17 +9,21 @@ from typing_extensions import Self
 from mosaico.media import Media
 
 
-T = TypeVar("T", bound=BaseModel)
+_ParamsType = TypeVar("_ParamsType", bound=BaseModel)
+_InfoType = TypeVar("_InfoType", bound=BaseModel | None)
 
 
-class BaseAsset(Media, Generic[T]):
+class BaseAsset(Media, Generic[_ParamsType, _InfoType]):
     """Represents an assets with various properties."""
 
     type: str
     """The type of the assets."""
 
-    params: T
+    params: _ParamsType
     """The parameters for the assets."""
+
+    info: _InfoType | None = None
+    """Information associated with the asset type."""
 
     @classmethod
     def from_media(cls, media: Media) -> Self:
@@ -42,7 +46,7 @@ class BaseAsset(Media, Generic[T]):
         return cls.model_validate(data)
 
     @classmethod
-    def validate_params(cls, params: Any) -> T:
+    def validate_params(cls, params: Any) -> _ParamsType:
         """
         Validates the parameters for the assets.
 
@@ -50,10 +54,10 @@ class BaseAsset(Media, Generic[T]):
         :return: The validated parameters.
         """
         params_cls = cls.model_fields["params"].annotation
-        params_cls = cast(type[T], params_cls)
+        params_cls = cast(type[_ParamsType], params_cls)
         return params_cls.model_validate(params)
 
-    def with_params(self, params: T | dict[str, Any]) -> Self:
+    def with_params(self, params: _ParamsType | dict[str, Any]) -> Self:
         """
         Returns a new assets with the specified parameters.
 
@@ -63,12 +67,21 @@ class BaseAsset(Media, Generic[T]):
         if isinstance(params, BaseModel):
             params = params.model_dump(exclude_unset=True)
 
-        if not isinstance(params, dict):
-            raise ValueError("params must be a dict or a Pydantic model")
-
         existing_params = self.params.model_dump(exclude_unset=True)
         existing_params.update(params)
 
         self.params = self.validate_params(existing_params)
 
         return self
+
+    def _load_info(self) -> None:
+        """
+        Overwrite this method to set asset lazy-loading logic.
+        """
+        raise NotImplementedError
+
+    def _safe_get_info_key(self, key: str) -> Any:
+        self._load_info()
+        if self.info is None:
+            raise ValueError("Asset information data could not be loaded.")
+        return getattr(self.info, key)
