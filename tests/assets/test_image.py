@@ -3,8 +3,9 @@ from pathlib import Path
 
 import pytest
 from PIL import Image
+from pytest_mock import MockerFixture
 
-from mosaico.assets.image import ImageAsset
+from mosaico.assets.image import ImageAsset, ImageInfo
 
 
 @pytest.fixture
@@ -35,12 +36,15 @@ def test_image_asset_from_data(sample_image_data):
     assert image_asset.data == sample_image_data
 
 
-def test_image_asset_from_data_with_explicit_dimensions(sample_image_data):
+def test_image_asset_from_data_with_explicit_info(sample_image_data: bytes, mocker: MockerFixture):
     # Test creating ImageAsset with explicitly provided dimensions
-    image_asset = ImageAsset.from_data(sample_image_data, width=200, height=100)
+    image_asset = ImageAsset.from_data(sample_image_data, info=ImageInfo(width=200, height=100, mode="RGBA"))
+    image_load_spy = mocker.spy(ImageAsset, "_load_info")
 
+    image_load_spy.assert_not_called()
     assert image_asset.width == 200
     assert image_asset.height == 100
+    assert image_asset.mode == "RGBA"
     assert image_asset.data == sample_image_data
 
 
@@ -58,12 +62,15 @@ def test_image_asset_from_path(sample_image_path):
     assert image_asset.to_bytes() == expected_data
 
 
-def test_image_asset_from_path_with_explicit_dimensions(sample_image_path):
+def test_image_asset_from_path_with_explicit_info(sample_image_path: Path, mocker: MockerFixture):
     # Test creating ImageAsset from path with explicitly provided dimensions
-    image_asset = ImageAsset.from_path(sample_image_path, width=300, height=150)
+    image_asset = ImageAsset.from_path(sample_image_path, info=ImageInfo(width=300, height=150, mode="RGBA"))
+    image_load_spy = mocker.spy(ImageAsset, "_load_info")
 
+    image_load_spy.assert_not_called()
     assert image_asset.width == 300
     assert image_asset.height == 150
+    assert image_asset.mode == "RGBA"
 
     with open(sample_image_path, "rb") as f:
         expected_data = f.read()
@@ -84,13 +91,15 @@ def test_image_asset_from_path_with_pathlib(sample_image_path):
 def test_image_asset_from_invalid_data():
     # Test handling invalid image data
     with pytest.raises(Exception):
-        ImageAsset.from_data(b"invalid image data")
+        asset = ImageAsset.from_data(b"invalid image data")
+        asset.width
 
 
 def test_image_asset_from_invalid_path():
     # Test handling non-existent file path
     with pytest.raises(FileNotFoundError):
-        ImageAsset.from_path("nonexistent_image.png")
+        asset = ImageAsset.from_path("nonexistent_image.png")
+        asset.width
 
 
 def test_image_asset_params_default_values(sample_image_data):

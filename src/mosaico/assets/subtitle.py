@@ -14,7 +14,7 @@ from mosaico.script_generators.script import Shot
 class SubtitleAsset(BaseTextAsset):
     """Represents a subtitles assets."""
 
-    type: Literal["subtitle"] = "subtitle"
+    type: Literal["subtitle"] = "subtitle"  # type: ignore
     """The type of the assets. Defaults to "subtitle"."""
 
     params: TextAssetParams = Field(

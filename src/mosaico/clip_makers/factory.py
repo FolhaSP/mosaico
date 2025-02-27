@@ -66,7 +66,6 @@ def make_clip(
     duration: float | None = None,
     video_resolution: FrameSize | None = None,
     effects: Sequence[Effect] | None = None,
-    storage_options: dict[str, Any] | None = None,
     **kwargs: Any,
 ) -> Clip:
     """
@@ -83,7 +82,6 @@ def make_clip(
         duration=duration,
         video_resolution=video_resolution,
         effects=list(effects) if effects is not None else [],
-        storage_options=storage_options if storage_options is not None else {},
         **kwargs,
     )
     return clip_maker.make_clip(asset)
