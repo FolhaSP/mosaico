@@ -470,6 +470,18 @@ class VideoProject(BaseModel):
 
         return self
 
+    def with_config(self, config: VideoProjectConfig | Mapping[str, Any]) -> VideoProject:
+        """
+        Override the video project configuration.
+
+        :param config: The configuration to set.
+        :return: The updated project.
+        """
+        if isinstance(config, Mapping):
+            config = VideoProjectConfig.model_validate(config)
+        self.config = config
+        return self
+
     def with_subtitle_params(self, params: TextAssetParams | Mapping[str, Any]) -> VideoProject:
         """
         Override the subtitle parameters for the assets in the project.
