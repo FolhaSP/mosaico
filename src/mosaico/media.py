@@ -42,7 +42,7 @@ class Media(BaseModel):
     metadata: dict[str, Any] = Field(default_factory=dict)
     """The metadata of the media."""
 
-    storage_options: dict[str, Any] = Field(default_factory=lambda: settings.storage_options)
+    storage_options: dict[str, Any] = Field(default_factory=settings.storage_options.copy)
     """Media's storage options."""
 
     model_config = ConfigDict(validate_assignment=True, arbitrary_types_allowed=True, extra="forbid")
