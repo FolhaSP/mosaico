@@ -9,7 +9,7 @@ from pydantic.types import PositiveInt
 from pydub import AudioSegment
 from typing_extensions import Self
 
-from mosaico.assets.audio import AudioAsset, AudioAssetParams
+from mosaico.assets.audio import AudioAsset, AudioAssetParams, AudioInfo
 
 
 class OpenAISpeechSynthesizer(BaseModel):
@@ -73,11 +73,13 @@ class OpenAISpeechSynthesizer(BaseModel):
                 AudioAsset.from_data(
                     response.content,
                     params=audio_params if audio_params is not None else {},
-                    duration=segment.duration,
-                    sample_rate=segment.frame_rate,
-                    sample_width=segment.sample_width,
-                    channels=segment.channels,
                     mime_type="audio/mpeg",
+                    info=AudioInfo(
+                        duration=segment.duration,
+                        sample_rate=segment.frame_rate,
+                        sample_width=segment.sample_width,
+                        channels=segment.channels,
+                    ),
                 )
             )
 
