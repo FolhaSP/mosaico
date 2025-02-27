@@ -5,7 +5,7 @@ import io
 import mimetypes
 import uuid
 from collections.abc import Generator
-from typing import Any
+from typing import IO, Any, cast
 
 import fsspec
 from pydantic import BaseModel
@@ -14,6 +14,7 @@ from pydantic.fields import Field
 from pydantic.functional_validators import model_validator
 from typing_extensions import Self
 
+from mosaico.config import settings
 from mosaico.integrations.base.adapters import Adapter
 from mosaico.types import FilePath
 
@@ -40,6 +41,9 @@ class Media(BaseModel):
 
     metadata: dict[str, Any] = Field(default_factory=dict)
     """The metadata of the media."""
+
+    storage_options: dict[str, Any] = Field(default_factory=lambda: settings.storage_options)
+    """Media's storage options."""
 
     model_config = ConfigDict(validate_assignment=True, arbitrary_types_allowed=True, extra="forbid")
 
@@ -135,19 +139,15 @@ class Media(BaseModel):
         """
         Converts an external representation to a media.
         """
-        if not isinstance(adapter, Adapter):
-            raise TypeError("Adapter must be an instance of Adapter")
         return adapter.from_external(external)
 
     def to_external(self, adapter: Adapter[Media, Any]) -> Any:
         """
         Converts the media to an external representation.
         """
-        if not isinstance(adapter, Adapter):
-            raise TypeError("Adapter must be an instance of Adapter")
         return adapter.to_external(self)
 
-    def to_string(self, *, storage_options: dict[str, Any] | None = None) -> str:
+    def to_string(self, **kwargs: Any) -> str:
         """
         Returns the media as a string.
         """
@@ -156,10 +156,12 @@ class Media(BaseModel):
         if isinstance(self.data, bytes):
             return self.data.decode(self.encoding)
         if self.data is None and self.path is not None:
-            return _load_file(self.path, storage_options).decode(self.encoding)
+            kwargs["mode"] = "r"
+            with self.open(**kwargs) as f:
+                return cast(str, f.read())
         raise ValueError("Data is not a string or bytes")
 
-    def to_bytes(self, *, storage_options: dict[str, Any] | None = None) -> bytes:
+    def to_bytes(self, **kwargs: Any) -> bytes:
         """
         Returns the media as bytes.
         """
@@ -168,37 +170,53 @@ class Media(BaseModel):
         if isinstance(self.data, str):
             return self.data.encode(self.encoding)
         if self.data is None and self.path is not None:
-            return _load_file(self.path, storage_options)
+            kwargs["mode"] = "rb"
+            with self.open(**kwargs) as f:
+                return cast(bytes, f.read())
         raise ValueError("Data is not a string or bytes")
 
     @contextlib.contextmanager
-    def to_bytes_io(
-        self, *, storage_options: dict[str, Any] | None = None
-    ) -> Generator[io.BytesIO | io.BufferedReader]:
+    def to_bytes_io(self, **kwargs: Any) -> Generator[IO[bytes], None, None]:
         """
         Read data as a byte stream.
         """
         if isinstance(self.data, bytes):
             yield io.BytesIO(self.data)
         elif self.data is None and self.path:
-            yield from _yield_file(self.path, storage_options)
+            kwargs["mode"] = "rb"
+            with self.open(**kwargs) as f:
+                yield cast(IO[bytes], f)
         else:
             raise NotImplementedError(f"Unable to convert blob {self}")
 
+    @contextlib.contextmanager
+    def open(self, **kwargs) -> Generator[IO[bytes] | IO[str], None, None]:
+        """
+        Opens the media for read/write operations.
+        """
+        if self.path is None:
+            raise ValueError("File-opening could only be done when 'path' is not missing.")
+        fs, path_str = fsspec.core.url_to_fs(self.path, **self.storage_options)
+        with fs.open(path_str, **kwargs) as f:
+            yield f
 
-def _yield_file(path: FilePath, storage_options: dict[str, Any] | None = None) -> Generator[io.BufferedReader]:
-    """
-    Yields a file from a path.
-    """
-    fs, path_str = fsspec.core.url_to_fs(str(path), **(storage_options or {}))
-    with fs.open(path_str, "rb") as f:
-        yield f  # type: ignore
+    def add_metadata(self, metadata: dict[str, Any]) -> Self:
+        """
+        Add metadata to the media object.
+        """
+        self.metadata.update(metadata)
+        return self
 
+    def with_metadata(self, metadata: dict[str, Any]) -> Self:
+        """
+        Set media object metadata.
+        """
+        self.metadata = metadata
+        return self
 
-def _load_file(path: FilePath, storage_options: dict[str, Any] | None = None) -> bytes:
-    """
-    Loads a file from a path.
-    """
-    fs, path_str = fsspec.core.url_to_fs(str(path), **(storage_options or {}))
-    with fs.open(path_str, "rb") as f:
-        return f.read()
+    def with_storage_options(self, storage_options: dict[str, Any]) -> Self:
+        """
+        Add/replace storage options of the media object.
+        """
+        self.storage_options = storage_options
+        return self

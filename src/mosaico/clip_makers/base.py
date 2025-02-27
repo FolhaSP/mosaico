@@ -1,13 +1,13 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import Any, Generic, TypeVar
+from typing import Generic, TypeVar
 
 from moviepy.Clip import Clip
 from pydantic import BaseModel
 from pydantic.config import ConfigDict
 from pydantic.fields import Field
-from pydantic.types import NonNegativeFloat
+from pydantic.types import PositiveFloat
 
 from mosaico.assets.base import BaseAsset
 from mosaico.effects.protocol import Effect
@@ -20,7 +20,7 @@ T = TypeVar("T", bound=BaseAsset)
 class BaseClipMaker(BaseModel, Generic[T], ABC):
     """Base class for clip makers."""
 
-    duration: NonNegativeFloat | None = None
+    duration: PositiveFloat | None = None
     """The duration of the clip in seconds."""
 
     video_resolution: FrameSize | None = None
@@ -28,9 +28,6 @@ class BaseClipMaker(BaseModel, Generic[T], ABC):
 
     effects: list[Effect] = Field(default_factory=list)
     """List of effects to apply to the clip."""
-
-    storage_options: dict[str, Any] = Field(default_factory=dict)
-    """Storage options for the media."""
 
     model_config = ConfigDict(arbitrary_types_allowed=True, validate_assignment=True)
 

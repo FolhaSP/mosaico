@@ -13,7 +13,7 @@ class TestParams(BaseModel):
     __test__ = False
 
 
-class TestAsset(BaseAsset[TestParams]):
+class TestAsset(BaseAsset[TestParams, None]):
     type: str = "test"
     params: TestParams = Field(default_factory=TestParams)
 
