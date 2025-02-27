@@ -89,6 +89,8 @@ SHOOTING_SCRIPT_PROMPT = textwrap.dedent(
     - Use the paragraphs as subtitles for the shots.
     - Add timings to the media objects. Make sure they do not overlap.
     - Add a title for the shooting script.
+    - Use pan or zoom effects in all images.
+    - Avoid using fade and crossfade effects and transitions.
     - Respond only with the structured JSON output format in the same language as the paragraphs.
 
     SHOOTING SCRIPT:

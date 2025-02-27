@@ -92,7 +92,7 @@ class NewsVideoScriptGenerator:
         Suggest media usage based on the media objects.
         """
         formatted_media = _build_media_string(media)
-        formatted_paragraphs = "\n".join(f"{i+1}. {p}" for i, p in enumerate(paragraphs))
+        formatted_paragraphs = "\n".join(f"{i + 1}. {p}" for i, p in enumerate(paragraphs))
         prompt = MEDIA_SUGGESTING_PROMPT.format(paragraphs=formatted_paragraphs, media_objects=formatted_media)
         suggestions = self._fetch_completion(prompt, response_type=ParagraphMediaSuggestions)
         return suggestions.suggestions
@@ -130,7 +130,7 @@ class NewsVideoScriptGenerator:
         )
 
 
-def _format_media(media: Media, index: int) -> str:
+def _format_media(media: Media) -> str:
     """
     Format a media object as a string for display.
     """
@@ -144,7 +144,7 @@ def _build_media_string(medias: Sequence[Media]) -> str:
     Build context and media strings for generating a script.
     """
     media_str = ""
-    for index, media in enumerate(medias):
-        fmt_media = _format_media(media, index)
+    for media in medias:
+        fmt_media = _format_media(media)
         media_str += fmt_media
     return media_str
