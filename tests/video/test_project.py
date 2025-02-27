@@ -436,6 +436,13 @@ def test_group_words_into_phrases_with_numbers():
     assert " ".join(word.text for word in phrases[1]) == "and 6,789"
 
 
+@pytest.mark.parametrize("config", [VideoProjectConfig(title="Test"), {"title": "Test"}], ids=["object", "dict"])
+def test_with_config(config) -> None:
+    project = VideoProject().with_config(config)
+
+    assert project.config.title == "Test"
+
+
 def test_with_subtitle_params_asset_reference() -> None:
     # Create a subtitle asset
     subtitle_asset = SubtitleAsset.from_data("test text", id="subtitle1")
