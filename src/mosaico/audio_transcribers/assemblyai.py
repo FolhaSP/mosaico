@@ -69,7 +69,7 @@ class AssemblyAIAudioTranscriber(BaseModel):
         transcriber = aai.Transcriber(client=self._client, config=config)
 
         with audio_asset.to_bytes_io() as audio_file:
-            response = transcriber.transcribe(audio_file)
+            response = transcriber.transcribe(audio_file)  # type: ignore
 
         transcription = response.wait_for_completion()
 

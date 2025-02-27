@@ -9,7 +9,7 @@ from pydantic.fields import Field
 from pydantic_extra_types.language_code import LanguageAlpha2
 from pydub import AudioSegment
 
-from mosaico.assets.audio import AudioAsset, AudioAssetParams
+from mosaico.assets.audio import AudioAsset, AudioAssetParams, AudioInfo
 
 
 class ElevenLabsSpeechSynthesizer(BaseModel):
@@ -84,10 +84,12 @@ class ElevenLabsSpeechSynthesizer(BaseModel):
                 response.content,
                 params=audio_params if audio_params is not None else {},
                 mime_type="audio/mpeg",
-                duration=duration,
-                sample_rate=44100,
-                sample_width=128,
-                channels=1,
+                info=AudioInfo(
+                    duration=duration,
+                    sample_rate=44100,
+                    sample_width=128,
+                    channels=1,
+                ),
             )
             assets.append(asset)
 
