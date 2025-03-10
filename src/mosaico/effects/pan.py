@@ -1,6 +1,6 @@
-from typing import Literal
+from typing import Annotated, Literal
 
-from pydantic.types import PositiveFloat
+from pydantic.fields import Field
 
 from mosaico.effects.base import BaseEffect
 
@@ -8,7 +8,7 @@ from mosaico.effects.base import BaseEffect
 class BasePanEffect(BaseEffect):
     """A pan effect."""
 
-    zoom_factor: PositiveFloat = 1.1
+    zoom_factor: Annotated[float, Field(default=1.1, ge=1)] = 1.1
     """The zoom factor."""
 
 

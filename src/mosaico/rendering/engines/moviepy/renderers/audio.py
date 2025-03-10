@@ -70,5 +70,7 @@ class MoviepyAudioClipRenderer(AssetClipRenderer[AudioAsset]):
             return (
                 MPAudioFileClip(temp_file.name)
                 .with_fps(options.fps)
+                .with_start(clip.start_time)
+                .with_duration(clip_duration)
                 .with_effects([afx.MultiplyVolume(asset.params.volume)])
             )

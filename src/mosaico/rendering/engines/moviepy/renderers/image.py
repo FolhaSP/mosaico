@@ -71,6 +71,7 @@ class MoviepyImageClipRenderer(AssetClipRenderer[ImageAsset]):
                 MoviepyImageClip(img=fp.name)
                 .with_layer_index(params.z_index)
                 .with_position((position.x, position.y), relative=is_relative_position(position))
+                .with_start(clip.start_time)
                 .with_duration(clip.duration or 3)
                 .with_fps(options.fps)
             )

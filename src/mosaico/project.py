@@ -23,9 +23,7 @@ from mosaico.effects.factory import create_effect
 from mosaico.exceptions import AssetNotFoundError, DuplicatedAssetError, EmptyTimelineError, TrackNotFoundError
 from mosaico.media import Media
 from mosaico.rendering.types import RenderingOptions
-from mosaico.script_generators.protocol import ScriptGenerator
-from mosaico.script_generators.script import ShotMediaReference
-from mosaico.speech_synthesizers.protocol import SpeechSynthesizer
+from mosaico.script_generators.script import ShootingScript, ShotMediaReference
 from mosaico.timeline import Timeline
 from mosaico.track import Track
 from mosaico.types import FilePath, FrameSize, ReadableBuffer, WritableBuffer
@@ -104,54 +102,50 @@ class Project(BaseModel):
         return cls.from_dict(project_dict)
 
     @classmethod
-    def from_script_generator(
+    def from_script(
         cls,
-        script_generator: ScriptGenerator,
+        script: ShootingScript,
         media: Sequence[Media],
         *,
         config: ProjectConfig | None = None,
         **kwargs: Any,
     ) -> Project:
         """
-        Create a Project object from a script generator.
+        Create a Project object from a shooting script.
 
-        :param generator: The script generator to use.
-        :param media: The media files to use.
-        :param config: The configuration of the project.
-        :param kwargs: Additional keyword arguments to pass to the script generator.
+        :param shooting_script: The shooting script to use.
         :return: A Project object instance.
         """
-        config = config if config is not None else ProjectConfig()
+        config = config or ProjectConfig()
         project = cls(config=config)
 
-        script = script_generator.generate(media, **kwargs)
+        subtitle_track = Track()
+        media_track = Track()
 
-        def process_media_reference(media_reference: ShotMediaReference) -> tuple[Asset, AssetClip]:
+        def _process_media_reference(media_reference: ShotMediaReference) -> tuple[Asset, AssetClip]:
             referenced_media = next(m for m in media if m.id == media_reference.media_id)
             media_asset = convert_media_to_asset(referenced_media)
             asset_clip = (
                 AssetClip.from_asset(media_asset)
-                .with_start_time(media_ref.start_time)
-                .with_duration(media_ref.duration)
+                .with_start_time(media_reference.start_time)
+                .with_duration(media_reference.duration)
             )
-            if media_asset.type == "image" and media_ref.effects:
-                asset_clip = asset_clip.with_effects([create_effect(effect) for effect in media_ref.effects])
+            if media_asset.type == "image" and media_reference.effects:
+                asset_clip = asset_clip.with_effects([create_effect(effect) for effect in media_reference.effects])
             return media_asset, asset_clip
 
         for shot in script.shots:
             subtitle = SubtitleAsset.from_data(shot.subtitle)
             subtitle_clip = AssetClip.from_asset(subtitle).with_start_time(shot.start_time).with_duration(shot.duration)
-            track = Track().with_description(shot.description).add_clips(subtitle_clip)
+            subtitle_track = subtitle_track.add_clips(subtitle_clip)
             project = project.add_assets(subtitle)
 
-            for media_ref in shot.media_references:
-                media_asset, asset_clip = process_media_reference(media_ref)
+            for media_reference in shot.media_references:
+                media_asset, asset_clip = _process_media_reference(media_reference)
                 project = project.add_assets(media_asset)
-                track = track.add_clips(asset_clip)
+                media_track = media_track.add_clips(asset_clip)
 
-            project = project.add_tracks(track)
-
-        return project
+        return project.add_tracks([media_track, subtitle_track])
 
     def to_file(self, file: FilePath | WritableBuffer[str]) -> None:
         """
@@ -219,103 +213,49 @@ class Project(BaseModel):
 
         return self
 
-    # def add_narration(self, text: str, speech_synthesizer: SpeechSynthesizer) -> Project:
-    #     narration_asset = speech_synthesizer.synthesize(text)
-    #     narration_clip = AssetClip.from_asset(narration_asset, start_time=0)
-    #     narration_track = Track(title="Narration", clips=[narration_clip])
-
-    #     for track_index in range(len(self.timeline)):
-    #         num_clips = len(self.timeline[track_index].clips)
-    #         for clip_index in range(num_clips):
-    #             pass
-
-    #     return self.add_assets(narration_asset).add_tracks(narration_track)
-
-    def add_narration(self, speech_synthesizer: SpeechSynthesizer) -> Project:
+    def add_narration(self, narration_asset: AudioAsset, *, start_time: float = 0.0) -> Project:
         """
-        Add narration to subtitles inside Scene objects by generating speech audio from subtitle text.
+        Add narration to the project.
 
-        Updates asset timings within each Scene to match narration duration, dividing time equally
-        between multiple images.
-
-        :param speech_synthesizer: The speech synthesizer to use for generating narration audio
+        :param narration_asset: The narration audio asset to add
+        :param start_time: The start time of the narration in seconds
         :return: The updated project with narration added
         """
-        current_time = None
+        narration_clip = (
+            AssetClip.from_asset(narration_asset).with_start_time(start_time).with_duration(narration_asset.duration)
+        )
+        narration_track = Track(title="Narration", clips=[narration_clip])
+
+        def _adjust_clip_timings(clips: list[AssetClip], new_total_duration: float) -> list[AssetClip]:
+            new_clips = []
+            time_per_clip = new_total_duration / len(clips)
+            for clip_index, clip in enumerate(clips):
+                new_start = track.start_time + (clip_index * time_per_clip)
+                new_clip = clip.model_copy().with_start_time(new_start).with_duration(time_per_clip)
+                new_clips.append(new_clip)
+            return new_clips
 
         for track_index, track in enumerate(self.timeline.tracks):
-            # Get subtitle content from scene
-            subtitle_clips = track.get_clips_by_type("subtitle")
-
-            if not subtitle_clips:
-                continue
-
-            # Get subtitle assets and their text content
-            subtitle_assets = [cast(SubtitleAsset, self.get_asset(clip.asset_reference.id)) for clip in subtitle_clips]
-
-            # Generate narration for subtitle content
-            texts = [subtitle.to_string() for subtitle in subtitle_assets]
-            narration_assets = speech_synthesizer.synthesize(texts)
-
-            # Add narration assets to project
-            self.add_assets(narration_assets)
-
-            # Calculate total narration duration for this scene
-            total_narration_duration = sum(narration.duration for narration in narration_assets)
-
-            # Get non-subtitle assets to adjust timing
             image_clips = track.get_clips_by_type("image")
-            other_clips = track.get_clips_by_type(["subtitle", "image"], negate=True)
-
-            if current_time is None:
-                current_time = track.start_time
+            subtitle_clips = track.get_clips_by_type("subtitle")
 
             new_clips = []
 
             # Adjust image timings - divide narration duration equally
             if image_clips:
-                time_per_image = total_narration_duration / len(image_clips)
-                for image_index, image_clip in enumerate(image_clips):
-                    new_start = current_time + (image_index * time_per_image)
-                    new_end = new_start + time_per_image
-                    new_clip = image_clip.model_copy().with_start_time(new_start).with_end_time(new_end)
-                    new_clips.append(new_clip)
+                new_image_clips = _adjust_clip_timings(image_clips, narration_asset.duration)
+                new_clips.extend(new_image_clips)
 
-            # Add other non-image assets with full narration duration
-            for image_clip in other_clips:
-                new_clip = (
-                    image_clip.model_copy()
-                    .with_start_time(current_time)
-                    .with_end_time(current_time + total_narration_duration)
-                )
-                new_clips.append(new_clip)
-
-            # Add subtitle references spanning full narration duration
-            for image_clip in subtitle_clips:
-                new_clip = (
-                    image_clip.model_copy()
-                    .with_start_time(current_time)
-                    .with_end_time(current_time + total_narration_duration)
-                )
-                new_clips.append(new_clip)
-
-            # Add narration references
-            for narration in narration_assets:
-                narration_clip = (
-                    AssetClip.from_asset(narration)
-                    .with_start_time(current_time)
-                    .with_end_time(current_time + narration.duration)
-                )
-                new_clips.append(narration_clip)
-
-            # Update current_time for next scene
-            current_time += total_narration_duration
+            # Adjust subtitle timings - divide narration duration equally
+            if subtitle_clips:
+                new_subtitle_clips = _adjust_clip_timings(subtitle_clips, narration_asset.duration)
+                new_clips.extend(new_subtitle_clips)
 
             # Create new scene with updated references
-            new_scene = track.model_copy(update={"clips": new_clips})
-            self.timeline.tracks[track_index] = new_scene
+            updated_track = track.model_copy(update={"clips": new_clips})
+            self.timeline.tracks[track_index] = updated_track
 
-        return self
+        return self.add_assets(narration_asset).add_tracks(narration_track)
 
     def add_captions(
         self,
@@ -340,7 +280,6 @@ class Project(BaseModel):
         clips = []
 
         phrases = _group_transcript_into_sentences(transcription, max_duration=max_duration)
-
         track = self.timeline.tracks[track_index] if track_index is not None else Track()
 
         if track.has_subtitles and not overwrite:
@@ -361,20 +300,15 @@ class Project(BaseModel):
 
             # Calculate scaled duration
             phrase_duration = phrase[-1].end_time - phrase[0].start_time
-
             start_time = current_time
-            end_time = start_time + phrase_duration
 
             subtitle_clip = AssetClip.from_asset(
-                asset=subtitle_asset,
-                params=params,
-                start_time=start_time,
-                end_time=end_time,
+                subtitle_asset, params=params, start_time=start_time, duration=phrase_duration
             )
             assets.append(subtitle_asset)
             clips.append(subtitle_clip)
 
-            current_time = end_time
+            current_time += phrase_duration
 
         self.add_assets(assets)
         track = track.add_clips(clips)

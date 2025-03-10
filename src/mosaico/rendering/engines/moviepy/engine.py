@@ -1,8 +1,10 @@
 import multiprocessing
 from pathlib import Path
 
+from moviepy.audio.AudioClip import AudioClip
 from moviepy.audio.AudioClip import CompositeAudioClip as MPCompositeAudioClip
 from moviepy.video.compositing.CompositeVideoClip import CompositeVideoClip as MPCompositeVideoClip
+from moviepy.video.VideoClip import VideoClip
 
 from mosaico.assets.types import Asset
 from mosaico.exceptions import AssetNotFoundError, EmptyTrackError
@@ -82,15 +84,25 @@ class MoviepyRenderingEngine(RenderingEngine):
             else:
                 video_clips.append(rendered)
 
-        video = (
-            MPCompositeVideoClip(video_clips, size=options.resolution)
-            .with_fps(options.fps)
-            .with_duration(track.duration)
-        )
+        video = None
+
+        if video_clips:
+            video = (
+                MPCompositeVideoClip(video_clips, size=options.resolution)
+                .with_fps(options.fps)
+                .with_start(track.start_time)
+                .with_duration(track.duration)
+            )
 
         if audio_clips:
             audio = MPCompositeAudioClip(audio_clips)
-            video = video.with_audio(audio)  # type: ignore
+            if video_clips:
+                video = video.with_audio(audio)  # type: ignore
+            else:
+                video = audio
+
+        if video is None:
+            raise ValueError("Error while rendering track clips.")
 
         return video
 
@@ -131,19 +143,29 @@ class MoviepyRenderingEngine(RenderingEngine):
             raise FileExistsError(f"Output file already exists: {output_path}")
 
         rendering_options = project.config.rendering_options
-        rendered_videos = []
+        video_clips = []
+        audio_clips = []
 
         for track in project.timeline.tracks:
-            rendered_track_video = self.render_track(track, project.asset_map, rendering_options)
-            rendered_videos.append(rendered_track_video)
+            track_clips = self.render_track(track, project.asset_map, rendering_options).clips
+            audio_clips.extend([clip for clip in track_clips if isinstance(clip, AudioClip | MPCompositeAudioClip)])
+            video_clips.extend([clip for clip in track_clips if isinstance(clip, VideoClip | MPCompositeVideoClip)])
 
         video = (
-            MPCompositeVideoClip(rendered_videos, size=rendering_options.resolution)
+            MPCompositeVideoClip(video_clips, size=rendering_options.resolution)
             .with_fps(rendering_options.fps)
+            .with_start(0)
             .with_duration(project.duration)
         )
 
-        video.preview()
+        if audio_clips:
+            audio = (
+                MPCompositeAudioClip(audio_clips)
+                .with_fps(rendering_options.fps)
+                .with_start(0)
+                .with_duration(project.duration)
+            )
+            video = video.with_audio(audio)
 
         kwargs["codec"] = output_codec
         kwargs["audio_codec"] = kwargs.get("audio_codec", "aac")

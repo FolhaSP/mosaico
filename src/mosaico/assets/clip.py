@@ -64,7 +64,7 @@ class AssetClip(BaseModel):
     @property
     def end_time(self) -> float:
         """The end time of the asset in seconds."""
-        return self.end_time - self.start_time
+        return self.start_time + (self.duration or 0)
 
     @classmethod
     def from_asset(

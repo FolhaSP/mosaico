@@ -1,6 +1,5 @@
 import io
 import os
-from collections.abc import Sequence
 from typing import Annotated, Any, ClassVar, Literal
 
 import requests
@@ -55,9 +54,7 @@ class ElevenLabsSpeechSynthesizer(BaseModel):
     timeout: int = 120
     """Timeout for the HTTP request in seconds."""
 
-    def synthesize(
-        self, texts: Sequence[str], *, audio_params: AudioAssetParams | None = None, **kwargs: Any
-    ) -> list[AudioAsset]:
+    def synthesize(self, text: str, *, audio_params: AudioAssetParams | None = None, **kwargs: Any) -> AudioAsset:
         """
         Synthesizes the given texts into audio assets using the ElevenLabs API.
 
@@ -66,42 +63,23 @@ class ElevenLabsSpeechSynthesizer(BaseModel):
         :param kwargs: Additional keyword arguments.
         :return: List of synthesized audio assets.
         """
-        assets = []
-        previous_request_ids = []
+        response = self._fetch_speech_synthesis(
+            text=text,
+        )
+        duration = AudioSegment.from_file(io.BytesIO(response.content), format="mp3").duration_seconds
+        return AudioAsset.from_data(
+            response.content,
+            params=audio_params if audio_params is not None else {},
+            mime_type="audio/mpeg",
+            info=AudioInfo(
+                duration=duration,
+                sample_rate=44100,
+                sample_width=128,
+                channels=1,
+            ),
+        )
 
-        for i, text in enumerate(texts):
-            is_first = i == 0
-            is_last = i == len(texts) - 1
-            response = self._fetch_speech_synthesis(
-                text=text,
-                previous_request_ids=previous_request_ids[-3:],
-                previous_text=None if is_first else " ".join(texts[:i]),
-                next_text=None if is_last else " ".join(texts[i + 1 :]),
-            )
-            previous_request_ids.append(response.headers["request-id"])
-            duration = AudioSegment.from_file(io.BytesIO(response.content), format="mp3").duration_seconds
-            asset = AudioAsset.from_data(
-                response.content,
-                params=audio_params if audio_params is not None else {},
-                mime_type="audio/mpeg",
-                info=AudioInfo(
-                    duration=duration,
-                    sample_rate=44100,
-                    sample_width=128,
-                    channels=1,
-                ),
-            )
-            assets.append(asset)
-
-        return assets
-
-    def _fetch_speech_synthesis(
-        self,
-        text: str,
-        previous_request_ids: Sequence[str],
-        previous_text: str | None = None,
-        next_text: str | None = None,
-    ) -> requests.Response:
+    def _fetch_speech_synthesis(self, text: str) -> requests.Response:
         """
         Fetches the speech synthesis from the ElevenLabs API.
         """
@@ -110,9 +88,6 @@ class ElevenLabsSpeechSynthesizer(BaseModel):
             json={
                 "text": text,
                 "model_id": self.model,
-                "previous_request_ids": previous_request_ids,
-                "previous_text": previous_text,
-                "next_text": next_text,
                 "voice_settings": {
                     "stability": self.voice_stability,
                     "similarity_boost": self.voice_similarity_boost,

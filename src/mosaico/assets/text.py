@@ -38,7 +38,7 @@ class TextAssetParams(BaseModel):
     stroke_width: NonNegativeFloat = 0
     """The font stroke width."""
 
-    shadow_color: Color = Field(default_factory=lambda: Color("#000000"))
+    shadow_color: Color = Field(default_factory=lambda: Color("transparent"))
     """The shadow color hexadecimal code."""
 
     shadow_blur: int = 0

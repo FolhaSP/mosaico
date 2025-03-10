@@ -138,6 +138,7 @@ class MoviepyTextClipRenderer(AssetClipRenderer[BaseTextAsset]):
                 MPImageClip(f.name)
                 .with_layer_index(params.z_index)
                 .with_position((params.position.x, params.position.y), relative=is_relative_position(params.position))
+                .with_start(clip.start_time)
                 .with_duration(clip.duration or 3)
             )
 

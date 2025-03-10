@@ -3,7 +3,6 @@ from __future__ import annotations
 from pydantic import BaseModel
 from pydantic.config import ConfigDict
 from pydantic.types import NonNegativeFloat
-from typing_extensions import Self
 
 
 class TranscriptionWord(BaseModel):
@@ -33,7 +32,7 @@ class Transcription(BaseModel):
         return self.words[-1].end_time - self.words[0].start_time
 
     @classmethod
-    def from_srt(cls, srt: str) -> Self:
+    def from_srt(cls, srt: str) -> Transcription:
         """
         Create a transcription from an SRT string.
 
@@ -42,40 +41,36 @@ class Transcription(BaseModel):
         """
         lines = srt.strip().split("\n")
         words = []
-        for i in range(1, len(lines), 4):
-            start_time, end_time = lines[i].split(" --> ")
-            word = TranscriptionWord(
-                start_time=float(start_time.replace(",", ".")),
-                end_time=float(end_time.replace(",", ".")),
-                text=lines[i + 1],
-            )
-            words.append(word)
+        for i in range(0, len(lines)):
+            if not " --> " in lines[i]:
+                continue
+            start_time, end_time = map(_extract_time_from_string, lines[i].split(" --> "))
+            line_words = lines[i + 1].split(" ")
+            line_duration = end_time - start_time
+            current_start_time = start_time
+            current_end_time = None
+            for word_index, line_word in enumerate(line_words):
+                if current_end_time is None or word_index < len(line_words) - 1:
+                    current_end_time = round(current_start_time + line_duration / len(line_words), 3)
+                else:
+                    current_end_time = end_time
+                word = TranscriptionWord(start_time=current_start_time, end_time=current_end_time, text=line_word)
+                words.append(word)
+                current_start_time = current_end_time
         return cls(words=words)
 
-    @classmethod
-    def from_vtt(cls, vtt: str) -> Self:
-        """
-        Create a transcription from a WebVTT string.
-
-        :param vtt: The WebVTT string.
-        :return: The transcription.
-        """
-        lines = vtt.strip().split("\n")
-        if not lines[0].strip().upper() == "WEBVTT":
-            raise ValueError("Not a valid WebVTT file.")
-        words = []
-        for i in range(1, len(lines), 4):
-            start_time, end_time = lines[i + 1].split(" --> ")
-            word = TranscriptionWord(start_time=float(start_time), end_time=float(end_time), text=lines[i + 2])
-            words.append(word)
-        return cls(words=words)
-
-    def as_vtt(self) -> str:
-        """Return the transcription as a WebVTT string."""
-        lines = ["WEBVTT", ""]
+    def to_srt(self) -> str:
+        """Return the transcription as an SRT string."""
+        lines = []
         for i, word in enumerate(self.words):
             lines.append(f"{i + 1}")
             lines.append(f"{word.start_time:.3f} --> {word.end_time:.3f}")
             lines.append(word.text)
             lines.append("")
         return "\n".join(lines)
+
+
+def _extract_time_from_string(time_str: str) -> float:
+    """Extract time from a string in the format HH:MM:SS.mmm."""
+    hours, minutes, seconds = time_str.replace(",", ".").split(":")
+    return float(hours) * 3600 + float(minutes) * 60 + float(seconds)
