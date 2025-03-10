@@ -1,95 +1,42 @@
-from abc import abstractmethod
-from collections.abc import Callable
 from typing import Literal
 
-from moviepy.video import fx as vfx
-from moviepy.video.VideoClip import VideoClip
-from pydantic import BaseModel
 from pydantic.types import PositiveFloat
 
-
-PanFn = Callable[[float], tuple[float, str] | tuple[str, float]]
-"""The pan function type."""
+from mosaico.effects.base import BaseEffect
 
 
-class BasePanEffect(BaseModel):
+class BasePanEffect(BaseEffect):
     """A pan effect."""
 
     zoom_factor: PositiveFloat = 1.1
     """The zoom factor."""
 
-    @abstractmethod
-    def _pan_fn(self, clip: VideoClip) -> PanFn:
-        """
-        Get the pan function.
 
-        :param clip: The clip.
-        :return: The pan function.
-        """
-        ...
+class PanLeftEffect(BasePanEffect):
+    """A pan left effect."""
 
-    def apply(self, clip: VideoClip) -> VideoClip:
-        """
-        Apply the pan effect to the clip.
-
-        :param clip: The clip.
-        :return: The clip with the effect applied.
-        """
-        pan_fn = self._pan_fn(clip)
-        return clip.with_effects([vfx.Resize(self.zoom_factor)]).with_position(pan_fn)  # type: ignore
+    type: Literal["pan_left"] = "pan_left"
 
 
 class PanRightEffect(BasePanEffect):
-    """A left to right pan effect."""
+    """A pan right effect."""
 
     type: Literal["pan_right"] = "pan_right"
-    """Effect type. Must be "pan_right"."""
-
-    def _pan_fn(self, clip: VideoClip) -> PanFn:
-        def pan(t):
-            x = (clip.w * self.zoom_factor - clip.w) * (t / clip.duration)
-            return (-x, "center")
-
-        return pan
-
-
-class PanLeftEffect(BasePanEffect):
-    """A right to left pan effect."""
-
-    type: Literal["pan_left"] = "pan_left"
-    """Effect type. Must be "pan_left"."""
-
-    def _pan_fn(self, clip: VideoClip) -> PanFn:
-        def pan(t):
-            x = (clip.w * self.zoom_factor - clip.w) * (1 - t / clip.duration)
-            return (-x, "center")
-
-        return pan
-
-
-class PanDownEffect(BasePanEffect):
-    """A top to bottom pan effect."""
-
-    type: Literal["pan_down"] = "pan_down"
-    """Effect type. Must be "pan_down"."""
-
-    def _pan_fn(self, clip: VideoClip) -> PanFn:
-        def pan(t):
-            y = (clip.h * self.zoom_factor - clip.h) * (t / clip.duration)
-            return ("center", -y)
-
-        return pan
 
 
 class PanUpEffect(BasePanEffect):
-    """A bottom to top pan effect."""
+    """A pan up effect."""
 
     type: Literal["pan_up"] = "pan_up"
-    """Effect type. Must be "pan_up"."""
 
-    def _pan_fn(self, clip: VideoClip) -> PanFn:
-        def pan(t):
-            y = (clip.h * self.zoom_factor - clip.h) * (1 - t / clip.duration)
-            return ("center", -y)
 
-        return pan
+class PanDownEffect(BasePanEffect):
+    """A pan down effect."""
+
+    type: Literal["pan_down"] = "pan_down"
+
+
+class PanCenterEffect(BasePanEffect):
+    """A pan center effect."""
+
+    type: Literal["pan_center"] = "pan_center"

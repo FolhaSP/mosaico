@@ -22,12 +22,8 @@ class SubtitleAsset(BaseTextAsset):
             position=RegionPosition(x="center", y="bottom"),
             font_color=Color("white"),
             font_size=45,
-            stroke_width=1,
+            stroke_width=1.5,
             align="center",
-            shadow_blur=10,
-            shadow_angle=135,
-            shadow_opacity=0.5,
-            shadow_distance=5,
         )
     )
     """The parameters for the assets."""

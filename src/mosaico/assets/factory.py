@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import importlib
 import importlib.util
+from collections.abc import MutableMapping
 from typing import TYPE_CHECKING, Any, Literal, overload
 
 from mosaico.exceptions import InvalidAssetTypeError
@@ -18,77 +19,77 @@ if TYPE_CHECKING:
 
 @overload
 def create_asset(
-    asset_type: Literal["image"],
+    type: Literal["image"],
     id: str | None = ...,
     data: str | bytes | None = ...,
     path: FilePath | None = ...,
     metadata: dict[str, Any] | None = ...,
-    params: ImageAssetParams | None = ...,
+    params: ImageAssetParams | MutableMapping[str, Any] | None = ...,
     **kwargs: Any,
 ) -> ImageAsset: ...
 
 
 @overload
 def create_asset(
-    asset_type: Literal["audio"],
+    type: Literal["audio"],
     id: str | None = ...,
     data: str | bytes | None = ...,
     path: FilePath | None = ...,
     metadata: dict[str, Any] | None = ...,
-    params: AudioAssetParams | None = ...,
+    params: AudioAssetParams | MutableMapping[str, Any] | None = ...,
     **kwargs: Any,
 ) -> AudioAsset: ...
 
 
 @overload
 def create_asset(
-    asset_type: Literal["text"],
+    type: Literal["text"],
     id: str | None = ...,
     data: str | bytes | None = ...,
     path: FilePath | None = ...,
     metadata: dict[str, Any] | None = ...,
-    params: TextAssetParams | None = ...,
+    params: TextAssetParams | MutableMapping[str, Any] | None = ...,
     **kwargs: Any,
 ) -> TextAsset: ...
 
 
 @overload
 def create_asset(
-    asset_type: Literal["subtitle"],
+    type: Literal["subtitle"],
     id: str | None = ...,
     data: str | bytes | None = ...,
     path: FilePath | None = ...,
     metadata: dict[str, Any] | None = ...,
-    params: TextAssetParams | None = ...,
+    params: TextAssetParams | MutableMapping[str, Any] | None = ...,
     **kwargs: Any,
 ) -> SubtitleAsset: ...
 
 
 @overload
 def create_asset(
-    asset_type: AssetType,
+    type: AssetType,
     id: str | None = ...,
     data: str | bytes | None = ...,
     path: FilePath | None = ...,
     metadata: dict[str, Any] | None = ...,
-    params: AssetParams | None = ...,
+    params: AssetParams | MutableMapping[str, Any] | None = ...,
     **kwargs: Any,
 ) -> Asset: ...
 
 
 def create_asset(
-    asset_type: AssetType,
+    type: AssetType,
     id: str | None = None,
     data: str | bytes | None = None,
     path: FilePath | None = None,
     metadata: dict[str, Any] | None = None,
-    params: AssetParams | dict[str, Any] | None = None,
+    params: AssetParams | MutableMapping[str, Any] | None = None,
     **kwargs: Any,
 ) -> Asset:
     """
     Create an asset from the given asset type.
 
-    :param asset_type: The asset type.
+    :param type: The asset type.
     :param id: The asset ID.
     :param data: The asset data.
     :param path: The asset path.
@@ -97,13 +98,13 @@ def create_asset(
     :param kwargs: Additional keyword arguments.
     :return: The asset.
     """
-    asset_mod_name = f"mosaico.assets.{asset_type}"
+    asset_mod_name = f"mosaico.assets.{type}"
 
     if not importlib.util.find_spec(asset_mod_name):
-        raise InvalidAssetTypeError(asset_type)
+        raise InvalidAssetTypeError(type)
 
-    asset_mod = importlib.import_module(f"mosaico.assets.{asset_type}")
-    asset_class = getattr(asset_mod, asset_type.capitalize() + "Asset")
+    asset_mod = importlib.import_module(f"mosaico.assets.{type}")
+    asset_class = getattr(asset_mod, type.capitalize() + "Asset")
 
     def _get_asset_class_default_params(asset_class: type[Asset]) -> AssetParams:
         params_field = asset_class.model_fields["params"]

@@ -1,12 +1,11 @@
 from typing import Literal
 
-from moviepy.video import fx as vfx
-from moviepy.video.VideoClip import VideoClip
-from pydantic import BaseModel
 from pydantic.types import PositiveFloat
 
+from mosaico.effects.base import BaseEffect
 
-class BaseFadeEffect(BaseModel):
+
+class BaseFadeEffect(BaseEffect):
     """Base class for fade effects."""
 
     duration: PositiveFloat = 1
@@ -14,34 +13,28 @@ class BaseFadeEffect(BaseModel):
 
 
 class FadeInEffect(BaseFadeEffect):
-    """fade-in effect for video clips."""
+    """Fade-in effect for video clips."""
 
     type: Literal["fade_in"] = "fade_in"
-    """Effect type. Must be "fade_in"."""
-
-    def apply(self, clip: VideoClip) -> VideoClip:
-        """
-        Apply fade-in effect to clip.
-
-        :param clip: The clip to apply the effect to.
-        :return: The clip with the effect applied.
-        """
-        fx = vfx.FadeIn(self.duration)
-        return fx.apply(clip)  # type: ignore
+    """Type of the effect."""
 
 
 class FadeOutEffect(BaseFadeEffect):
-    """fade-out effect for video clips."""
+    """Fade-out effect for video clips."""
 
     type: Literal["fade_out"] = "fade_out"
-    """Effect type. Must be "fade_out"."""
+    """Type of the effect."""
 
-    def apply(self, clip: VideoClip) -> VideoClip:
-        """
-        Apply fade-out effect to clip.
 
-        :param clip: The clip to apply the effect to.
-        :return: The clip with the effect applied.
-        """
-        fx = vfx.FadeOut(self.duration)
-        return fx.apply(clip)  # type: ignore
+class CrossFadeInEffect(BaseFadeEffect):
+    """Cross-fade-in effect for video clips."""
+
+    type: Literal["cross_fade_in"] = "cross_fade_in"
+    """Type of the effect."""
+
+
+class CrossFadeOutEffect(BaseFadeEffect):
+    """Cross-fade-out effect for video clips."""
+
+    type: Literal["cross_fade_out"] = "cross_fade_out"
+    """Type of the effect."""

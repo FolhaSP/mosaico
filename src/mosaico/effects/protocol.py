@@ -1,13 +1,11 @@
-from typing import Protocol, TypeVar, runtime_checkable
-
-from moviepy.Clip import Clip
+from typing import Any, LiteralString, Protocol, TypeVar, runtime_checkable
 
 
-ClipType = TypeVar("ClipType", bound=Clip)
+T = TypeVar("T", bound=LiteralString)
 
 
 @runtime_checkable
-class Effect(Protocol[ClipType]):
+class Effect(Protocol[T]):
     """
     A protocol for clip effects.
 
@@ -16,6 +14,9 @@ class Effect(Protocol[ClipType]):
         ``issubclass()`` checks can be performed against it.
     """
 
-    def apply(self, clip: ClipType) -> ClipType:
-        """Apply the effect to the clip."""
+    type: T
+    """The type of the effect."""
+
+    def get_params(self) -> dict[str, Any]:
+        """Return the parameters of the effect."""
         ...

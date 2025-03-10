@@ -1,35 +1,50 @@
+from __future__ import annotations
+
 from typing import Literal
 
-from mosaico.effects.crossfade import CrossFadeInEffect, CrossFadeOutEffect
-from mosaico.effects.fade import FadeInEffect, FadeOutEffect
-from mosaico.effects.pan import PanDownEffect, PanLeftEffect, PanRightEffect, PanUpEffect
+from mosaico.effects.fade import CrossFadeInEffect, CrossFadeOutEffect, FadeInEffect, FadeOutEffect
+from mosaico.effects.pan import PanCenterEffect, PanDownEffect, PanLeftEffect, PanRightEffect, PanUpEffect
 from mosaico.effects.zoom import ZoomInEffect, ZoomOutEffect
 
 
 VideoEffect = (
-    ZoomInEffect
-    | ZoomOutEffect
+    CrossFadeInEffect
+    | CrossFadeOutEffect
+    | FadeInEffect
+    | FadeOutEffect
+    | PanCenterEffect
+    | PanDownEffect
     | PanLeftEffect
     | PanRightEffect
     | PanUpEffect
-    | PanDownEffect
-    | FadeInEffect
-    | FadeOutEffect
-    | CrossFadeInEffect
-    | CrossFadeOutEffect
+    | ZoomInEffect
+    | ZoomOutEffect
 )
 """A type representing any video effect."""
 
-VideoEffectType = Literal[
-    "zoom_in",
-    "zoom_out",
+FadeEffect = FadeInEffect | FadeOutEffect
+"""Type of the fade effect."""
+
+CrossFadeEffect = CrossFadeInEffect | CrossFadeOutEffect
+"""Type of the cross-fade effect."""
+
+PanEffect = PanLeftEffect | PanRightEffect | PanUpEffect | PanDownEffect | PanCenterEffect
+"""Type of the pan effect."""
+
+ZoomEffect = ZoomInEffect | ZoomOutEffect
+"""Type of the zoom effect."""
+
+EffectType = Literal[
+    "cross_fade_in",
+    "cross_fade_out",
+    "fade_in",
+    "fade_out",
+    "pan_center",
+    "pan_down",
     "pan_left",
     "pan_right",
     "pan_up",
-    "pan_down",
-    "fade_in",
-    "fade_out",
-    "crossfade_out",
-    "crossfade_in",
+    "zoom_in",
+    "zoom_out",
 ]
 """A type representing the type of a video effect."""

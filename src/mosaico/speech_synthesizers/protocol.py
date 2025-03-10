@@ -1,4 +1,3 @@
-from collections.abc import Sequence
 from typing import Any, ClassVar, Protocol, runtime_checkable
 
 from mosaico.assets.audio import AudioAsset, AudioAssetParams
@@ -47,11 +46,9 @@ class SpeechSynthesizer(Protocol):
     provider: ClassVar[str]
     """The provider of the speech synthesizer."""
 
-    def synthesize(
-        self, texts: Sequence[str], *, audio_params: AudioAssetParams | None = None, **kwargs: Any
-    ) -> list[AudioAsset]:
+    def synthesize(self, text: str, *, audio_params: AudioAssetParams | None = None, **kwargs: Any) -> AudioAsset:
         """
-        Convert a list of texts into synthesized speech audio assets.
+        Convert a text into synthesized speech audio asset.
 
         This method handles the conversion of text to speech, managing both the synthesis
         process and the creation of audio assets for use in video projects.
@@ -64,7 +61,7 @@ class SpeechSynthesizer(Protocol):
             * Large texts may need to be chunked according to service limits
             * Audio format should match project requirements
 
-        :param texts: List of text strings to be converted to speech. Each string should
+        :param text: Text string to be converted to speech. Each string should
             be properly formatted text ready for synthesis.
         :param audio_params: Optional parameters for configuring the output audio assets.
             If None, default parameters will be used. These parameters affect properties
@@ -72,6 +69,5 @@ class SpeechSynthesizer(Protocol):
         :param kwargs: Additional provider-specific parameters.
         :return: List of audio assets containing the synthesized speech. The returned list
             will have the same length as the input texts list, with corresponding indices.
-
         """
         ...

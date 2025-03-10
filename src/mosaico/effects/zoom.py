@@ -1,14 +1,13 @@
 from typing import Annotated, Literal
 
-from moviepy.video import fx as vfx
-from moviepy.video.VideoClip import VideoClip
-from pydantic import BaseModel
 from pydantic.fields import Field
 from pydantic.functional_validators import model_validator
 from typing_extensions import Self
 
+from mosaico.effects.base import BaseEffect
 
-class BaseZoomEffect(BaseModel):
+
+class BaseZoomEffect(BaseEffect):
     """Base class for zoom effects."""
 
     start_zoom: Annotated[float, Field(ge=0.1, le=2)]
@@ -16,21 +15,6 @@ class BaseZoomEffect(BaseModel):
 
     end_zoom: Annotated[float, Field(ge=0.1, le=2.0)]
     """Ending zoom scale."""
-
-    def apply(self, clip: VideoClip) -> VideoClip:
-        """
-        Apply zoom effect to clip.
-
-        :param clip: The clip to apply the effect to.
-        :return: The clip with the effect applied.
-        """
-
-        def zoom(t):
-            """Calculate zoom factor at time t."""
-            progress = t / clip.duration
-            return self.start_zoom + (self.end_zoom - self.start_zoom) * progress
-
-        return clip.with_effects([vfx.Resize(zoom)])  # type: ignore
 
 
 class ZoomInEffect(BaseZoomEffect):

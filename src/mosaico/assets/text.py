@@ -59,7 +59,7 @@ class TextAssetParams(BaseModel):
     align: Literal["left", "center", "right"] = "left"
     """The text alignment."""
 
-    z_index: int = 0
+    z_index: int = 9999
     """The z-index of the assets."""
 
     @field_serializer("font_color", "stroke_color", "shadow_color", "background_color", when_used="always")

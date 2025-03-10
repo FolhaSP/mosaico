@@ -1,8 +1,7 @@
 import pytest
 
-from mosaico.effects.crossfade import CrossFadeInEffect, CrossFadeOutEffect
 from mosaico.effects.factory import EFFECT_MAP, create_effect
-from mosaico.effects.fade import FadeInEffect, FadeOutEffect
+from mosaico.effects.fade import CrossFadeInEffect, CrossFadeOutEffect, FadeInEffect, FadeOutEffect
 from mosaico.effects.pan import PanDownEffect, PanLeftEffect, PanRightEffect, PanUpEffect
 from mosaico.effects.zoom import ZoomInEffect, ZoomOutEffect
 

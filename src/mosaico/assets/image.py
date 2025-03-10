@@ -33,7 +33,7 @@ class ImageAssetParams(BaseModel):
     position: Position = Field(default_factory=AbsolutePosition)
     """The positioning of the text assets in the video."""
 
-    z_index: int = -1
+    z_index: int = 0
     """The z-index of the assets."""
 
     crop: tuple[int, int, int, int] | None = None

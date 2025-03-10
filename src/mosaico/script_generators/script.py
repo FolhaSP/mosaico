@@ -4,11 +4,9 @@ from typing import Literal
 
 from pydantic import BaseModel, PositiveInt
 from pydantic.fields import Field
-from pydantic.functional_validators import model_validator
-from pydantic.types import NonNegativeFloat, PositiveFloat
-from typing_extensions import Self
+from pydantic.types import NonNegativeFloat
 
-from mosaico.effects.types import VideoEffectType
+from mosaico.effects.types import EffectType
 
 
 class ShotMediaReference(BaseModel):
@@ -23,18 +21,16 @@ class ShotMediaReference(BaseModel):
     start_time: NonNegativeFloat
     """The start time of the media object in seconds."""
 
-    end_time: PositiveFloat
-    """The end time of the media object in seconds."""
+    duration: NonNegativeFloat
+    """The duration of the media object in seconds."""
 
-    effects: list[VideoEffectType] = Field(default_factory=list)
+    effects: list[EffectType] = Field(default_factory=list)
     """The effects applied to the media object."""
 
-    @model_validator(mode="after")
-    def _validate_media_references(self) -> Self:
-        """Validate the media references."""
-        if self.start_time >= self.end_time:
-            raise ValueError("The start time must be less than the end time.")
-        return self
+    @property
+    def end_time(self) -> float:
+        """The end time of the media object in seconds."""
+        return self.start_time + self.duration
 
 
 class Shot(BaseModel):
