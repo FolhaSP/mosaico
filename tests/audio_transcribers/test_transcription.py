@@ -4,7 +4,7 @@ from mosaico.audio_transcribers.transcription import Transcription
 
 
 def test_from_srt(fixtures_dir: Path) -> None:
-    srt_file = fixtures_dir / "example.srt"
+    srt_file = fixtures_dir / "subtitles.srt"
     transcription = Transcription.from_srt(srt_file.read_text())
     assert len(transcription.words) == 71
     assert transcription.words[0].start_time == 0
