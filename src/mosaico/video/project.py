@@ -16,7 +16,7 @@ from mosaico.assets.factory import create_asset
 from mosaico.assets.reference import AssetReference
 from mosaico.assets.subtitle import SubtitleAsset
 from mosaico.assets.text import TextAssetParams
-from mosaico.assets.types import Asset
+from mosaico.assets.types import Asset, AssetType
 from mosaico.assets.utils import convert_media_to_asset
 from mosaico.audio_transcribers.protocol import AudioTranscriber
 from mosaico.audio_transcribers.transcription import Transcription, TranscriptionWord
@@ -26,6 +26,7 @@ from mosaico.media import Media
 from mosaico.scene import Scene
 from mosaico.script_generators.protocol import ScriptGenerator
 from mosaico.speech_synthesizers.protocol import SpeechSynthesizer
+from mosaico.transcription_aligners.protocol import TranscriptionAligner
 from mosaico.types import FilePath, FrameSize, ReadableBuffer, WritableBuffer
 from mosaico.video.timeline import EventOrEventSequence, Timeline
 from mosaico.video.types import AssetInputType, TimelineEvent
@@ -350,6 +351,7 @@ class VideoProject(BaseModel):
         transcription: Transcription,
         *,
         max_duration: int = 5,
+        aligner: TranscriptionAligner | None = None,
         params: TextAssetParams | None = None,
         scene_index: int | None = None,
         overwrite: bool = False,
@@ -367,7 +369,13 @@ class VideoProject(BaseModel):
         subtitles = []
         references = []
 
-        phrases = _group_transcript_into_sentences(transcription, max_duration=max_duration)
+        if aligner is not None:
+            subtitles = _extract_assets_from_refs(self.timeline, self.assets, "subtitle")
+            original_text = " ".join([s.to_string() for s in subtitles])
+            aligned_transcription = aligner.align(transcription, original_text)
+            phrases = _group_transcript_into_sentences(aligned_transcription, max_duration=max_duration)
+        else:
+            phrases = _group_transcript_into_sentences(transcription, max_duration=max_duration)
 
         if scene_index is not None:
             scene = self.timeline[scene_index]
@@ -384,7 +392,7 @@ class VideoProject(BaseModel):
             # Calculate time scale factor if needed
             current_time = scene.start_time
 
-            for phrase in phrases:
+            for phrase_index, phrase in enumerate(phrases):
                 subtitle_text = " ".join(word.text for word in phrase)
                 subtitle = SubtitleAsset.from_data(subtitle_text)
 
@@ -396,6 +404,9 @@ class VideoProject(BaseModel):
 
                 # Ensure we don't exceed scene bounds
                 end_time = min(end_time, scene.end_time)
+
+                if phrase_index == len(phrases) - 1:
+                    end_time = scene.end_time
 
                 subtitle_ref = AssetReference.from_asset(
                     asset=subtitle,
@@ -436,6 +447,7 @@ class VideoProject(BaseModel):
         audio_transcriber: AudioTranscriber,
         *,
         max_duration: int = 5,
+        aligner: TranscriptionAligner | None = None,
         params: TextAssetParams | None = None,
         overwrite: bool = False,
     ) -> VideoProject:
@@ -683,3 +695,19 @@ def _group_transcript_into_sentences(
         phrases.append(current_phrase)
 
     return phrases
+
+
+def _extract_assets_from_refs(timeline: Timeline, assets: dict[str, Asset], asset_type: AssetType) -> list[Asset]:
+    """
+    Extracts asset references of a given type from a timeline.
+    """
+    refs = []
+    for event in timeline:
+        if isinstance(event, Scene):
+            for ref in event.asset_references:
+                if ref.asset_type == asset_type:
+                    refs.append(assets[ref.asset_id])
+        else:
+            if event.asset_type == asset_type:
+                refs.append(assets[event.asset_id])
+    return refs
