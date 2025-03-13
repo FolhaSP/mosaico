@@ -475,6 +475,7 @@ class VideoProject(BaseModel):
                 self.add_captions(
                     audio_transcription,
                     max_duration=max_duration,
+                    aligner=aligner,
                     params=params,
                     scene_index=i,
                     overwrite=overwrite,

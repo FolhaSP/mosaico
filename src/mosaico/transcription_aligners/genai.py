@@ -31,7 +31,7 @@ class GenAITranscriptionAligner(TranscriptionAligner):
         :param original_text: Original script text.
         :return: A new transcription with aligned text and timing.
         """
-        model_params = self.model_params or {}
+        model_params = self.model_params or {"temperature": 0}
         fixed_transcription = self.client.chat.completions.create(
             model=self.model,
             messages=[
