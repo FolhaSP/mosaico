@@ -133,6 +133,7 @@ ignore = [
 "src/mosaico/speech_synthesizers/*.py" = ["D102"]
 "src/mosaico/types.py" = ["D102"]
 "src/mosaico/**/prompts.py" = ["E501"]
+"src/mosaico/transcription_aligners/genai.py" = ["E501"]
 "cookbook/*.py" = ["F821"]
 "tests/*.py" = ["S101", "D", "ARG001", "PLR2004"]
 "e2e/*.py" = ["S101", "D", "ARG001", "PLR2004"]

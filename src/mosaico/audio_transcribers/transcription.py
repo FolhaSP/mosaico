@@ -39,12 +39,13 @@ class Transcription(BaseModel):
         :param srt: The SRT string.
         :return: The transcription.
         """
+        print(str)
         lines = srt.strip().split("\n")
         words = []
         for i in range(0, len(lines)):
             if not " --> " in lines[i]:
                 continue
-            start_time, end_time = map(_extract_time_from_string, lines[i].split(" --> "))
+            start_time, end_time = map(_extract_srt_time_from_string, lines[i].split(" --> "))
             line_words = lines[i + 1].split(" ")
             line_duration = end_time - start_time
             current_start_time = start_time
@@ -63,14 +64,24 @@ class Transcription(BaseModel):
         """Return the transcription as an SRT string."""
         lines = []
         for i, word in enumerate(self.words):
+            start_time = _format_srt_time(word.start_time)
+            end_time = _format_srt_time(word.end_time)
             lines.append(f"{i + 1}")
-            lines.append(f"{word.start_time:.3f} --> {word.end_time:.3f}")
+            lines.append(f"{start_time} --> {end_time}")
             lines.append(word.text)
             lines.append("")
         return "\n".join(lines)
 
 
-def _extract_time_from_string(time_str: str) -> float:
+def _extract_srt_time_from_string(time_str: str) -> float:
     """Extract time from a string in the format HH:MM:SS.mmm."""
     hours, minutes, seconds = time_str.replace(",", ".").split(":")
     return float(hours) * 3600 + float(minutes) * 60 + float(seconds)
+
+
+def _format_srt_time(seconds: float) -> str:
+    """Format time in seconds to a string in the format HH:MM:SS.mmm."""
+    hours = int(seconds // 3600)
+    minutes = int((seconds % 3600) // 60)
+    seconds = seconds % 60
+    return f"{hours:02d}:{minutes:02d}:{seconds:06.3f}".replace(".", ",")
