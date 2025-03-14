@@ -346,12 +346,13 @@ class VideoProject(BaseModel):
 
         return self
 
-    def add_captions(
+    def add_captions(  # noqa: PLR0912
         self,
         transcription: Transcription,
         *,
         max_duration: int = 5,
         aligner: TranscriptionAligner | None = None,
+        original_text: str | None = None,
         params: TextAssetParams | None = None,
         scene_index: int | None = None,
         overwrite: bool = False,
@@ -361,6 +362,8 @@ class VideoProject(BaseModel):
 
         :param transcription: The transcription to add subtitles from.
         :param max_duration: The maximum duration of each subtitle.
+        :param aligner: The aligner to use for aligning the transcription with the original text.
+        :param original_text: The original text to align the transcription with.
         :param params: The parameters for the subtitle assets.
         :param scene_index: The index of the scene to add the subtitles to.
         :param overwrite: Whether to overwrite existing subtitles in the scene.
@@ -368,14 +371,6 @@ class VideoProject(BaseModel):
         """
         subtitles = []
         references = []
-
-        if aligner is not None:
-            subtitles = _extract_assets_from_refs(self.timeline, self.assets, "subtitle")
-            original_text = " ".join([s.to_string() for s in subtitles])
-            aligned_transcription = aligner.align(transcription, original_text)
-            phrases = _group_transcript_into_sentences(aligned_transcription, max_duration=max_duration)
-        else:
-            phrases = _group_transcript_into_sentences(transcription, max_duration=max_duration)
 
         if scene_index is not None:
             scene = self.timeline[scene_index]
@@ -388,6 +383,15 @@ class VideoProject(BaseModel):
             for ref in scene.asset_references:
                 if ref.asset_type == "subtitle":
                     self.remove_asset(ref.asset_id)
+
+            if aligner is not None:
+                subtitles = _extract_assets_from_scene(scene, self.assets, "subtitle")
+                if not original_text:
+                    original_text = " ".join([s.to_string() for s in subtitles])
+                aligned_transcription = aligner.align(transcription, original_text)
+                phrases = _group_transcript_into_sentences(aligned_transcription, max_duration=max_duration)
+            else:
+                phrases = _group_transcript_into_sentences(transcription, max_duration=max_duration)
 
             # Calculate time scale factor if needed
             current_time = scene.start_time
@@ -423,6 +427,15 @@ class VideoProject(BaseModel):
             scene = scene.add_asset_references(references)
             self.timeline[scene_index] = scene
         else:
+            if aligner is not None:
+                subtitles = _extract_assets_from_timeline(self.timeline, self.assets, "subtitle")
+                if not original_text:
+                    original_text = " ".join([s.to_string() for s in subtitles])
+                aligned_transcription = aligner.align(transcription, original_text)
+                phrases = _group_transcript_into_sentences(aligned_transcription, max_duration=max_duration)
+            else:
+                phrases = _group_transcript_into_sentences(transcription, max_duration=max_duration)
+
             # Handle non-scene case
             for phrase in phrases:
                 subtitle_text = " ".join(word.text for word in phrase)
@@ -464,6 +477,11 @@ class VideoProject(BaseModel):
             if not isinstance(event, Scene) or not event.has_audio:
                 continue
 
+            subtitles = _extract_assets_from_scene(event, self.assets, "subtitle")
+
+            if not subtitles:
+                continue
+
             for asset_ref in event.asset_references:
                 if asset_ref.asset_type != "audio":
                     continue
@@ -476,6 +494,7 @@ class VideoProject(BaseModel):
                     audio_transcription,
                     max_duration=max_duration,
                     aligner=aligner,
+                    original_text=" ".join([s.to_string() for s in subtitles]),
                     params=params,
                     scene_index=i,
                     overwrite=overwrite,
@@ -698,7 +717,14 @@ def _group_transcript_into_sentences(
     return phrases
 
 
-def _extract_assets_from_refs(timeline: Timeline, assets: dict[str, Asset], asset_type: AssetType) -> list[Asset]:
+def _extract_assets_from_scene(scene: Scene, assets: dict[str, Asset], asset_type: AssetType) -> list[Asset]:
+    """
+    Extracts asset references of a given type from a timeline.
+    """
+    return [assets[ref.asset_id] for ref in scene.asset_references if ref.asset_type == asset_type]
+
+
+def _extract_assets_from_timeline(timeline: Timeline, assets: dict[str, Asset], asset_type: AssetType) -> list[Asset]:
     """
     Extracts asset references of a given type from a timeline.
     """
