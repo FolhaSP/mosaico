@@ -1,6 +1,6 @@
 [project]
 name = "mosaico"
-version = "0.3.4"
+version = "0.3.5"
 description = "Open-source video generation framework"
 authors = [
     { name = "Leonardo Diegues", email = "leonardo.diegues@grupofolha.com.br" },
