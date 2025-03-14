@@ -1,11 +1,137 @@
-import textwrap
 from typing import Any
 
 import instructor
 import litellm
 
 from mosaico.audio_transcribers.transcription import Transcription
+from mosaico.logging import get_logger
 from mosaico.transcription_aligners.protocol import TranscriptionAligner
+
+
+logger = get_logger(__name__)
+
+SYSTEM_PROMPT = """
+# SRT Transcription Correction
+
+## CRITICAL RULES
+1. **KEEP EXACT NUMBER OF SEGMENTS** - Must have exactly same number of segments as original SRT
+2. **KEEP EXACT TIMECODES** - Use timecodes only from original SRT
+3. **USE ORIGINAL TEXT ONLY** - Replace all words with original document text
+
+## Step-by-Step Process
+1. Count the number of segments in original SRT (N) - output must have EXACTLY N segments
+2. Copy all timecodes exactly as they appear in the SRT
+3. Replace each segment's text with words from the original document in order
+4. Do NOT add ANY extra segments or extend timecodes
+
+## Word Distribution Rules
+- Distribute original text across existing segments only
+- If original text has different word count:
+  - May need to put multiple words in some segments
+  - May need to combine/split words to fit segment count
+  - NEVER exceed the original number of segments
+  - NEVER extend the end timecode
+
+## Example
+
+**Original Text:**
+"Weather forecast for today: Sunny with a high of 75 degrees. Expect clear skies throughout the afternoon."
+
+**Original SRT (8 segments):**
+```
+1
+00:00:01,500 --> 00:00:02,300
+Weather
+
+2
+00:00:02,300 --> 00:00:02,800
+forecast
+
+3
+00:00:02,800 --> 00:00:03,200
+for
+
+4
+00:00:03,200 --> 00:00:03,600
+tue
+
+5
+00:00:03,600 --> 00:00:04,200
+sunny
+
+6
+00:00:04,200 --> 00:00:05,100
+hi of 72
+
+7
+00:00:05,100 --> 00:00:06,300
+expect partly cloudy
+
+8
+00:00:06,300 --> 00:00:07,500
+in afternoon
+```
+
+**CORRECT OUTPUT (8 segments):**
+```
+1
+00:00:01,500 --> 00:00:02,300
+Weather
+
+2
+00:00:02,300 --> 00:00:02,800
+forecast
+
+3
+00:00:02,800 --> 00:00:03,200
+for
+
+4
+00:00:03,200 --> 00:00:03,600
+today:
+
+5
+00:00:03,600 --> 00:00:04,200
+Sunny
+
+6
+00:00:04,200 --> 00:00:05,100
+with a high of 75 degrees.
+
+7
+00:00:05,100 --> 00:00:06,300
+Expect clear skies
+
+8
+00:00:06,300 --> 00:00:07,500
+throughout the afternoon.
+```
+
+Note: Exact same number of segments (8), exact same timecodes, but text is corrected using only the original document content.
+"""
+
+USER_PROMPT = """
+I need to correct an SRT subtitle file using the original text as the source of truth.
+
+## Original Document Text
+```
+{original_text}
+```
+
+## Current SRT File
+```
+{transcription_srt}
+```
+
+Please correct the SRT file by:
+1. Keeping all timecodes exactly as they appear in my SRT file
+2. Replacing all text with the correct words from my original document
+3. Maintaining the same number of segments as the original SRT
+4. Not adding any new segments or extending the end time
+5. Combining or splitting words as needed to fit the segment count exactly as in the original document
+
+Return the corrected SRT file with the exact same number of segments and timecodes but with the text replaced using only the original document content.
+""".strip()
 
 
 class GenAITranscriptionAligner(TranscriptionAligner):
@@ -22,6 +148,7 @@ class GenAITranscriptionAligner(TranscriptionAligner):
         self.model = model
         self.model_params = model_params
         self.client = instructor.from_litellm(litellm.completion, api_key=api_key, base_url=base_url, timeout=timeout)
+        logger.debug(f"Initialized GenAI transcription aligner with model '{model}'.")
 
     def align(self, transcription: Transcription, original_text: str) -> Transcription:
         """
@@ -32,87 +159,16 @@ class GenAITranscriptionAligner(TranscriptionAligner):
         :return: A new transcription with aligned text and timing.
         """
         model_params = self.model_params or {"temperature": 0}
+        logger.debug(f"Aligning transcription with GenAI model '{self.model}', parameters: {model_params}")
         fixed_transcription = self.client.chat.completions.create(
             model=self.model,
             messages=[
-                {
-                    "role": "system",
-                    "content": textwrap.dedent("""
-                        ## Task Description
-                        I need you to correct an SRT subtitle file based on the original text. The current transcription contains errors or discrepancies compared to the original text. Your task is to align the transcription with the original text while preserving all the timing information.
-
-                        ## Requirements
-                        1. Keep all timestamp data exactly as it appears in the original SRT file.
-                        2. Replace the transcribed text with the corresponding text from the original document.
-                        3. Maintain the same number of subtitle entries/segments.
-                        4. Follow the exact wording of the original text - no paraphrasing or summarizing.
-                        5. Preserve all paragraph breaks and sentence structures from the original text.
-                        6. Match the original text's capitalization, punctuation, and spelling.
-
-                        ## Input Format
-                        I will provide:
-                        1. The original text (the accurate version that should appear in the subtitles)
-                        2. The current SRT file content (with timing information that must be preserved)
-
-                        ## Expected Output
-                        An SRT file that:
-                        - Contains the exact same number of entries as the original SRT
-                        - Preserves all timestamp information (start and end times) from the original SRT
-                        - Contains text that matches the original document's words exactly
-                        - Maintains proper SRT formatting (sequential numbering, timestamps, and blank lines between entries)
-
-                        ## Example
-                        **Original Text:**
-                        "Welcome to our presentation on climate change. Today, we'll discuss the latest research findings and their implications for global policy."
-
-                        **Current SRT:**
-                        ```
-                        1
-                        00:00:01,000 --> 00:00:03,500
-                        Welcome to our presentation about climate change.
-
-                        2
-                        00:00:03,600 --> 00:00:08,200
-                        Today, we will talk about the newest research and what it means for worldwide policy.
-                        ```
-
-                        **Corrected SRT:**
-                        ```
-                        1
-                        00:00:01,000 --> 00:00:03,500
-                        Welcome to our presentation on climate change.
-
-                        2
-                        00:00:03,600 --> 00:00:08,200
-                        Today, we'll discuss the latest research findings and their implications for global policy.
-                        ```
-
-                        ## Additional Guidelines
-                        - If the original text is longer than what can fit in the existing SRT segments, prioritize maintaining accurate timestamps and distribute the text appropriately across segments.
-                        - If the original text is shorter, ensure all segments still contain appropriate content - don't leave any segments empty.
-                        - Ensure special characters, formatting, and emphasis from the original text are preserved.
-                        - Make sure line breaks within a subtitle segment are appropriate for readability.
-
-                        Please provide both the original text and the current SRT file, and I'll correct the transcription accordingly.
-                        """),
-                },
+                {"role": "system", "content": SYSTEM_PROMPT},
                 {
                     "role": "user",
-                    "content": textwrap.dedent(f"""
-                        Fix this transcription SRT based on the original text of the audio.
-
-                        The transcription SRT:
-
-                        <transcription>
-                        {transcription.to_srt()}
-                        </transcription>
-
-                        The original audio text:
-
-                        <original_text>
-                        {original_text}
-                        </original_text>
-                        """).strip(),
+                    "content": USER_PROMPT.format(
+                        transcription_srt=transcription.to_srt(), original_text=original_text
+                    ),
                 },
             ],
             response_model=str,
