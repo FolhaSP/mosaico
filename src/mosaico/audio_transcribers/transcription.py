@@ -4,6 +4,11 @@ from pydantic import BaseModel
 from pydantic.config import ConfigDict
 from pydantic.types import NonNegativeFloat
 
+from mosaico.logging import get_logger
+
+
+logger = get_logger(__name__)
+
 
 class TranscriptionWord(BaseModel):
     """A word in a transcription."""
@@ -39,9 +44,10 @@ class Transcription(BaseModel):
         :param srt: The SRT string.
         :return: The transcription.
         """
-        print(str)
+        logger.debug("Creating transcription from SRT")
         lines = srt.strip().split("\n")
         words = []
+        logger.debug(f"Found {len(lines)} lines in SRT")
         for i in range(0, len(lines)):
             if not " --> " in lines[i]:
                 continue
@@ -55,13 +61,19 @@ class Transcription(BaseModel):
                     current_end_time = round(current_start_time + line_duration / len(line_words), 3)
                 else:
                     current_end_time = end_time
-                word = TranscriptionWord(start_time=current_start_time, end_time=current_end_time, text=line_word)
+                word = TranscriptionWord(
+                    start_time=current_start_time,
+                    end_time=current_end_time,
+                    text=line_word.strip().replace("\n", "").replace("\r", ""),
+                )
                 words.append(word)
                 current_start_time = current_end_time
         return cls(words=words)
 
     def to_srt(self) -> str:
         """Return the transcription as an SRT string."""
+        logger.debug("Creating SRT from transcription")
+        logger.debug(f"Found {len(self.words)} words in transcription")
         lines = []
         for i, word in enumerate(self.words):
             start_time = _format_srt_time(word.start_time)
@@ -70,6 +82,7 @@ class Transcription(BaseModel):
             lines.append(f"{start_time} --> {end_time}")
             lines.append(word.text)
             lines.append("")
+        logger.debug(f"Created {len(lines)} lines in SRT")
         return "\n".join(lines)
 
 

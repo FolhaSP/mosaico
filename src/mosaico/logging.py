@@ -4,7 +4,7 @@ from mosaico.config import settings
 from mosaico.types import LogLevel
 
 
-LOG_FORMAT = "%(asctime)s [%(levelname)8s] %(name)s %(message)s"
+LOG_FORMAT = "%(asctime)s [%(levelname)8s] %(name)s: %(message)s"
 LOG_DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
 
 
