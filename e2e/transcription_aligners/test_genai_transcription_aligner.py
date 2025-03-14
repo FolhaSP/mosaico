@@ -53,9 +53,14 @@ The futur of AI depends on making ethical choices today
 
 @pytest.mark.skipif(not os.environ.get("OPENAI_API_KEY"), reason="Export OPENAI_API_KEY to run this test.")
 def test_genai_transcription_aligner():
+    original_transcription = Transcription.from_srt(SRT_FILE)
     aligner = GenAITranscriptionAligner(
         api_key=os.environ.get("OPENAI_API_KEY"), base_url=os.environ.get("OPENAI_BASE_URL")
     )
-    aligned_transcription = aligner.align(Transcription.from_srt(SRT_FILE), ORIGINAL_TEXT)
+    aligned_transcription = aligner.align(original_transcription, ORIGINAL_TEXT)
 
-    assert " ".join(word.text for word in aligned_transcription.words) == ORIGINAL_TEXT.replace("\n", " ")
+    assert (
+        " ".join(word.text for word in aligned_transcription.words).strip() == ORIGINAL_TEXT.replace("\n", " ").strip()
+    )
+    assert aligned_transcription.words[0].start_time == original_transcription.words[0].start_time
+    assert aligned_transcription.words[-1].end_time == original_transcription.words[-1].end_time
