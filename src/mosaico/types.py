@@ -1,10 +1,13 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Annotated, Any, Protocol, TypeVar, runtime_checkable
+from typing import Annotated, Any, Literal, Protocol, TypeVar, runtime_checkable
 
 from pydantic.fields import Field
 
+
+LogLevel = Literal["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]
+"""A type alias for log levels."""
 
 FilePath = str | Path
 """A type alias for paths."""
