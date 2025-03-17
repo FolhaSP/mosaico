@@ -36,6 +36,9 @@ class ElevenLabsSpeechSynthesizer(BaseModel):
     voice_speaker_boost: bool = True
     """Voice speaker boost for the synthesized speech. Default is True."""
 
+    voice_speed: Annotated[float, Field(ge=0.7, le=1.2)] = 1
+    """The generated speech speed."""
+
     language_code: LanguageAlpha2 = Field(default_factory=lambda: LanguageAlpha2("en"))
     """Language code of the text to synthesize. If not provided, it defaults to "en".
 
@@ -118,6 +121,7 @@ class ElevenLabsSpeechSynthesizer(BaseModel):
                     "similarity_boost": self.voice_similarity_boost,
                     "style": self.voice_style,
                     "use_speaker_boost": self.voice_speaker_boost,
+                    "speed": self.voice_speed,
                 },
             },
             headers={"xi-api-key": self.api_key or os.getenv("ELEVENLABS_API_KEY", "")},
