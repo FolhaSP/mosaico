@@ -501,7 +501,6 @@ class VideoProject(BaseModel):
         :return: The updated project.
         """
         for i, event in enumerate(self.timeline):
-            print(f"Processing event {i + 1}/{len(self.timeline)}")
             if not isinstance(event, Scene) or not event.has_audio:
                 continue
 

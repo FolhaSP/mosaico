@@ -135,7 +135,7 @@ ignore = [
 "src/mosaico/**/prompts.py" = ["E501"]
 "src/mosaico/transcription_aligners/genai.py" = ["E501"]
 "cookbook/*.py" = ["F821"]
-"tests/*.py" = ["S101", "D", "ARG001", "PLR2004"]
+"tests/*.py" = ["S101", "D", "E501", "ARG001", "PLR2004"]
 "e2e/*.py" = ["S101", "D", "ARG001", "PLR2004"]
 
 [tool.ruff.lint.pylint]

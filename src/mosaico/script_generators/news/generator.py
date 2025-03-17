@@ -1,10 +1,12 @@
+import random
 from collections.abc import Sequence
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, get_args
 
 from pydantic import BaseModel
 from pydantic.fields import Field
 from pydantic_extra_types.language_code import LanguageAlpha2
 
+from mosaico.effects.types import VideoEffectType
 from mosaico.media import Media
 from mosaico.script_generators.news.prompts import (
     MEDIA_SUGGESTING_PROMPT,
@@ -75,6 +77,13 @@ class NewsVideoScriptGenerator:
         paragraphs = self._summarize_context(self.context, self.num_paragraphs, self.language)
         suggestions = self._suggest_paragraph_media(paragraphs, media)
         shooting_script = self._generate_shooting_script(suggestions)
+
+        for shot_index, shot in enumerate(shooting_script.shots):
+            for media_ref_index, media_ref in enumerate(shot.media_references):
+                if media_ref.type != "image" or media_ref.effects:
+                    continue
+                shooting_script.shots[shot_index].media_references[media_ref_index].effects = [_random_effect()]
+
         return shooting_script
 
     def _summarize_context(self, context: str, num_paragraphs: int, language: LanguageAlpha2) -> list[str]:
@@ -148,3 +157,10 @@ def _build_media_string(medias: Sequence[Media]) -> str:
         fmt_media = _format_media(media)
         media_str += fmt_media
     return media_str
+
+
+def _random_effect() -> VideoEffectType:
+    """
+    Suggest a random zoom or pan effect.
+    """
+    return random.choice([fx for fx in get_args(VideoEffectType) if fx.startswith(("zoom_", "pan_"))])
