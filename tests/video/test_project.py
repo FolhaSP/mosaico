@@ -3,7 +3,7 @@ from __future__ import annotations
 import io
 from collections.abc import Sequence
 from typing import Any, ClassVar
-from unittest.mock import patch
+from unittest.mock import Mock
 
 import pytest
 import yaml
@@ -12,6 +12,7 @@ from mosaico.assets.audio import AudioAsset, AudioAssetParams, AudioInfo
 from mosaico.assets.reference import AssetReference
 from mosaico.assets.subtitle import SubtitleAsset
 from mosaico.assets.text import TextAsset, TextAssetParams
+from mosaico.audio_transcribers.protocol import AudioTranscriber
 from mosaico.audio_transcribers.transcription import Transcription, TranscriptionWord
 from mosaico.exceptions import AssetNotFoundError, TimelineEventNotFoundError
 from mosaico.media import Media
@@ -297,6 +298,21 @@ class MockAudioTranscriber:
         )
 
 
+@pytest.fixture
+def mock_transcriber():
+    class MockTranscriber:
+        def transcribe(self, audio_asset: AudioAsset) -> Transcription:
+            words = audio_asset.to_string().split()  # Assume audio.data is the text
+            return Transcription(
+                words=[
+                    TranscriptionWord(text=word, start_time=i * 0.5, end_time=(i + 1) * 0.5)
+                    for i, word in enumerate(words)
+                ]
+            )
+
+    return MockTranscriber()
+
+
 # Subtitle Tests
 @pytest.fixture
 def sample_transcription():
@@ -354,12 +370,13 @@ def test_add_captions_with_params(sample_transcription):
     assert subtitle_refs[0].asset_params.font_color.as_hex().upper() == "#FFF"
 
 
-@patch("mosaico.audio_transcribers.protocol.AudioTranscriber")
-def test_add_captions_from_transcriber(mock_transcriber, sample_transcription):
+def test_add_captions_from_transcriber(sample_transcription):
     # Setup
     audio_asset = AudioAsset.from_data(
         "test_audio", id="audio1", info=AudioInfo(duration=2.5, sample_rate=44100, sample_width=128, channels=1)
     )
+
+    mock_transcriber = Mock(AudioTranscriber)
     mock_transcriber.transcribe.return_value = sample_transcription
 
     # Create project with audio in timeline
