@@ -1,6 +1,6 @@
+import random
 from collections.abc import Sequence
 from typing import TYPE_CHECKING, Any, get_args
-import random
 
 from pydantic import BaseModel
 from pydantic.fields import Field
