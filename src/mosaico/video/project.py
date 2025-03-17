@@ -22,6 +22,7 @@ from mosaico.audio_transcribers.protocol import AudioTranscriber
 from mosaico.audio_transcribers.transcription import Transcription, TranscriptionWord
 from mosaico.effects.factory import create_effect
 from mosaico.exceptions import AssetNotFoundError, TimelineEventNotFoundError
+from mosaico.logging import get_logger
 from mosaico.media import Media
 from mosaico.scene import Scene
 from mosaico.script_generators.protocol import ScriptGenerator
@@ -30,6 +31,9 @@ from mosaico.transcription_aligners.protocol import TranscriptionAligner
 from mosaico.types import FilePath, FrameSize, ReadableBuffer, WritableBuffer
 from mosaico.video.timeline import EventOrEventSequence, Timeline
 from mosaico.video.types import AssetInputType, TimelineEvent
+
+
+logger = get_logger(__name__)
 
 
 class VideoProjectConfig(BaseModel):
@@ -266,6 +270,7 @@ class VideoProject(BaseModel):
         :param speech_synthesizer: The speech synthesizer to use for generating narration audio
         :return: The updated project with narration added
         """
+        logger.debug(f"Adding narration to project with {speech_synthesizer.__class__.__name__} synthesizer")
         current_time = None
 
         for i, scene in enumerate(self.timeline.sort()):
@@ -277,6 +282,8 @@ class VideoProject(BaseModel):
 
             if not subtitle_refs:
                 continue
+
+            logger.debug(f"Adding narration to scene {i + 1} with {len(subtitle_refs)} subtitles")
 
             # Get subtitle assets and their text content
             subtitle_assets = [cast(SubtitleAsset, self.get_asset(ref.asset_id)) for ref in subtitle_refs]
@@ -305,6 +312,7 @@ class VideoProject(BaseModel):
             if image_refs:
                 time_per_image = total_narration_duration / len(image_refs)
                 for idx, ref in enumerate(image_refs):
+                    logger.debug(f"Adjusting image {ref.asset_id} timing")
                     new_start = current_time + (idx * time_per_image)
                     new_end = new_start + time_per_image
                     new_ref = ref.model_copy().with_start_time(new_start).with_end_time(new_end)
@@ -312,6 +320,7 @@ class VideoProject(BaseModel):
 
             # Add other non-image assets with full narration duration
             for ref in other_refs:
+                logger.debug(f"Adjusting non-image asset {ref.asset_id} timing")
                 new_ref = (
                     ref.model_copy()
                     .with_start_time(current_time)
@@ -321,6 +330,7 @@ class VideoProject(BaseModel):
 
             # Add subtitle references spanning full narration duration
             for ref in subtitle_refs:
+                logger.debug(f"Adjusting subtitle asset {ref.asset_id} timing")
                 new_ref = (
                     ref.model_copy()
                     .with_start_time(current_time)
@@ -330,6 +340,7 @@ class VideoProject(BaseModel):
 
             # Add narration references
             for narration in narration_assets:
+                logger.debug(f"Adjusting narration asset {narration.id} timing")
                 narration_ref = (
                     AssetReference.from_asset(narration)
                     .with_start_time(current_time)
@@ -341,17 +352,19 @@ class VideoProject(BaseModel):
             current_time += total_narration_duration
 
             # Create new scene with updated references
+            logger.debug("Creating new scene with narration and updated references")
             new_scene = scene.model_copy(update={"asset_references": new_refs})
             self.timeline[i] = new_scene
 
         return self
 
-    def add_captions(
+    def add_captions(  # noqa: PLR0912, PLR0915
         self,
         transcription: Transcription,
         *,
         max_duration: int = 5,
         aligner: TranscriptionAligner | None = None,
+        original_text: str | None = None,
         params: TextAssetParams | None = None,
         scene_index: int | None = None,
         overwrite: bool = False,
@@ -361,23 +374,20 @@ class VideoProject(BaseModel):
 
         :param transcription: The transcription to add subtitles from.
         :param max_duration: The maximum duration of each subtitle.
+        :param aligner: The aligner to use for aligning the transcription with the original text.
+        :param original_text: The original text to align the transcription with.
         :param params: The parameters for the subtitle assets.
         :param scene_index: The index of the scene to add the subtitles to.
         :param overwrite: Whether to overwrite existing subtitles in the scene.
         :return: The updated project.
         """
+        logger.debug("Adding subtitles to project")
+
         subtitles = []
         references = []
 
-        if aligner is not None:
-            subtitles = _extract_assets_from_refs(self.timeline, self.assets, "subtitle")
-            original_text = " ".join([s.to_string() for s in subtitles])
-            aligned_transcription = aligner.align(transcription, original_text)
-            phrases = _group_transcript_into_sentences(aligned_transcription, max_duration=max_duration)
-        else:
-            phrases = _group_transcript_into_sentences(transcription, max_duration=max_duration)
-
         if scene_index is not None:
+            logger.debug(f"Adding subtitles to scene at index {scene_index}")
             scene = self.timeline[scene_index]
 
             if scene.has_subtitles and not overwrite:
@@ -385,14 +395,30 @@ class VideoProject(BaseModel):
                 raise ValueError(msg)
 
             # Remove existing subtitles
+            logger.debug(f"Removing existing subtitles from scene at index {scene_index}")
             for ref in scene.asset_references:
                 if ref.asset_type == "subtitle":
                     self.remove_asset(ref.asset_id)
+
+            if aligner is not None:
+                logger.debug(f"Aligning subtitles for scene at index {scene_index}")
+                subtitles = _extract_assets_from_scene(scene, self.assets, "subtitle")
+                if not original_text:
+                    logger.debug(
+                        f"No original text provided for scene at index {scene_index}. Using subtitles as original text."
+                    )
+                    original_text = " ".join([s.to_string() for s in subtitles])
+                aligned_transcription = aligner.align(transcription, original_text)
+                phrases = _group_transcript_into_sentences(aligned_transcription, max_duration=max_duration)
+            else:
+                logger.debug(f"No aligner provided for scene at index {scene_index}. Using original transcription.")
+                phrases = _group_transcript_into_sentences(transcription, max_duration=max_duration)
 
             # Calculate time scale factor if needed
             current_time = scene.start_time
 
             for phrase_index, phrase in enumerate(phrases):
+                logger.debug(f"Processing phrase {phrase_index + 1} of {len(phrases)}")
                 subtitle_text = " ".join(word.text for word in phrase)
                 subtitle = SubtitleAsset.from_data(subtitle_text)
 
@@ -419,12 +445,26 @@ class VideoProject(BaseModel):
 
                 current_time = end_time
 
+            logger.debug(f"Processed {len(phrases)} phrases")
             self.add_assets(subtitles)
             scene = scene.add_asset_references(references)
             self.timeline[scene_index] = scene
         else:
+            logger.warning("No scene index provided. Caption generation is likely to present inconsistent results.")
+            if aligner is not None:
+                logger.debug("Aligning subtitles based on original text")
+                subtitles = _extract_assets_from_timeline(self.timeline, self.assets, "subtitle")
+                if not original_text:
+                    logger.debug("Original text not provided. Using all project subtitles as original text")
+                    original_text = " ".join([s.to_string() for s in subtitles])
+                aligned_transcription = aligner.align(transcription, original_text)
+                phrases = _group_transcript_into_sentences(aligned_transcription, max_duration=max_duration)
+            else:
+                phrases = _group_transcript_into_sentences(transcription, max_duration=max_duration)
+
             # Handle non-scene case
-            for phrase in phrases:
+            for phrase_index, phrase in enumerate(phrases):
+                logger.debug(f"Processing phrase {phrase_index + 1} of {len(phrases)}")
                 subtitle_text = " ".join(word.text for word in phrase)
                 subtitle = SubtitleAsset.from_data(subtitle_text)
 
@@ -461,8 +501,11 @@ class VideoProject(BaseModel):
         :return: The updated project.
         """
         for i, event in enumerate(self.timeline):
+            print(f"Processing event {i + 1}/{len(self.timeline)}")
             if not isinstance(event, Scene) or not event.has_audio:
                 continue
+
+            subtitles = _extract_assets_from_scene(event, self.assets, "subtitle")
 
             for asset_ref in event.asset_references:
                 if asset_ref.asset_type != "audio":
@@ -476,6 +519,7 @@ class VideoProject(BaseModel):
                     audio_transcription,
                     max_duration=max_duration,
                     aligner=aligner,
+                    original_text=" ".join([s.to_string() for s in subtitles]) if subtitles else None,
                     params=params,
                     scene_index=i,
                     overwrite=overwrite,
@@ -698,7 +742,14 @@ def _group_transcript_into_sentences(
     return phrases
 
 
-def _extract_assets_from_refs(timeline: Timeline, assets: dict[str, Asset], asset_type: AssetType) -> list[Asset]:
+def _extract_assets_from_scene(scene: Scene, assets: dict[str, Asset], asset_type: AssetType) -> list[Asset]:
+    """
+    Extracts asset references of a given type from a timeline.
+    """
+    return [assets[ref.asset_id] for ref in scene.asset_references if ref.asset_type == asset_type]
+
+
+def _extract_assets_from_timeline(timeline: Timeline, assets: dict[str, Asset], asset_type: AssetType) -> list[Asset]:
     """
     Extracts asset references of a given type from a timeline.
     """
