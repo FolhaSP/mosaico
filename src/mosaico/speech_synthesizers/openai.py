@@ -76,13 +76,19 @@ class OpenAISpeechSynthesizer(BaseModel):
         """
         assets = []
 
+        model = kwargs.pop("model", self.model)
+        instructions = kwargs.pop("instructions", self.instructions)
+
+        if instructions and model.startswith("tts-"):
+            raise ValueError("`instructions` cannot be set when model is not from the GPT-4o family or higher.")
+
         for text in texts:
             response = self._client.audio.speech.create(
                 input=text,
-                model=kwargs.pop("model", self.model),
+                model=model,
+                instructions=instructions,
                 voice=kwargs.pop("voice", self.voice),
                 speed=kwargs.pop("speed", self.speed),
-                instructions=kwargs.pop("instructions", self.instructions),
                 response_format="mp3",
                 **kwargs,
             )
