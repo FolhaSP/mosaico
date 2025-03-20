@@ -24,10 +24,10 @@ class OpenAISpeechSynthesizer(BaseModel):
     base_url: str | None = None
     """Base URL for OpenAI's API."""
 
-    model: Literal["tts-1", "tts-1-hd"] = "tts-1"
+    model: Literal["gpt-4o-mini-tts", "tts-1", "tts-1-hd"] = "gpt-4o-mini-tts"
     """Model to use for speech synthesis."""
 
-    voice: Literal["alloy", "echo", "fable", "onyx", "nova", "shimmer"] = "alloy"
+    voice: Literal["alloy", "ash", "echo", "coral", "fable", "onyx", "nova", "sage", "shimmer"] = "alloy"
     """Voice to use for speech synthesis."""
 
     speed: Annotated[float, Field(ge=0.25, le=4)] = 1.0
@@ -36,8 +36,20 @@ class OpenAISpeechSynthesizer(BaseModel):
     timeout: PositiveInt = 120
     """Timeout for speech synthesis in seconds."""
 
+    instructions: str | None = None
+    """Instructions passed to the model. Valid only when the model is from the GPT-4o family or higher."""
+
     _client: Any = PrivateAttr(default=None)
     """The OpenAI client."""
+
+    @model_validator(mode="after")
+    def _validate_model_supports_instructions(self) -> Self:
+        """
+        Validates whether the selected model supports instructions.
+        """
+        if self.instructions and self.model.startswith("tts-"):
+            raise ValueError("`instructions` cannot be set when model is not from the GPT-4o family or higher.")
+        return self
 
     @model_validator(mode="after")
     def _set_client(self) -> Self:
@@ -64,9 +76,21 @@ class OpenAISpeechSynthesizer(BaseModel):
         """
         assets = []
 
+        model = kwargs.pop("model", self.model)
+        instructions = kwargs.pop("instructions", self.instructions)
+
+        if instructions and model.startswith("tts-"):
+            raise ValueError("`instructions` cannot be set when model is not from the GPT-4o family or higher.")
+
         for text in texts:
             response = self._client.audio.speech.create(
-                input=text, model=self.model, voice=self.voice, response_format="mp3", speed=self.speed, **kwargs
+                input=text,
+                model=model,
+                instructions=instructions,
+                voice=kwargs.pop("voice", self.voice),
+                speed=kwargs.pop("speed", self.speed),
+                response_format="mp3",
+                **kwargs,
             )
             segment = AudioSegment.from_file(io.BytesIO(response.content), format="mp3")
             assets.append(
@@ -75,7 +99,7 @@ class OpenAISpeechSynthesizer(BaseModel):
                     params=audio_params if audio_params is not None else {},
                     mime_type="audio/mpeg",
                     info=AudioInfo(
-                        duration=segment.duration,
+                        duration=segment.duration_seconds,
                         sample_rate=segment.frame_rate,
                         sample_width=segment.sample_width,
                         channels=segment.channels,

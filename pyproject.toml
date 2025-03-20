@@ -46,7 +46,7 @@ mosaico = "mosaico.cli:entrypoint"
 cli = ["click>=8.1.7"]
 assemblyai = ["assemblyai>=0.34.0"]
 elevenlabs = ["elevenlabs>=1.9.0"]
-openai = ["openai>=1.54.4"]
+openai = ["openai>=1.68.0"]
 langchain = ["langchain>=0.3.7"]
 haystack = ["haystack-ai>=2.6.1"]
 
