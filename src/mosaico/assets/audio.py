@@ -1,12 +1,13 @@
 from __future__ import annotations
 
 import io
-from typing import Any, Literal
+from typing import Any, Literal, cast
 
 from pydantic import BaseModel
 from pydantic.fields import Field
 from pydantic.types import NonNegativeInt, PositiveFloat
 from pydub import AudioSegment
+from pydub.silence import detect_leading_silence
 from tinytag import TinyTag
 
 from mosaico.assets.base import BaseAsset
@@ -87,36 +88,57 @@ class AudioAsset(BaseAsset[AudioAssetParams, AudioInfo]):
         """
         return self._safe_get_info_key("channels")
 
+    def to_audio_segment(self, **kwargs) -> AudioSegment:
+        """
+        Casts the audio asset to a pydub.AudioSegment object.
+        """
+        with self.to_bytes_io(**kwargs) as audio_buf:
+            return AudioSegment.from_file(
+                file=audio_buf,
+                sample_width=self.sample_width,
+                frame_rate=self.sample_rate,
+                channels=self.channels,
+            )
+
     def slice(self, start_time: float, end_time: float, **kwargs: Any) -> AudioAsset:
         """
         Slices the audio asset.
 
         :param start_time: The start time in seconds.
         :param end_time: The end time in seconds.
+        :param kwargs: Additional parameters passed to the audio loader.
         :return: The sliced audio asset.
         """
-        with self.to_bytes_io(**kwargs) as audio_file:
-            audio = AudioSegment.from_file(
-                file=audio_file,
+        audio = self.to_audio_segment(**kwargs)
+
+        sliced_buf = io.BytesIO()
+        sliced_audio = cast(AudioSegment, audio[round(start_time * 1000) : round(end_time * 1000)])
+        sliced_audio.export(sliced_buf, format="mp3")
+        sliced_buf.seek(0)
+
+        return AudioAsset.from_data(
+            sliced_buf.read(),
+            info=AudioInfo(
+                duration=len(sliced_audio) / 1000,
+                sample_rate=self.sample_rate,
                 sample_width=self.sample_width,
-                frame_rate=self.sample_rate,
                 channels=self.channels,
-            )
+            ),
+        )
 
-            sliced_buf = io.BytesIO()
-            sliced_audio = audio[round(start_time * 1000) : round(end_time * 1000)]
-            sliced_audio.export(sliced_buf, format="mp3")
-            sliced_buf.seek(0)
+    def strip_silence(self, silence_threshold: float = -50, chunk_size: int = 10, **kwargs: Any) -> AudioAsset:
+        """
+        Removes leading and trailing silence from the audio asset.
 
-            return AudioAsset.from_data(
-                sliced_buf.read(),
-                info=AudioInfo(
-                    duration=audio.duration_seconds,
-                    sample_rate=self.sample_rate,
-                    sample_width=self.sample_width,
-                    channels=self.channels,
-                ),
-            )
+        :param silence_threshold: Silence threshold in dBFS (default: -50.0).
+        :param chunk_size: Size of the audio iterator chunk, in ms (default: 10).
+        :param kwargs: Additional parameters passed to the audio loader.
+        :return: A new AudioAsset with leading and trailing silence removed.
+        """
+        audio = self.to_audio_segment(**kwargs)
+        start_trim = detect_leading_silence(audio, silence_threshold, chunk_size)
+        end_trim = detect_leading_silence(audio.reverse(), silence_threshold, chunk_size)
+        return self.slice(start_trim / 1000, (len(audio) - end_trim) / 1000)
 
     def _load_info(self) -> None:
         attrs = ["duration", "sample_rate", "sample_width", "channels"]
