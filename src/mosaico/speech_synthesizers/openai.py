@@ -43,6 +43,12 @@ class OpenAISpeechSynthesizer(BaseModel):
     instructions: str | None = None
     """Instructions passed to the model. Valid only when the model is from the GPT-4o family or higher."""
 
+    silence_threshold: float | None = None
+    """Silence threshold for the audio asset."""
+
+    silence_duration: float | None = None
+    """Silence duration for the audio asset."""
+
     _client: Any = PrivateAttr(default=None)
     """The OpenAI client."""
 
@@ -82,6 +88,8 @@ class OpenAISpeechSynthesizer(BaseModel):
 
         model = kwargs.pop("model", self.model)
         instructions = kwargs.pop("instructions", self.instructions)
+        silence_threshold = kwargs.pop("silence_threshold", self.silence_threshold)
+        silence_duration = kwargs.pop("silence_duration", self.silence_duration)
 
         if instructions and model.startswith("tts-"):
             raise ValueError("`instructions` cannot be set when model is not from the GPT-4o family or higher.")
@@ -97,18 +105,21 @@ class OpenAISpeechSynthesizer(BaseModel):
                 **kwargs,
             )
             segment = AudioSegment.from_file(io.BytesIO(response.content), format="mp3")
-            assets.append(
-                AudioAsset.from_data(
-                    response.content,
-                    params=audio_params if audio_params is not None else {},
-                    mime_type="audio/mpeg",
-                    info=AudioInfo(
-                        duration=segment.duration_seconds,
-                        sample_rate=segment.frame_rate,
-                        sample_width=segment.sample_width,
-                        channels=segment.channels,
-                    ),
-                )
+            asset = AudioAsset.from_data(
+                response.content,
+                params=audio_params if audio_params is not None else {},
+                mime_type="audio/mpeg",
+                info=AudioInfo(
+                    duration=segment.duration_seconds,
+                    sample_rate=segment.frame_rate,
+                    sample_width=segment.sample_width,
+                    channels=segment.channels,
+                ),
             )
+
+            if silence_threshold is not None and silence_duration is not None:
+                asset = asset.strip_silence(silence_threshold, silence_duration)
+
+            assets.append(asset)
 
         return assets
