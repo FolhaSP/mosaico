@@ -12,6 +12,10 @@ from typing_extensions import Self
 from mosaico.assets.audio import AudioAsset, AudioAssetParams, AudioInfo
 
 
+OpenAITTSVoice = Literal["alloy", "ash", "ballad", "echo", "coral", "fable", "onyx", "nova", "sage", "shimmer", "verse"]
+"""OpenAI's text-to-speech available voices."""
+
+
 class OpenAISpeechSynthesizer(BaseModel):
     """Speech synthesizer using OpenAI's API."""
 
@@ -27,7 +31,7 @@ class OpenAISpeechSynthesizer(BaseModel):
     model: Literal["gpt-4o-mini-tts", "tts-1", "tts-1-hd"] = "gpt-4o-mini-tts"
     """Model to use for speech synthesis."""
 
-    voice: Literal["alloy", "ash", "echo", "coral", "fable", "onyx", "nova", "sage", "shimmer"] = "alloy"
+    voice: OpenAITTSVoice = "alloy"
     """Voice to use for speech synthesis."""
 
     speed: Annotated[float, Field(ge=0.25, le=4)] = 1.0
