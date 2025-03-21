@@ -1,4 +1,6 @@
 import io
+import math
+from array import array
 from pathlib import Path
 
 import pytest
@@ -123,11 +125,54 @@ def test_slice_out_of_bounds(sample_audio_data):
 
 
 def test_audio_asset_params_modification(sample_audio_data):
-    # Test modifying audio parameters
     audio_asset = AudioAsset.from_data(sample_audio_data)
-
     audio_asset.params.volume = 0.5
+
     assert audio_asset.params.volume == 0.5
 
     audio_asset.params.crop = (0, 500)
     assert audio_asset.params.crop == (0, 500)
+
+
+def test_to_audio_segment(sample_audio_data):
+    audio_asset = AudioAsset.from_data(sample_audio_data)
+    audio_segment = audio_asset.to_audio_segment()
+
+    assert isinstance(audio_segment, AudioSegment)
+    assert audio_segment.duration_seconds == pytest.approx(audio_asset.duration, rel=0.2)
+    assert audio_segment.frame_rate == audio_asset.sample_rate
+    assert audio_segment.sample_width > 0
+    assert audio_segment.channels == audio_asset.channels
+
+
+def test_strip_silence():
+    # Create an audio with silence at the beginning and end
+    sample_rate = 44100
+    channels = 1
+    sample_width = 2
+
+    # Create 1 second of silence for leading and trailing
+    leading_silence = AudioSegment.silent(duration=500, frame_rate=sample_rate)
+    trailing_silence = AudioSegment.silent(duration=300, frame_rate=sample_rate)
+
+    frequency = 440  # Hz
+    duration = 1.0  # seconds
+    num_samples = int(sample_rate * duration)
+    samples = array("h", [int(32767 * math.sin(2 * math.pi * frequency * t / sample_rate)) for t in range(num_samples)])
+    content = AudioSegment(samples.tobytes(), frame_rate=sample_rate, sample_width=sample_width, channels=channels)
+    audio_with_silence = leading_silence + content + trailing_silence
+
+    # Export to bytes
+    audio_bytes = io.BytesIO()
+    audio_with_silence.export(audio_bytes, format="wav")
+    audio_bytes.seek(0)
+    audio_asset = AudioAsset.from_data(audio_bytes.getvalue())
+    stripped_asset = audio_asset.strip_silence(silence_threshold=-50)
+
+    assert stripped_asset.duration < audio_asset.duration
+    assert stripped_asset.duration == pytest.approx(1.0, rel=0.3)
+    assert stripped_asset.sample_rate == audio_asset.sample_rate
+    assert stripped_asset.sample_width == audio_asset.sample_width
+    assert stripped_asset.channels == audio_asset.channels
+    stripped_asset_high_threshold = audio_asset.strip_silence(silence_threshold=-30)
+    assert stripped_asset_high_threshold.duration <= stripped_asset.duration
