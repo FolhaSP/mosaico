@@ -1,10 +1,10 @@
 import multiprocessing
 from pathlib import Path
 
-from moviepy.audio.AudioClip import AudioClip
+from moviepy.audio.AudioClip import AudioClip as MPAudioClip
 from moviepy.audio.AudioClip import CompositeAudioClip as MPCompositeAudioClip
 from moviepy.video.compositing.CompositeVideoClip import CompositeVideoClip as MPCompositeVideoClip
-from moviepy.video.VideoClip import VideoClip
+from moviepy.video.VideoClip import VideoClip as MPVideoClip
 
 from mosaico.assets.types import Asset
 from mosaico.exceptions import AssetNotFoundError, EmptyTrackError
@@ -97,9 +97,8 @@ class MoviepyRenderingEngine(RenderingEngine):
         if audio_clips:
             audio = MPCompositeAudioClip(audio_clips)
             if video_clips:
-                video = video.with_audio(audio)  # type: ignore
-            else:
-                video = audio
+                return video.with_audio(audio)  # type: ignore
+            return audio
 
         if video is None:
             raise ValueError("Error while rendering track clips.")
@@ -148,8 +147,8 @@ class MoviepyRenderingEngine(RenderingEngine):
 
         for track in project.timeline.tracks:
             track_clips = self.render_track(track, project.asset_map, rendering_options).clips
-            audio_clips.extend([clip for clip in track_clips if isinstance(clip, AudioClip | MPCompositeAudioClip)])
-            video_clips.extend([clip for clip in track_clips if isinstance(clip, VideoClip | MPCompositeVideoClip)])
+            audio_clips.extend([clip for clip in track_clips if isinstance(clip, MPAudioClip | MPCompositeAudioClip)])
+            video_clips.extend([clip for clip in track_clips if isinstance(clip, MPVideoClip | MPCompositeVideoClip)])
 
         video = (
             MPCompositeVideoClip(video_clips, size=rendering_options.resolution)
@@ -185,3 +184,4 @@ def _guess_codec_from_file_path(file_path: Path) -> str | None:
     for codec, file_ext in _CODEC_FILE_EXTENSION_MAP.items():
         if file_path.name.endswith(file_ext):
             return codec
+    return None
