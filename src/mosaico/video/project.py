@@ -66,6 +66,9 @@ class VideoProject(BaseModel):
     timeline: Timeline = Field(default_factory=Timeline)
     """The timeline of assets and scenes of the video."""
 
+    metadata: dict[str, Any] = Field(default_factory=dict)
+    """The metadata of the video project."""
+
     model_config = ConfigDict(validate_assignment=True)
 
     @property
