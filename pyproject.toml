@@ -38,6 +38,7 @@ dependencies = [
     "instructor>=1.7.2",
     "litellm>=1.61.0",
     "pydantic-settings>=2.8.0",
+    "deprecated>=1.2.18",
 ]
 
 [project.scripts]

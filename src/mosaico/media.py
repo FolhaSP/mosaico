@@ -11,6 +11,7 @@ from collections.abc import Generator
 from typing import IO, Any, cast
 
 import fsspec
+from deprecated import deprecated
 from pydantic import BaseModel
 from pydantic.config import ConfigDict
 from pydantic.fields import Field
@@ -62,11 +63,19 @@ class Media(BaseModel):
         return self.metadata.get("description", "")
 
     @property
-    def credits(self) -> str:
+    def credits(self) -> list[str]:
         """
         Returns the credits of the media.
         """
-        return self.metadata.get("credits", "")
+        return self.metadata.get("credits", [])
+
+    @property
+    @deprecated("Use 'credits' instead.", version="1.0.0")
+    def credit(self) -> str:
+        """
+        Returns the credit of the media.
+        """
+        return self.metadata.get("credit", "")
 
     @model_validator(mode="before")
     @classmethod
