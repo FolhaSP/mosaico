@@ -1,8 +1,11 @@
 from __future__ import annotations
 
+import base64
+import binascii
 import contextlib
 import io
 import mimetypes
+import re
 import uuid
 from collections.abc import Generator
 from typing import IO, Any, cast
@@ -11,12 +14,16 @@ import fsspec
 from pydantic import BaseModel
 from pydantic.config import ConfigDict
 from pydantic.fields import Field
-from pydantic.functional_validators import model_validator
+from pydantic.functional_serializers import field_serializer
+from pydantic.functional_validators import field_validator, model_validator
 from typing_extensions import Self
 
 from mosaico.config import settings
 from mosaico.integrations.base.adapters import Adapter
 from mosaico.types import FilePath
+
+
+_BASE64_BYTE_PATTERN = re.compile(rb"^[A-Za-z0-9+/]+={0,2}$")
 
 
 class Media(BaseModel):
@@ -71,6 +78,34 @@ class Media(BaseModel):
             raise ValueError("Either data or path must be provided")
 
         return values
+
+    @field_validator("data")
+    @classmethod
+    def decode_base64_data(cls, v: bytes | str | None) -> bytes | str | None:
+        """
+        Decode field data from Base64 only if it looks like Base64.
+        """
+        if isinstance(v, str):
+            try:
+                raw = v.encode("ascii")
+            except UnicodeEncodeError:
+                return v
+
+            if len(raw) % 4 == 0 and _BASE64_BYTE_PATTERN.match(raw) is not None and raw.endswith(b"="):
+                try:
+                    return base64.b64decode(raw, validate=True)
+                except binascii.Error:
+                    pass
+        return v
+
+    @field_serializer("data", when_used="json")
+    def encode_base64_data(self, v) -> str:
+        """
+        Codifica campo data em base64.
+        """
+        if isinstance(v, bytes):
+            return base64.b64encode(v).decode(self.encoding)
+        return v
 
     @classmethod
     def from_path(

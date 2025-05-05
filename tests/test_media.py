@@ -1,3 +1,5 @@
+import base64
+
 import pytest
 from pydantic import ValidationError
 
@@ -25,6 +27,69 @@ def test_creation_with_path():
     assert media.path == "/path/to/file.txt"
     assert media.mime_type is None
     assert media.metadata == {}
+
+
+def test_decode_base64_str_to_bytes():
+    original = b"hello world \xf0\x9f\x8c\x8d"
+    b64 = base64.b64encode(original).decode("ascii")
+    m = Media(data=b64, path=None)
+    assert isinstance(m.data, bytes)
+    assert m.data == original
+
+
+def test_encode_bytes_to_base64_json():
+    original = b"foo bar baz"
+    m = Media(data=original, path=None)
+    m_dict = m.model_dump(mode="json")
+    assert isinstance(m_dict["data"], str)
+    decoded = base64.b64decode(m_dict["data"])
+    assert decoded == original
+
+
+def test_round_trip_via_model_dump_and_parse():
+    original = b"\x00\x01\x02binary\xff"
+    b64 = base64.b64encode(original).decode("ascii")
+    m1 = Media.from_data(b64)
+    json_str = m1.model_dump_json()
+    m2 = Media.model_validate_json(json_str)
+    assert isinstance(m2.data, bytes)
+    assert m2.data == original
+
+
+def test_non_base64_string_pass_through():
+    raw = "not base64!!!"
+    m = Media(data=raw)
+    assert isinstance(m.data, str)
+    assert m.data == raw
+
+
+def test_non_ascii_string_pass_through():
+    raw = "hello 😊"
+    m = Media(data=raw)
+    assert isinstance(m.data, str)
+    assert m.data == raw
+
+
+def test_length_not_multiple_of_four_pass_through():
+    raw = "YWxsb3c"
+    assert len(raw) % 4 != 0
+    m = Media(data=raw)
+    assert isinstance(m.data, str)
+    assert m.data == raw
+
+
+def test_empty_string_pass_through():
+    raw = ""
+    m = Media(data=raw)
+    assert isinstance(m.data, str)
+    assert m.data == raw
+
+
+def test_bytes_input_unchanged():
+    original = b"abcd"
+    m = Media(data=original)
+    assert isinstance(m.data, bytes)
+    assert m.data == original
 
 
 def test_creation_with_mime_type():
