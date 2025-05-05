@@ -252,3 +252,17 @@ def test_media_roundtrip_conversion():
     assert original_media.data == converted_media.data
     assert original_media.mime_type == converted_media.mime_type
     assert original_media.metadata == converted_media.metadata
+
+
+def test_metadata_properties_extraction():
+    """Test extraction of credits metadata"""
+    media = Media(
+        id="test-id",
+        data="test data",
+        mime_type="text/plain",
+        metadata={"description": "Test description", "credits": ["Credit 1", "Credit 2"]},
+    )
+    media_credits = media.credits
+    description = media.description
+    assert description == "Test description"
+    assert media_credits == ["Credit 1", "Credit 2"]
