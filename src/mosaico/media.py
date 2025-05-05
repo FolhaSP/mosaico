@@ -55,11 +55,11 @@ class Media(BaseModel):
         return self.metadata.get("description", "")
 
     @property
-    def credit(self) -> str:
+    def credits(self) -> str:
         """
         Returns the credits of the media.
         """
-        return self.metadata.get("credit", "")
+        return self.metadata.get("credits", "")
 
     @model_validator(mode="before")
     @classmethod
