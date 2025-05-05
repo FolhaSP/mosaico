@@ -47,7 +47,7 @@ class SequenceMatcherTranscriptionAligner(TranscriptionAligner):
                 # No change needed, keep original words and time ranges
                 logger.debug("No change needed, keeping original words and time ranges.")
                 for word in words_with_time_ranges[i1:i2]:
-                    fixed_words.append(word.copy())
+                    fixed_words.append(word.model_copy())
 
             elif tag == "replace":
                 # Replace words but adapt their time ranges
