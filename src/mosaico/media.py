@@ -94,17 +94,31 @@ class Media(BaseModel):
         """
         Decode field data from Base64 only if it looks like Base64.
         """
+        decodable_length = 16
+
         if isinstance(v, str):
             try:
                 raw = v.encode("ascii")
             except UnicodeEncodeError:
                 return v
 
-            if len(raw) % 4 == 0 and _BASE64_BYTE_PATTERN.match(raw) is not None and raw.endswith(b"="):
-                try:
-                    return base64.b64decode(raw, validate=True)
-                except binascii.Error:
-                    pass
+            # Only try to decode if it's a reasonable length for base64 (at least 16 characters)
+            # and matches the base64 pattern
+            if len(raw) >= decodable_length and _BASE64_BYTE_PATTERN.match(raw) is not None:
+                # Check if it looks like base64 (proper length and valid characters)
+                if len(raw) % 4 == 0:
+                    try:
+                        return base64.b64decode(raw, validate=True)
+                    except binascii.Error:
+                        pass
+                # Also try if it looks like base64 without padding
+                else:
+                    try:
+                        padding_needed = 4 - (len(raw) % 4)
+                        padded_raw = raw + b"=" * padding_needed
+                        return base64.b64decode(padded_raw, validate=True)
+                    except binascii.Error:
+                        pass
         return v
 
     @field_serializer("data", when_used="json")
@@ -226,6 +240,8 @@ class Media(BaseModel):
         """
         if isinstance(self.data, bytes):
             yield io.BytesIO(self.data)
+        elif isinstance(self.data, str):
+            yield io.BytesIO(self.data.encode(self.encoding))
         elif self.data is None and self.path:
             kwargs["mode"] = "rb"
             with self.open(**kwargs) as f:
