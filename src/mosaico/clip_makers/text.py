@@ -101,6 +101,9 @@ class TextClipMaker(BaseClipMaker[BaseTextAsset]):
         wrapped_text = _wrap_text(text, font, round(max_width * 0.9))
         text_size = _get_font_text_size(wrapped_text, font)
 
+        # Ensure text size has minimum dimensions to avoid PIL errors with zero-sized images
+        text_size = (max(text_size[0], 1), max(text_size[1], 1))
+
         shadow_image = None
 
         if asset.has_shadow:
@@ -131,7 +134,11 @@ class TextClipMaker(BaseClipMaker[BaseTextAsset]):
         )
 
         if shadow_image is not None:
-            final_image = Image.alpha_composite(shadow_image, text_image)
+            if shadow_image.size != text_image.size:
+                final_image = shadow_image.copy()
+                final_image.paste(text_image, (0, 0), text_image)
+            else:
+                final_image = Image.alpha_composite(shadow_image, text_image)
         else:
             final_image = text_image.copy()
 
@@ -320,7 +327,10 @@ def _draw_text_shadow_image(
     x_offset = round(shadow_distance * math.cos(math.radians(shadow_angle)))
     y_offset = round(shadow_distance * math.sin(math.radians(shadow_angle)))
 
-    shadow_image = Image.new("RGBA", text_size, (0, 0, 0, 0))
+    # Expand shadow image size to accommodate offset
+    shadow_width = text_size[0] + abs(x_offset)
+    shadow_height = text_size[1] + abs(y_offset)
+    shadow_image = Image.new("RGBA", (shadow_width, shadow_height), (0, 0, 0, 0))
     shadow_draw = ImageDraw.Draw(shadow_image)
     shadow_draw.multiline_text(
         (x_offset, y_offset),
