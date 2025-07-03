@@ -4,9 +4,9 @@ import math
 import sys
 from dataclasses import dataclass
 from pathlib import Path
-from tempfile import NamedTemporaryFile
 from typing import cast
 
+import numpy as np
 from find_system_fonts_filename import get_system_fonts_filename
 from moviepy.Clip import Clip
 from moviepy.video.VideoClip import ImageClip
@@ -101,6 +101,9 @@ class TextClipMaker(BaseClipMaker[BaseTextAsset]):
         wrapped_text = _wrap_text(text, font, round(max_width * 0.9))
         text_size = _get_font_text_size(wrapped_text, font)
 
+        # Ensure text size has minimum dimensions to avoid PIL errors with zero-sized images
+        text_size = (max(text_size[0], 1), max(text_size[1], 1))
+
         shadow_image = None
 
         if asset.has_shadow:
@@ -131,21 +134,23 @@ class TextClipMaker(BaseClipMaker[BaseTextAsset]):
         )
 
         if shadow_image is not None:
-            final_image = Image.alpha_composite(shadow_image, text_image)
+            if shadow_image.size != text_image.size:
+                final_image = shadow_image.copy()
+                final_image.paste(text_image, (0, 0), text_image)
+            else:
+                final_image = Image.alpha_composite(shadow_image, text_image)
         else:
             final_image = text_image.copy()
 
         bbox = final_image.getbbox()
         final_image = final_image.crop(bbox)
+        np_image = np.asarray(final_image)
 
-        with NamedTemporaryFile(suffix=".png") as f:
-            final_image.save(f.name, "PNG")
-
-            return (
-                ImageClip(f.name)
-                .with_position((params.position.x, params.position.y), relative=is_relative_position(params.position))
-                .with_duration(self.duration)
-            )
+        return (
+            ImageClip(np_image)
+            .with_position((params.position.x, params.position.y), relative=is_relative_position(params.position))
+            .with_duration(self.duration)
+        )
 
 
 @dataclass
@@ -320,7 +325,10 @@ def _draw_text_shadow_image(
     x_offset = round(shadow_distance * math.cos(math.radians(shadow_angle)))
     y_offset = round(shadow_distance * math.sin(math.radians(shadow_angle)))
 
-    shadow_image = Image.new("RGBA", text_size, (0, 0, 0, 0))
+    # Expand shadow image size to accommodate offset
+    shadow_width = text_size[0] + abs(x_offset)
+    shadow_height = text_size[1] + abs(y_offset)
+    shadow_image = Image.new("RGBA", (shadow_width, shadow_height), (0, 0, 0, 0))
     shadow_draw = ImageDraw.Draw(shadow_image)
     shadow_draw.multiline_text(
         (x_offset, y_offset),
