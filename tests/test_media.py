@@ -331,3 +331,139 @@ def test_metadata_properties_extraction():
     description = media.description
     assert description == "Test description"
     assert media_credits == ["Credit 1", "Credit 2"]
+
+
+def test_base64_minimum_length_requirement():
+    """Test that short strings are not treated as base64"""
+    # Short strings that look like base64 but are too short (less than 16 chars)
+    short_strings = [
+        "YWxsb3c",  # 7 chars
+        "aGVsbG8",  # 7 chars  
+        "dGVzdA==",  # 8 chars
+        "SGVsbG8gV29ybGQ",  # 15 chars
+    ]
+    
+    for short_str in short_strings:
+        media = Media(data=short_str)
+        assert isinstance(media.data, str)
+        assert media.data == short_str
+
+
+def test_base64_without_padding():
+    """Test base64 decoding without padding"""
+    # Create base64 data without padding
+    original = b"hello world test"
+    b64_with_padding = base64.b64encode(original).decode("ascii")
+    # Remove padding
+    b64_without_padding = b64_with_padding.rstrip("=")
+    
+    # Should still decode correctly
+    media = Media(data=b64_without_padding)
+    assert isinstance(media.data, bytes)
+    assert media.data == original
+
+
+def test_base64_with_padding_still_works():
+    """Test that base64 with padding still works as before"""
+    original = b"hello world test data"
+    b64_with_padding = base64.b64encode(original).decode("ascii")
+    
+    media = Media(data=b64_with_padding)
+    assert isinstance(media.data, bytes)
+    assert media.data == original
+
+
+def test_base64_detection_edge_cases():
+    """Test various edge cases for base64 detection"""
+    # Valid base64 that meets minimum length
+    valid_b64 = base64.b64encode(b"this is a test string").decode("ascii")
+    media = Media(data=valid_b64)
+    assert isinstance(media.data, bytes)
+    
+    # Invalid base64 characters but meets length requirement
+    invalid_b64 = "InvalidBase64@#$%"
+    media = Media(data=invalid_b64)
+    assert isinstance(media.data, str)
+    assert media.data == invalid_b64
+    
+    # Non-base64 string that meets length requirement
+    long_text = "this is just a regular long text string"
+    media = Media(data=long_text)
+    assert isinstance(media.data, str)
+    assert media.data == long_text
+
+
+def test_to_bytes_io_with_string_data():
+    """Test to_bytes_io method with string data"""
+    test_string = "hello world test"
+    media = Media(data=test_string)
+    
+    with media.to_bytes_io() as byte_stream:
+        result = byte_stream.read()
+        assert result == test_string.encode("utf-8")
+
+
+def test_to_bytes_io_with_string_data_custom_encoding():
+    """Test to_bytes_io method with string data and custom encoding"""
+    test_string = "hello world test"
+    media = Media(data=test_string, encoding="ascii")
+    
+    with media.to_bytes_io() as byte_stream:
+        result = byte_stream.read()
+        assert result == test_string.encode("ascii")
+
+
+def test_to_bytes_io_with_unicode_string():
+    """Test to_bytes_io method with unicode string data"""
+    test_string = "hello world 🌍 test"
+    media = Media(data=test_string)
+    
+    with media.to_bytes_io() as byte_stream:
+        result = byte_stream.read()
+        assert result == test_string.encode("utf-8")
+
+
+def test_base64_detection_with_non_ascii_characters():
+    """Test that strings with non-ASCII characters are not decoded as base64"""
+    test_string = "hello 🌍 world"
+    media = Media(data=test_string)
+    assert isinstance(media.data, str)
+    assert media.data == test_string
+
+
+def test_base64_detection_preserves_original_behavior():
+    """Test that existing base64 detection behavior is preserved"""
+    # Test cases that should still work as before
+    test_cases = [
+        # Valid base64 with padding
+        (b"hello world", True),
+        # Valid base64 without padding (new functionality)
+        (b"hello world test", True),
+        # Invalid base64 due to bad characters
+        ("invalid@#$%", False),
+        # Too short to be considered base64
+        ("short", False),
+        # Non-ASCII characters
+        ("hello 🌍", False),
+        # Empty string
+        ("", False),
+    ]
+    
+    for test_data, should_decode in test_cases:
+        if isinstance(test_data, bytes):
+            # Create base64 string
+            b64_str = base64.b64encode(test_data).decode("ascii")
+            if not should_decode:
+                # Make it too short
+                b64_str = b64_str[:10]
+        else:
+            b64_str = test_data
+            
+        media = Media(data=b64_str)
+        
+        if should_decode and isinstance(test_data, bytes):
+            assert isinstance(media.data, bytes)
+            assert media.data == test_data
+        else:
+            assert isinstance(media.data, str)
+            assert media.data == b64_str
