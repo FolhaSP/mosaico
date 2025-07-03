@@ -4,9 +4,9 @@ import math
 import sys
 from dataclasses import dataclass
 from pathlib import Path
-from tempfile import NamedTemporaryFile
 from typing import cast
 
+import numpy as np
 from find_system_fonts_filename import get_system_fonts_filename
 from moviepy.Clip import Clip
 from moviepy.video.VideoClip import ImageClip
@@ -144,15 +144,13 @@ class TextClipMaker(BaseClipMaker[BaseTextAsset]):
 
         bbox = final_image.getbbox()
         final_image = final_image.crop(bbox)
+        np_image = np.asarray(final_image)
 
-        with NamedTemporaryFile(suffix=".png") as f:
-            final_image.save(f.name, "PNG")
-
-            return (
-                ImageClip(f.name)
-                .with_position((params.position.x, params.position.y), relative=is_relative_position(params.position))
-                .with_duration(self.duration)
-            )
+        return (
+            ImageClip(np_image)
+            .with_position((params.position.x, params.position.y), relative=is_relative_position(params.position))
+            .with_duration(self.duration)
+        )
 
 
 @dataclass
