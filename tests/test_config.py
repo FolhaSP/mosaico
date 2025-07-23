@@ -34,21 +34,25 @@ def test_resolved_temp_dir_falls_back_when_custom_invalid(tmp_path, system_temp_
     assert resolved == system_temp_dir
 
 
-def test_resolved_temp_dir_falls_back_when_custom_not_writable(tmp_path, system_temp_dir):
+def test_resolved_temp_dir_falls_back_when_custom_not_writable(tmp_path, system_temp_dir, monkeypatch):
     """Test that resolved_temp_dir falls back when custom temp_dir is not writable."""
     readonly_temp = tmp_path / "readonly_temp"
     readonly_temp.mkdir()
-    readonly_temp.chmod(0o444)  # Read-only
+    
+    # Mock os.access to return False for write access to this specific directory
+    original_access = os.access
+    def mock_access(path, mode):
+        if str(Path(path).resolve()) == str(readonly_temp.resolve()) and mode == os.W_OK:
+            return False
+        return original_access(path, mode)
+    
+    monkeypatch.setattr(os, "access", mock_access)
 
-    try:
-        settings = Settings(temp_dir=str(readonly_temp))
-        resolved = settings.resolved_temp_dir
+    settings = Settings(temp_dir=str(readonly_temp))
+    resolved = settings.resolved_temp_dir
 
-        # Should fall back to system temp directory
-        assert resolved == system_temp_dir
-    finally:
-        # Restore permissions for cleanup
-        readonly_temp.chmod(0o755)
+    # Should fall back to system temp directory
+    assert resolved == system_temp_dir
 
 
 def test_resolved_temp_dir_uses_system_temp_by_default(system_temp_dir):
@@ -120,10 +124,10 @@ def test_cross_platform_temp_directory_resolution():
     assert temp_path.exists()
     assert os.access(temp_path, os.W_OK)
 
-    # Should be one of the expected fallback locations
+    # Should be one of the expected fallback locations (resolve paths for Windows compatibility)
     expected_dirs = [
-        tempfile.gettempdir(),  # System temp
-        os.getcwd(),           # Current directory
-        str(Path.home()),      # User home
+        str(Path(tempfile.gettempdir()).resolve()),  # System temp
+        str(Path(os.getcwd()).resolve()),           # Current directory
+        str(Path.home().resolve()),                 # User home
     ]
     assert resolved_temp in expected_dirs
