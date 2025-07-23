@@ -43,7 +43,7 @@ class Settings(BaseSettings):
         if self.temp_dir:
             temp_path = Path(self.temp_dir)
             if temp_path.exists() and os.access(temp_path, os.W_OK):
-                return str(temp_path)
+                return str(temp_path.resolve())
 
         # Fallback hierarchy
         fallback_dirs = [
@@ -56,7 +56,7 @@ class Settings(BaseSettings):
             try:
                 temp_path = Path(temp_dir)
                 if temp_path.exists() and os.access(temp_path, os.W_OK):
-                    return str(temp_path)
+                    return str(temp_path.resolve())
             except (OSError, PermissionError):
                 continue
 

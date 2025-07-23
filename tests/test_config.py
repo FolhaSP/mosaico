@@ -8,6 +8,12 @@ import pytest
 from mosaico.config import Settings
 
 
+@pytest.fixture
+def system_temp_dir():
+    """Return the resolved system temp directory for consistent comparison."""
+    return str(Path(tempfile.gettempdir()).resolve())
+
+
 def test_resolved_temp_dir_uses_custom_when_valid(tmp_path):
     """Test that resolved_temp_dir uses custom temp_dir when it exists and is writable."""
     custom_temp = tmp_path / "custom_temp"
@@ -17,7 +23,7 @@ def test_resolved_temp_dir_uses_custom_when_valid(tmp_path):
     assert settings.resolved_temp_dir == str(custom_temp)
 
 
-def test_resolved_temp_dir_falls_back_when_custom_invalid(tmp_path):
+def test_resolved_temp_dir_falls_back_when_custom_invalid(tmp_path, system_temp_dir):
     """Test that resolved_temp_dir falls back when custom temp_dir doesn't exist."""
     nonexistent_temp = tmp_path / "nonexistent"
 
@@ -25,10 +31,10 @@ def test_resolved_temp_dir_falls_back_when_custom_invalid(tmp_path):
     resolved = settings.resolved_temp_dir
 
     # Should fall back to system temp directory
-    assert resolved == tempfile.gettempdir()
+    assert resolved == system_temp_dir
 
 
-def test_resolved_temp_dir_falls_back_when_custom_not_writable(tmp_path):
+def test_resolved_temp_dir_falls_back_when_custom_not_writable(tmp_path, system_temp_dir):
     """Test that resolved_temp_dir falls back when custom temp_dir is not writable."""
     readonly_temp = tmp_path / "readonly_temp"
     readonly_temp.mkdir()
@@ -39,19 +45,19 @@ def test_resolved_temp_dir_falls_back_when_custom_not_writable(tmp_path):
         resolved = settings.resolved_temp_dir
 
         # Should fall back to system temp directory
-        assert resolved == tempfile.gettempdir()
+        assert resolved == system_temp_dir
     finally:
         # Restore permissions for cleanup
         readonly_temp.chmod(0o755)
 
 
-def test_resolved_temp_dir_uses_system_temp_by_default():
+def test_resolved_temp_dir_uses_system_temp_by_default(system_temp_dir):
     """Test that resolved_temp_dir uses system temp when no custom temp_dir is set."""
     settings = Settings()
-    assert settings.resolved_temp_dir == tempfile.gettempdir()
+    assert settings.resolved_temp_dir == system_temp_dir
 
 
-def test_fallback_hierarchy_integration(tmp_path, monkeypatch):
+def test_fallback_hierarchy_integration(tmp_path, monkeypatch, system_temp_dir):
     """Test fallback hierarchy with a real scenario using invalid custom temp."""
     # Create an invalid custom temp directory (doesn't exist)
     invalid_temp = tmp_path / "nonexistent_custom"
@@ -63,7 +69,7 @@ def test_fallback_hierarchy_integration(tmp_path, monkeypatch):
     resolved = settings.resolved_temp_dir
 
     # Should fall back to system temp directory since custom doesn't exist
-    assert resolved == tempfile.gettempdir()
+    assert resolved == system_temp_dir
 
 
 @patch("tempfile.gettempdir")
