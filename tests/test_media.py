@@ -338,11 +338,11 @@ def test_base64_minimum_length_requirement():
     # Short strings that look like base64 but are too short (less than 16 chars)
     short_strings = [
         "YWxsb3c",  # 7 chars
-        "aGVsbG8",  # 7 chars  
+        "aGVsbG8",  # 7 chars
         "dGVzdA==",  # 8 chars
         "SGVsbG8gV29ybGQ",  # 15 chars
     ]
-    
+
     for short_str in short_strings:
         media = Media(data=short_str)
         assert isinstance(media.data, str)
@@ -356,7 +356,7 @@ def test_base64_without_padding():
     b64_with_padding = base64.b64encode(original).decode("ascii")
     # Remove padding
     b64_without_padding = b64_with_padding.rstrip("=")
-    
+
     # Should still decode correctly
     media = Media(data=b64_without_padding)
     assert isinstance(media.data, bytes)
@@ -367,7 +367,7 @@ def test_base64_with_padding_still_works():
     """Test that base64 with padding still works as before"""
     original = b"hello world test data"
     b64_with_padding = base64.b64encode(original).decode("ascii")
-    
+
     media = Media(data=b64_with_padding)
     assert isinstance(media.data, bytes)
     assert media.data == original
@@ -379,13 +379,13 @@ def test_base64_detection_edge_cases():
     valid_b64 = base64.b64encode(b"this is a test string").decode("ascii")
     media = Media(data=valid_b64)
     assert isinstance(media.data, bytes)
-    
+
     # Invalid base64 characters but meets length requirement
     invalid_b64 = "InvalidBase64@#$%"
     media = Media(data=invalid_b64)
     assert isinstance(media.data, str)
     assert media.data == invalid_b64
-    
+
     # Non-base64 string that meets length requirement
     long_text = "this is just a regular long text string"
     media = Media(data=long_text)
@@ -397,7 +397,7 @@ def test_to_bytes_io_with_string_data():
     """Test to_bytes_io method with string data"""
     test_string = "hello world test"
     media = Media(data=test_string)
-    
+
     with media.to_bytes_io() as byte_stream:
         result = byte_stream.read()
         assert result == test_string.encode("utf-8")
@@ -407,7 +407,7 @@ def test_to_bytes_io_with_string_data_custom_encoding():
     """Test to_bytes_io method with string data and custom encoding"""
     test_string = "hello world test"
     media = Media(data=test_string, encoding="ascii")
-    
+
     with media.to_bytes_io() as byte_stream:
         result = byte_stream.read()
         assert result == test_string.encode("ascii")
@@ -417,7 +417,7 @@ def test_to_bytes_io_with_unicode_string():
     """Test to_bytes_io method with unicode string data"""
     test_string = "hello world 🌍 test"
     media = Media(data=test_string)
-    
+
     with media.to_bytes_io() as byte_stream:
         result = byte_stream.read()
         assert result == test_string.encode("utf-8")
@@ -448,7 +448,7 @@ def test_base64_detection_preserves_original_behavior():
         # Empty string
         ("", False),
     ]
-    
+
     for test_data, should_decode in test_cases:
         if isinstance(test_data, bytes):
             # Create base64 string
@@ -458,9 +458,9 @@ def test_base64_detection_preserves_original_behavior():
                 b64_str = b64_str[:10]
         else:
             b64_str = test_data
-            
+
         media = Media(data=b64_str)
-        
+
         if should_decode and isinstance(test_data, bytes):
             assert isinstance(media.data, bytes)
             assert media.data == test_data

@@ -9,6 +9,7 @@ from pydub import AudioSegment
 
 from mosaico.assets.audio import AudioAsset
 from mosaico.clip_makers.base import BaseClipMaker
+from mosaico.config import settings
 
 
 class AudioClipMaker(BaseClipMaker[AudioAsset]):
@@ -44,7 +45,7 @@ class AudioClipMaker(BaseClipMaker[AudioAsset]):
 
         with (
             asset.to_bytes_io() as audio_buf,
-            NamedTemporaryFile(mode="wb", suffix=".mp3") as temp_file,
+            NamedTemporaryFile(mode="wb", suffix=".mp3", dir=settings.resolved_temp_dir) as temp_file,
         ):
             audio = AudioSegment.from_file(
                 file=audio_buf,
