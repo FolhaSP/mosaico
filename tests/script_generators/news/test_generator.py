@@ -106,14 +106,14 @@ def test_generate_adds_effects_to_images(
         for media_ref in shot.media_references:
             if media_ref.type == "image":
                 assert media_ref.effects, f"Media reference {media_ref.media_id} should have effects"
-                assert (
-                    len(media_ref.effects) > 0
-                ), f"Media reference {media_ref.media_id} should have at least one effect"
+                assert len(media_ref.effects) > 0, (
+                    f"Media reference {media_ref.media_id} should have at least one effect"
+                )
                 assert isinstance(media_ref.effects[0], str), "Effect should be a string"
                 # Check that the effect is one of the valid VideoEffectType values
-                assert any(
-                    media_ref.effects[0].startswith(prefix) for prefix in ["zoom_", "pan_"]
-                ), f"Effect {media_ref.effects[0]} should start with 'zoom_' or 'pan_'"
+                assert any(media_ref.effects[0].startswith(prefix) for prefix in ["zoom_", "pan_"]), (
+                    f"Effect {media_ref.effects[0]} should start with 'zoom_' or 'pan_'"
+                )
 
 
 @patch.object(NewsVideoScriptGenerator, "_summarize_context")
