@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import contextlib
+import os
 import tempfile
 
 import cv2 as cv
@@ -61,7 +63,7 @@ class ImageClipMaker(BaseClipMaker[ImageAsset]):
 
         position = asset.params.position
 
-        with tempfile.NamedTemporaryFile(mode="wb", suffix=".png", dir=settings.resolved_temp_dir) as fp:
+        with tempfile.NamedTemporaryFile(mode="wb", suffix=".png", dir=settings.resolved_temp_dir, delete=False) as fp:
             nparr = np.frombuffer(asset.to_bytes(), np.uint8)
             image = cv.imdecode(nparr, cv.IMREAD_UNCHANGED)
 
@@ -70,12 +72,19 @@ class ImageClipMaker(BaseClipMaker[ImageAsset]):
                 image = _resize_and_crop(image, self.video_resolution)
 
             cv.imwrite(fp.name, image)
+            temp_file_path = fp.name
 
-            return (
-                ImageClip(img=fp.name)
+        try:
+            clip = (
+                ImageClip(img=temp_file_path)
                 .with_position((position.x, position.y), relative=is_relative_position(position))
                 .with_duration(self.duration)
             )
+        finally:
+            with contextlib.suppress(OSError, FileNotFoundError, PermissionError):
+                os.remove(temp_file_path)
+
+        return clip
 
 
 def _resize_and_crop(image: cv.typing.MatLike, target_size: tuple[int, int]) -> cv.typing.MatLike:

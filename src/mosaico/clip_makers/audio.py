@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import contextlib
+import os
 from tempfile import NamedTemporaryFile
 
 from moviepy.audio import fx as afx
@@ -45,7 +47,7 @@ class AudioClipMaker(BaseClipMaker[AudioAsset]):
 
         with (
             asset.to_bytes_io() as audio_buf,
-            NamedTemporaryFile(mode="wb", suffix=".mp3", dir=settings.resolved_temp_dir) as temp_file,
+            NamedTemporaryFile(mode="wb", suffix=".mp3", dir=settings.resolved_temp_dir, delete=False) as fp,
         ):
             audio = AudioSegment.from_file(
                 file=audio_buf,
@@ -60,8 +62,15 @@ class AudioClipMaker(BaseClipMaker[AudioAsset]):
             if asset.params.crop is not None:
                 audio = audio[asset.params.crop[0] * 1000 : asset.params.crop[1] * 1000]
 
-            audio.export(temp_file.name, format="mp3")
+            audio.export(fp.name, format="mp3")
+            temp_file_path = fp.name
 
-            return AudioFileClip(temp_file.name, fps=asset.sample_rate).with_effects(
+        try:
+            clip = AudioFileClip(temp_file_path, fps=asset.sample_rate).with_effects(
                 [afx.MultiplyVolume(asset.params.volume)]
             )
+        finally:
+            with contextlib.suppress(OSError, FileNotFoundError, PermissionError):
+                os.remove(temp_file_path)
+
+        return clip
