@@ -1,0 +1,927 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+    <url>
+        <loc>https://folhasp.github.io/mosaico/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/roadmap/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/roadmap/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/roadmap/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/api-reference/asset-reference/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/api-reference/asset-reference/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/api-reference/asset-reference/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/api-reference/media/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/api-reference/media/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/api-reference/media/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/api-reference/scene/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/api-reference/scene/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/api-reference/scene/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/api-reference/assets/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/api-reference/assets/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/api-reference/assets/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/api-reference/assets/audio/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/api-reference/assets/audio/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/api-reference/assets/audio/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/api-reference/assets/image/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/api-reference/assets/image/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/api-reference/assets/image/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/api-reference/assets/subtitle/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/api-reference/assets/subtitle/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/api-reference/assets/subtitle/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/api-reference/assets/text/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/api-reference/assets/text/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/api-reference/assets/text/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/api-reference/audio-transcribers/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/api-reference/audio-transcribers/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/api-reference/audio-transcribers/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/api-reference/audio-transcribers/assemblyai/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/api-reference/audio-transcribers/assemblyai/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/api-reference/audio-transcribers/assemblyai/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/api-reference/audio-transcribers/openai/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/api-reference/audio-transcribers/openai/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/api-reference/audio-transcribers/openai/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/api-reference/clip-makers/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/api-reference/clip-makers/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/api-reference/clip-makers/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/api-reference/clip-makers/audio/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/api-reference/clip-makers/audio/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/api-reference/clip-makers/audio/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/api-reference/clip-makers/image/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/api-reference/clip-makers/image/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/api-reference/clip-makers/image/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/api-reference/clip-makers/subtitle/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/api-reference/clip-makers/subtitle/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/api-reference/clip-makers/subtitle/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/api-reference/clip-makers/text/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/api-reference/clip-makers/text/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/api-reference/clip-makers/text/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/api-reference/effects/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/api-reference/effects/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/api-reference/effects/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/api-reference/effects/pan/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/api-reference/effects/pan/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/api-reference/effects/pan/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/api-reference/effects/zoom/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/api-reference/effects/zoom/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/api-reference/effects/zoom/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/api-reference/positioning/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/api-reference/positioning/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/api-reference/positioning/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/api-reference/positioning/absolute/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/api-reference/positioning/absolute/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/api-reference/positioning/absolute/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/api-reference/positioning/region/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/api-reference/positioning/region/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/api-reference/positioning/region/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/api-reference/positioning/relative/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/api-reference/positioning/relative/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/api-reference/positioning/relative/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/api-reference/script-generators/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/api-reference/script-generators/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/api-reference/script-generators/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/api-reference/script-generators/script/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/api-reference/script-generators/script/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/api-reference/script-generators/script/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/api-reference/speech-synthesizers/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/api-reference/speech-synthesizers/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/api-reference/speech-synthesizers/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/api-reference/speech-synthesizers/elevenlabs/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/api-reference/speech-synthesizers/elevenlabs/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/api-reference/speech-synthesizers/elevenlabs/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/api-reference/speech-synthesizers/openai/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/api-reference/speech-synthesizers/openai/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/api-reference/speech-synthesizers/openai/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/api-reference/video/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/api-reference/video/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/api-reference/video/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/api-reference/video/project/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/api-reference/video/project/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/api-reference/video/project/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/api-reference/video/rendering/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/api-reference/video/rendering/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/api-reference/video/rendering/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/concepts/asset-references-and-scenes/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/concepts/asset-references-and-scenes/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/concepts/asset-references-and-scenes/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/concepts/audio-transcriptors/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/concepts/audio-transcriptors/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/concepts/audio-transcriptors/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/concepts/effects/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/concepts/effects/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/concepts/effects/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/concepts/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/concepts/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/concepts/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/concepts/media-and-assets/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/concepts/media-and-assets/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/concepts/media-and-assets/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/concepts/positioning/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/concepts/positioning/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/concepts/positioning/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/concepts/script-generators/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/concepts/script-generators/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/concepts/script-generators/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/concepts/speech-synthesizers/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/concepts/speech-synthesizers/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/concepts/speech-synthesizers/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/concepts/video-projects/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/concepts/video-projects/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/concepts/video-projects/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/cookbook/adding-audio/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/cookbook/adding-audio/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/cookbook/adding-audio/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/cookbook/adding-images/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/cookbook/adding-images/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/cookbook/adding-images/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/cookbook/adding-subtitles/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/cookbook/adding-subtitles/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/cookbook/adding-subtitles/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/cookbook/basic-video/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/cookbook/basic-video/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/cookbook/basic-video/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/cookbook/creating-custom-effects/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/cookbook/creating-custom-effects/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/cookbook/creating-custom-effects/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/cookbook/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/cookbook/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/cookbook/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/cookbook/multilayer-scene/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/cookbook/multilayer-scene/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/cookbook/multilayer-scene/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/cookbook/project-config/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/cookbook/project-config/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/cookbook/project-config/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/cookbook/slide-show/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/cookbook/slide-show/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/cookbook/slide-show/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/cookbook/syncing-audio/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/cookbook/syncing-audio/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/cookbook/syncing-audio/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/cookbook/text-animation/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/cookbook/text-animation/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/cookbook/text-animation/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/cookbook/timed-transition/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/cookbook/timed-transition/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/cookbook/timed-transition/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/cookbook/timeline-management/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/cookbook/timeline-management/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/cookbook/timeline-management/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/cookbook/video-from-article/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/cookbook/video-from-article/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/cookbook/video-from-article/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/development/contributing/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/development/contributing/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/development/contributing/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/getting-started/architecture/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/getting-started/architecture/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/getting-started/architecture/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/getting-started/installation/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/getting-started/installation/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/getting-started/installation/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/getting-started/quick-start/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/getting-started/quick-start/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/getting-started/quick-start/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/integrations/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/integrations/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/integrations/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/integrations/frameworks/haystack/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/integrations/frameworks/haystack/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/integrations/frameworks/haystack/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/integrations/frameworks/langchain/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/integrations/frameworks/langchain/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/integrations/frameworks/langchain/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/integrations/platforms/assemblyai/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/integrations/platforms/assemblyai/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/integrations/platforms/assemblyai/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/integrations/platforms/elevenlabs/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/integrations/platforms/elevenlabs/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/integrations/platforms/elevenlabs/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/integrations/platforms/openai/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/integrations/platforms/openai/"/>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/integrations/platforms/openai/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/pt/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/pt/roadmap/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/roadmap/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/roadmap/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/pt/api-reference/asset-reference/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/api-reference/asset-reference/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/api-reference/asset-reference/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/pt/api-reference/media/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/api-reference/media/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/api-reference/media/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/pt/api-reference/scene/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/api-reference/scene/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/api-reference/scene/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/pt/api-reference/assets/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/api-reference/assets/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/api-reference/assets/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/pt/api-reference/assets/audio/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/api-reference/assets/audio/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/api-reference/assets/audio/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/pt/api-reference/assets/image/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/api-reference/assets/image/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/api-reference/assets/image/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/pt/api-reference/assets/subtitle/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/api-reference/assets/subtitle/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/api-reference/assets/subtitle/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/pt/api-reference/assets/text/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/api-reference/assets/text/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/api-reference/assets/text/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/pt/api-reference/audio-transcribers/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/api-reference/audio-transcribers/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/api-reference/audio-transcribers/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/pt/api-reference/audio-transcribers/assemblyai/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/api-reference/audio-transcribers/assemblyai/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/api-reference/audio-transcribers/assemblyai/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/pt/api-reference/audio-transcribers/openai/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/api-reference/audio-transcribers/openai/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/api-reference/audio-transcribers/openai/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/pt/api-reference/clip-makers/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/api-reference/clip-makers/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/api-reference/clip-makers/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/pt/api-reference/clip-makers/audio/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/api-reference/clip-makers/audio/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/api-reference/clip-makers/audio/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/pt/api-reference/clip-makers/image/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/api-reference/clip-makers/image/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/api-reference/clip-makers/image/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/pt/api-reference/clip-makers/subtitle/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/api-reference/clip-makers/subtitle/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/api-reference/clip-makers/subtitle/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/pt/api-reference/clip-makers/text/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/api-reference/clip-makers/text/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/api-reference/clip-makers/text/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/pt/api-reference/effects/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/api-reference/effects/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/api-reference/effects/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/pt/api-reference/effects/pan/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/api-reference/effects/pan/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/api-reference/effects/pan/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/pt/api-reference/effects/zoom/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/api-reference/effects/zoom/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/api-reference/effects/zoom/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/pt/api-reference/positioning/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/api-reference/positioning/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/api-reference/positioning/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/pt/api-reference/positioning/absolute/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/api-reference/positioning/absolute/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/api-reference/positioning/absolute/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/pt/api-reference/positioning/region/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/api-reference/positioning/region/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/api-reference/positioning/region/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/pt/api-reference/positioning/relative/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/api-reference/positioning/relative/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/api-reference/positioning/relative/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/pt/api-reference/script-generators/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/api-reference/script-generators/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/api-reference/script-generators/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/pt/api-reference/script-generators/script/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/api-reference/script-generators/script/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/api-reference/script-generators/script/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/pt/api-reference/speech-synthesizers/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/api-reference/speech-synthesizers/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/api-reference/speech-synthesizers/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/pt/api-reference/speech-synthesizers/elevenlabs/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/api-reference/speech-synthesizers/elevenlabs/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/api-reference/speech-synthesizers/elevenlabs/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/pt/api-reference/speech-synthesizers/openai/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/api-reference/speech-synthesizers/openai/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/api-reference/speech-synthesizers/openai/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/pt/api-reference/video/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/api-reference/video/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/api-reference/video/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/pt/api-reference/video/project/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/api-reference/video/project/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/api-reference/video/project/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/pt/api-reference/video/rendering/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/api-reference/video/rendering/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/api-reference/video/rendering/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/pt/concepts/asset-references-and-scenes/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/concepts/asset-references-and-scenes/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/concepts/asset-references-and-scenes/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/pt/concepts/audio-transcriptors/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/concepts/audio-transcriptors/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/concepts/audio-transcriptors/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/pt/concepts/effects/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/concepts/effects/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/concepts/effects/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/pt/concepts/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/concepts/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/concepts/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/pt/concepts/media-and-assets/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/concepts/media-and-assets/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/concepts/media-and-assets/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/pt/concepts/positioning/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/concepts/positioning/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/concepts/positioning/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/pt/concepts/script-generators/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/concepts/script-generators/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/concepts/script-generators/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/pt/concepts/speech-synthesizers/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/concepts/speech-synthesizers/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/concepts/speech-synthesizers/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/pt/concepts/video-projects/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/concepts/video-projects/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/concepts/video-projects/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/pt/cookbook/adding-audio/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/cookbook/adding-audio/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/cookbook/adding-audio/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/pt/cookbook/adding-images/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/cookbook/adding-images/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/cookbook/adding-images/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/pt/cookbook/adding-subtitles/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/cookbook/adding-subtitles/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/cookbook/adding-subtitles/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/pt/cookbook/basic-video/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/cookbook/basic-video/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/cookbook/basic-video/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/pt/cookbook/creating-custom-effects/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/cookbook/creating-custom-effects/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/cookbook/creating-custom-effects/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/pt/cookbook/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/cookbook/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/cookbook/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/pt/cookbook/multilayer-scene/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/cookbook/multilayer-scene/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/cookbook/multilayer-scene/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/pt/cookbook/project-config/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/cookbook/project-config/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/cookbook/project-config/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/pt/cookbook/slide-show/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/cookbook/slide-show/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/cookbook/slide-show/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/pt/cookbook/syncing-audio/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/cookbook/syncing-audio/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/cookbook/syncing-audio/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/pt/cookbook/text-animation/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/cookbook/text-animation/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/cookbook/text-animation/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/pt/cookbook/timed-transition/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/cookbook/timed-transition/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/cookbook/timed-transition/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/pt/cookbook/timeline-management/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/cookbook/timeline-management/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/cookbook/timeline-management/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/pt/cookbook/video-from-article/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/cookbook/video-from-article/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/cookbook/video-from-article/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/pt/development/contributing/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/development/contributing/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/development/contributing/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/pt/getting-started/architecture/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/getting-started/architecture/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/getting-started/architecture/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/pt/getting-started/installation/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/getting-started/installation/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/getting-started/installation/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/pt/getting-started/quick-start/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/getting-started/quick-start/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/getting-started/quick-start/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/pt/integrations/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/integrations/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/integrations/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/pt/integrations/frameworks/haystack/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/integrations/frameworks/haystack/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/integrations/frameworks/haystack/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/pt/integrations/frameworks/langchain/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/integrations/frameworks/langchain/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/integrations/frameworks/langchain/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/pt/integrations/platforms/assemblyai/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/integrations/platforms/assemblyai/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/integrations/platforms/assemblyai/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/pt/integrations/platforms/elevenlabs/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/integrations/platforms/elevenlabs/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/integrations/platforms/elevenlabs/"/>
+    </url>
+    <url>
+        <loc>https://folhasp.github.io/mosaico/pt/integrations/platforms/openai/</loc>
+        <lastmod>2025-07-23</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="pt" href="https://folhasp.github.io/mosaico/pt/integrations/platforms/openai/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://folhasp.github.io/mosaico/integrations/platforms/openai/"/>
+    </url>
+</urlset>
