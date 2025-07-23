@@ -1,7 +1,6 @@
 import io
 from unittest.mock import patch
 
-import cv2 as cv
 import numpy as np
 import pytest
 from moviepy.video.VideoClip import ImageClip
@@ -197,4 +196,3 @@ def test_resize_and_crop_grayscale():
     result = _resize_and_crop(image, target_size)
 
     assert result.shape == (100, 100)
-
