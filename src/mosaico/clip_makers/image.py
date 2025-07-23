@@ -61,7 +61,7 @@ class ImageClipMaker(BaseClipMaker[ImageAsset]):
 
         position = asset.params.position
 
-        with tempfile.NamedTemporaryFile(mode="wb", suffix=".jpg", dir=settings.resolved_temp_dir) as fp:
+        with tempfile.NamedTemporaryFile(mode="wb", suffix=".png", dir=settings.resolved_temp_dir) as fp:
             nparr = np.frombuffer(asset.to_bytes(), np.uint8)
             image = cv.imdecode(nparr, cv.IMREAD_UNCHANGED)
 
