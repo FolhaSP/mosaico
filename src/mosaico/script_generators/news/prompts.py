@@ -96,3 +96,25 @@ SHOOTING_SCRIPT_PROMPT = textwrap.dedent(
     SHOOTING SCRIPT:
     """
 ).strip()
+
+REPLACEMENT_PROMPT = textwrap.dedent(
+    """
+    You previously produced a shooting script for a news video. Some media IDs were duplicates and removed.
+    Your task is to propose REPLACEMENT media IDs (distinct, not used elsewhere yet) for the specified shots.
+
+    AVAILABLE MEDIA (choose only from these IDs):
+    {available_media}
+
+    SHOTS NEEDING REPLACEMENTS:
+    {shots_needed}
+
+    GUIDELINES:
+    - Only use IDs from AVAILABLE MEDIA.
+    - Do not repeat a media ID across different shots.
+    - Provide at most the requested number of media IDs per shot (Needed count).
+    - Prefer semantically relevant matches using the subtitle as context.
+    - If you cannot find enough relevant media for a shot, return fewer IDs (but never fabricate IDs).
+    - Respond ONLY with JSON in the format:
+    {{"replacements": [{{"shot_number": <int>, "media_ids": ["id1", "id2"]}}, ...]}}
+    """
+).strip()
