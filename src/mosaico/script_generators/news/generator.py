@@ -1,6 +1,6 @@
 import random
 from collections.abc import Sequence
-from typing import TYPE_CHECKING, Any, get_args
+from typing import TYPE_CHECKING, Any, Callable, Sequence as _Sequence, get_args
 
 import instructor  # type: ignore
 import litellm  # type: ignore
@@ -63,11 +63,16 @@ class NewsVideoScriptGenerator:
         timeout: float = 120,
         *,
         enforce_unique_media: bool = True,
+        media_refetch_callback: Callable[[set[str], int], _Sequence[Media]] | None = None,
+        max_media_refetch_attempts: int = 3,
     ) -> None:
         """
         Create the generator.
 
         enforce_unique_media: Ensure each media_id is used at most once in final script.
+        media_refetch_callback: Optional function invoked when we need additional unique media.
+            Signature: (currently_used_media_ids, attempt_number starting at 1) -> Sequence[Media]
+        max_media_refetch_attempts: Maximum callback invocations when duplicates exhaust pool.
         """
         self.context = context
         self.model = model
@@ -77,6 +82,8 @@ class NewsVideoScriptGenerator:
         self.client = instructor.from_litellm(litellm.completion, api_key=api_key, base_url=base_url, timeout=timeout)
         self.enforce_unique_media = enforce_unique_media
         self.max_unsuccessful_replacement_rounds = 3
+        self.media_refetch_callback = media_refetch_callback
+        self.max_media_refetch_attempts = max_media_refetch_attempts
 
     def generate(self, media: Sequence[Media], **kwargs: Any) -> ShootingScript:
         """Generate the shooting script with optional uniqueness enforcement."""
@@ -132,6 +139,9 @@ class NewsVideoScriptGenerator:
             model=self.model, messages=messages, response_model=response_type, **model_params
         )
 
+    def _canonical_key(self, media: Media) -> str:
+        return media.id
+
     def _ensure_unique_media_with_replacements(
         self, shooting_script: ShootingScript, media_pool: Sequence[Media]
     ) -> ShootingScript:
@@ -140,26 +150,56 @@ class NewsVideoScriptGenerator:
 
         1. Global dedupe keeps first occurrence of each media_id.
         2. Iteratively request replacements to fill missing slots (based on original per-shot counts).
-        3. Unlimited attempts while progress occurs; count only unsuccessful rounds.
-        4. After self.max_unsuccessful_replacement_rounds consecutive unsuccessful rounds OR no available media, raise.
-        5. Never drop shots; either all targets are filled or we error.
+        3. Attempt refetch via callback when pool exhausted and still missing.
+        4. Stop after self.max_unsuccessful_replacement_rounds unsuccessful LLM rounds OR
+           self.max_media_refetch_attempts refetches without satisfying needs.
+        5. Raise RuntimeError if unable to satisfy.
         """
-        media_by_id = {m.id: m for m in media_pool}
+        media_pool_list = list(media_pool)
+        media_by_id = {m.id: m for m in media_pool_list}
         original_counts = {s.number: len(s.media_references) for s in shooting_script.shots}
-        self._initial_global_dedupe(shooting_script)
+        self._initial_global_dedupe(shooting_script, media_by_id)
 
         # Helper
         def total_missing() -> int:
             return sum(missing for _, missing in self._shots_needing_replacements(shooting_script, original_counts))
 
         unsuccessful_rounds = 0
+        refetch_attempts = 0
         while True:
             _ = total_missing()
             needs = self._shots_needing_replacements(shooting_script, original_counts)
             if not needs:
                 break
-            available_ids = self._remaining_available_ids(shooting_script, media_pool)
+            available_ids = self._remaining_available_ids(shooting_script, media_pool_list, media_by_id)
             if not available_ids:
+                # Try refetch if callback provided
+                if (
+                    self.media_refetch_callback is not None
+                    and refetch_attempts < self.max_media_refetch_attempts
+                ):
+                    used_ids = {
+                        ref.media_id
+                        for shot in shooting_script.shots
+                        for ref in shot.media_references
+                    }
+                    refetch_attempts += 1
+                    try:
+                        new_media = self.media_refetch_callback(used_ids, refetch_attempts)
+                    except Exception:  # pragma: no cover
+                        new_media = []
+                    # Integrate only truly new IDs
+                    added_any = False
+                    for m in new_media:
+                        if m.id in media_by_id:
+                            continue
+                        media_pool_list.append(m)
+                        media_by_id[m.id] = m
+                        added_any = True
+                    if added_any:
+                        # Recompute and continue loop
+                        continue
+                # No callback or no additions -> fail
                 raise RuntimeError("Error 500: Sem fotos suficientes")
 
             replacements = self._request_replacements(needs, available_ids, media_by_id)
@@ -174,20 +214,37 @@ class NewsVideoScriptGenerator:
                     raise RuntimeError("Error 500: Sem fotos suficientes")
         return shooting_script
 
-    def _initial_global_dedupe(self, shooting_script: ShootingScript) -> None:
-        seen: set[str] = set()
+    def _initial_global_dedupe(self, shooting_script: ShootingScript, media_by_id: dict[str, Media]) -> None:
+        seen_keys: set[str] = set()
         for shot in shooting_script.shots:
-            uniq = []
+            uniq: list[ShotMediaReference] = []
             for ref in shot.media_references:
-                if ref.media_id in seen:
+                media_obj = media_by_id.get(ref.media_id)
+                if not media_obj:
                     continue
-                seen.add(ref.media_id)
+                key = self._canonical_key(media_obj)
+                if key in seen_keys:
+                    continue
+                seen_keys.add(key)
                 uniq.append(ref)
             shot.media_references = uniq
 
-    def _remaining_available_ids(self, shooting_script: ShootingScript, media_pool: Sequence[Media]) -> list[str]:
-        used = {ref.media_id for s in shooting_script.shots for ref in s.media_references}
-        return [m.id for m in media_pool if m.id not in used]
+    def _remaining_available_ids(
+        self, shooting_script: ShootingScript, media_pool: Sequence[Media], media_by_id: dict[str, Media]
+    ) -> list[str]:
+        used_keys = set()
+        for s in shooting_script.shots:
+            for ref in s.media_references:
+                m = media_by_id.get(ref.media_id)
+                if m:
+                    used_keys.add(self._canonical_key(m))
+        available: list[str] = []
+        for m in media_pool:
+            ck = self._canonical_key(m)
+            if ck in used_keys:
+                continue
+            available.append(m.id)
+        return available
 
     def _shots_needing_replacements(
         self, shooting_script: ShootingScript, original_counts: dict[int, int]
@@ -224,7 +281,13 @@ class NewsVideoScriptGenerator:
         media_by_id: dict[str, Media],
     ) -> bool:
         shot_map = {s.number: s for s in shooting_script.shots}
-        used_ids = {ref.media_id for s in shooting_script.shots for ref in s.media_references}
+        # Track used canonical keys (not raw IDs)
+        used_keys = {
+            self._canonical_key(media_by_id[ref.media_id])
+            for s in shooting_script.shots
+            for ref in s.media_references
+            if ref.media_id in media_by_id
+        }
         applied_any = False
         for rep in replacements.replacements:
             shot = shot_map.get(rep.shot_number)
@@ -237,10 +300,14 @@ class NewsVideoScriptGenerator:
             for mid in rep.media_ids:
                 if len(candidates) >= missing:
                     break
-                if mid in used_ids or mid not in media_by_id:
+                media_obj = media_by_id.get(mid)
+                if not media_obj:
+                    continue
+                ck = self._canonical_key(media_obj)
+                if ck in used_keys:
                     continue
                 candidates.append(mid)
-                used_ids.add(mid)
+                used_keys.add(ck)
             if not candidates:
                 continue
             self._append_replacement_refs(shot, candidates, media_by_id)
