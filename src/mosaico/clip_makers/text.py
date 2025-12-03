@@ -98,8 +98,10 @@ class TextClipMaker(BaseClipMaker[BaseTextAsset]):
         # Load the font and wrap the text
         font = _load_font(params.font_family, params.font_size)
         text = asset.to_string()
-        wrapped_text = _wrap_text(text, font, round(max_width * 0.9))
-        text_size = _get_font_text_size(wrapped_text, font)
+        wrapped_text = _wrap_text(text, font, round(max_width * 0.9), params.stroke_width)
+        text_size = _get_font_text_size(
+            wrapped_text, font, line_height=params.line_height, stroke_width=params.stroke_width, align=params.align
+        )
 
         # Ensure text size has minimum dimensions to avoid PIL errors with zero-sized images
         text_size = (max(text_size[0], 1), max(text_size[1], 1))
@@ -244,36 +246,145 @@ def _load_font(font_family: str, font_size: int) -> ImageFont.FreeTypeFont:
     return default_font
 
 
-def _wrap_text(text: str, font: ImageFont.FreeTypeFont, max_width: int) -> str:
+def _wrap_text(text: str, font: ImageFont.FreeTypeFont, max_width: int, stroke_width: float = 0) -> str:
     """
     Wrap the given text to fit within the given width.
     """
     lines = []
     for line in text.split("\n"):
-        if _get_font_text_size(line, font)[0] <= max_width:
-            lines.append(line)
-        else:
-            words = line.split()
-            wrapped_line = ""
-            for word in words:
-                test_line = wrapped_line + word + " "
-                if _get_font_text_size(test_line, font)[0] <= max_width:
-                    wrapped_line = test_line
-                else:
-                    lines.append(wrapped_line)
-                    wrapped_line = word + " "
-            lines.append(wrapped_line)
-    return "\n".join(lines)
+        stripped_line = line.rstrip()
+        if _get_font_text_size(stripped_line, font, stroke_width=stroke_width)[0] <= max_width:
+            lines.append(stripped_line)
+            continue
+
+        words = stripped_line.split(" ")
+        wrapped_line_words: list[str] = []
+
+        for word in words:
+            candidate_line = " ".join([*wrapped_line_words, word])
+            if _get_font_text_size(candidate_line, font, stroke_width=stroke_width)[0] <= max_width:
+                wrapped_line_words.append(word)
+                continue
+
+            if _get_font_text_size(word, font, stroke_width=stroke_width)[0] > max_width:
+                for chunk in _split_long_word(word, font, max_width, stroke_width):
+                    candidate_chunk_line = " ".join([*wrapped_line_words, chunk])
+                    if wrapped_line_words and _get_font_text_size(candidate_chunk_line, font, stroke_width=stroke_width)[0] > max_width:
+                        lines.append(" ".join(wrapped_line_words))
+                        wrapped_line_words = [chunk]
+                    else:
+                        wrapped_line_words.append(chunk)
+                continue
+
+            if wrapped_line_words:
+                lines.append(" ".join(wrapped_line_words))
+            wrapped_line_words = [word]
+
+        if wrapped_line_words:
+            lines.append(" ".join(wrapped_line_words))
+
+    balanced_lines = _rebalance_wrapped_lines(lines, font, max_width, stroke_width)
+    return "\n".join(balanced_lines)
 
 
-def _get_font_text_size(text: str, font: ImageFont.FreeTypeFont) -> tuple[int, int]:
+def _split_long_word(word: str, font: ImageFont.FreeTypeFont, max_width: int, stroke_width: float = 0) -> list[str]:
+    """
+    Split a word longer than max width into chunks.
+    """
+    if not word:
+        return [word]
+
+    parts: list[str] = []
+    current = ""
+    for char in word:
+        candidate = current + char
+        if _get_font_text_size(candidate, font, stroke_width=stroke_width)[0] <= max_width or not current:
+            current = candidate
+            continue
+
+        parts.append(current)
+        current = char
+
+    if current:
+        parts.append(current)
+
+    return parts
+
+
+def _get_font_text_size(
+    text: str, font: ImageFont.FreeTypeFont, line_height: int = 0, stroke_width: float = 0, align: str = "left"
+) -> tuple[int, int]:
     """
     Get the width and height of the text with the given font.
     """
-    left, top, right, bottom = font.getbbox(text)
-    text_width = round(right - left)
-    text_height = round(bottom - top)
-    return text_width, text_height * text.count("\n") + 2 * text_height
+    bbox = ImageDraw.Draw(Image.new("RGB", (1, 1))).multiline_textbbox(
+        (0, 0), text, font=font, spacing=line_height, align=align, stroke_width=round(stroke_width)
+    )
+    return round(bbox[2] - bbox[0]), round(bbox[3] - bbox[1])
+
+
+def _rebalance_wrapped_lines(
+    lines: list[str], font: ImageFont.FreeTypeFont, max_width: int, stroke_width: float = 0
+) -> list[str]:
+    """
+    Rebalance wrapped lines to avoid orphan lines/words.
+    """
+    if len(lines) < 2:
+        return lines
+
+    balanced = list(lines)
+    for i in range(len(balanced) - 1):
+        current_line = balanced[i]
+        next_line = balanced[i + 1]
+
+        while current_line and next_line:
+            current_words = current_line.split()
+            if len(current_words) <= 1:
+                break
+
+            current_width = _get_font_text_size(current_line, font, stroke_width=stroke_width)[0]
+            next_width = _get_font_text_size(next_line, font, stroke_width=stroke_width)[0]
+
+            if current_width == 0 or next_width / current_width >= 0.65:
+                break
+
+            moved_word = current_words.pop()
+            candidate_current = " ".join(current_words)
+            candidate_next = f"{moved_word} {next_line}".strip()
+
+            if not candidate_current:
+                break
+
+            if _get_font_text_size(candidate_next, font, stroke_width=stroke_width)[0] > max_width:
+                break
+
+            new_current_width = _get_font_text_size(candidate_current, font, stroke_width=stroke_width)[0]
+            new_next_width = _get_font_text_size(candidate_next, font, stroke_width=stroke_width)[0]
+
+            if new_current_width and new_next_width / new_current_width > next_width / max(current_width, 1):
+                current_line = candidate_current
+                next_line = candidate_next
+                balanced[i] = current_line
+                balanced[i + 1] = next_line
+            else:
+                break
+
+    if len(balanced) >= 2:
+        last_words = balanced[-1].split()
+        prev_words = balanced[-2].split()
+        while len(last_words) < 2 and len(prev_words) > 1:
+            candidate_next = " ".join([prev_words[-1], *last_words])
+            candidate_prev = " ".join(prev_words[:-1])
+            if not candidate_prev:
+                break
+            if _get_font_text_size(candidate_next, font, stroke_width=stroke_width)[0] > max_width:
+                break
+            balanced[-2] = candidate_prev
+            balanced[-1] = candidate_next
+            last_words = candidate_next.split()
+            prev_words = candidate_prev.split()
+
+    return balanced
 
 
 def _draw_text_image(
